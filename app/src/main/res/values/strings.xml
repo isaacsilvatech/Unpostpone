@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Unpostpone</string>
+    <string name="accessibility_service_description">O Unpostpone monitora qual aplicativo está em uso para bloquear distrações enquanto você trabalha nas suas metas.</string>
+</resources>

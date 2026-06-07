@@ -1,0 +1,27 @@
+package com.unpostpone.app.di
+
+import com.unpostpone.app.data.repository.BlockedAppRepositoryImpl
+import com.unpostpone.app.data.repository.GoalRepositoryImpl
+import com.unpostpone.app.data.repository.StatisticsRepositoryImpl
+import com.unpostpone.app.domain.repository.BlockedAppRepository
+import com.unpostpone.app.domain.repository.GoalRepository
+import com.unpostpone.app.domain.repository.StatisticsRepository
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
+
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class RepositoryModule {
+
+    @Binds @Singleton
+    abstract fun bindGoalRepository(impl: GoalRepositoryImpl): GoalRepository
+
+    @Binds @Singleton
+    abstract fun bindBlockedAppRepository(impl: BlockedAppRepositoryImpl): BlockedAppRepository
+
+    @Binds @Singleton
+    abstract fun bindStatisticsRepository(impl: StatisticsRepositoryImpl): StatisticsRepository
+}
