@@ -70,6 +70,9 @@ dependencies {
     // Coroutines
     implementation(libs.coroutines.android)
 
+    // Google Fonts (Manrope)
+    implementation(libs.androidx.compose.ui.text.googlefonts)
+
     testImplementation(libs.junit)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
