@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="deep_focus">#0A4650</color>
+    <color name="dark_background">#081A1F</color>
+    <color name="dark_surface">#10262C</color>
+</resources>

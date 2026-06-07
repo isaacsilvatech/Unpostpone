@@ -1,0 +1,14 @@
+Primária:
+#0F4C5C
+
+Secundária:
+#2D6A73
+
+Ação:
+#F4A261
+
+Sucesso:
+#84A98C
+
+Neutro:
+#F7F4EA

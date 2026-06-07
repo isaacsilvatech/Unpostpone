@@ -11,22 +11,67 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
-private val DarkColorScheme = darkColorScheme(
-    primary = FocusBlue80,
-    secondary = FocusBlueDark80,
-    tertiary = SuccessGreen80
+private val LightColorScheme = lightColorScheme(
+    primary            = LightPrimary,
+    onPrimary          = LightOnPrimary,
+    primaryContainer   = LightPrimaryContainer,
+    onPrimaryContainer = LightOnPrimaryContainer,
+
+    secondary            = LightSecondary,
+    onSecondary          = LightOnSecondary,
+    secondaryContainer   = LightSecondaryContainer,
+    onSecondaryContainer = LightOnSecondaryContainer,
+
+    tertiary            = LightTertiary,
+    onTertiary          = LightOnTertiary,
+    tertiaryContainer   = LightTertiaryContainer,
+    onTertiaryContainer = LightOnTertiaryContainer,
+
+    background   = LightBackground,
+    onBackground = LightOnBackground,
+    surface      = LightSurface,
+    onSurface    = LightOnSurface,
+    surfaceVariant   = LightSurfaceVariant,
+    onSurfaceVariant = LightOnSurfaceVariant,
+
+    error    = LightError,
+    onError  = LightOnError,
+    outline  = LightOutline,
 )
 
-private val LightColorScheme = lightColorScheme(
-    primary = FocusBlue40,
-    secondary = FocusBlueDark40,
-    tertiary = SuccessGreen40
+private val DarkColorScheme = darkColorScheme(
+    primary            = DarkPrimary,
+    onPrimary          = DarkOnPrimary,
+    primaryContainer   = DarkPrimaryContainer,
+    onPrimaryContainer = DarkOnPrimaryContainer,
+
+    secondary            = DarkSecondary,
+    onSecondary          = DarkOnSecondary,
+    secondaryContainer   = DarkSecondaryContainer,
+    onSecondaryContainer = DarkOnSecondaryContainer,
+
+    tertiary            = DarkTertiary,
+    onTertiary          = DarkOnTertiary,
+    tertiaryContainer   = DarkTertiaryContainer,
+    onTertiaryContainer = DarkOnTertiaryContainer,
+
+    background   = DarkBackground,
+    onBackground = DarkOnBackground,
+    surface      = DarkSurface,
+    onSurface    = DarkOnSurface,
+    surfaceVariant   = DarkSurfaceVariant,
+    onSurfaceVariant = DarkOnSurfaceVariant,
+
+    error    = DarkError,
+    onError  = DarkOnError,
+    outline  = DarkOutline,
 )
 
 @Composable
 fun UnpostponeTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = true,
+    // Dynamic color desabilitado: usamos nossa paleta de marca
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -35,12 +80,12 @@ fun UnpostponeTheme(
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
         darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+        else      -> LightColorScheme
     }
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
-        content = content
+        typography  = Typography,
+        content     = content
     )
 }
