@@ -106,7 +106,7 @@ fun DashboardScreen(
 @Composable
 private fun DateHeader() {
     val today = remember {
-        SimpleDateFormat("EEEE, dd 'de' MMMM", Locale("pt", "BR"))
+        SimpleDateFormat("EEEE, dd 'de' MMMM", Locale.forLanguageTag("pt-BR"))
             .format(Date())
             .replaceFirstChar { it.uppercase() }
     }
