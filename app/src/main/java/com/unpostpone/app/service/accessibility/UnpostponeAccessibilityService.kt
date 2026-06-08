@@ -5,9 +5,11 @@ import android.accessibilityservice.AccessibilityServiceInfo
 import android.content.Intent
 import android.view.accessibility.AccessibilityEvent
 import com.unpostpone.app.domain.usecase.blockedapp.IsAppBlockedUseCase
+import com.unpostpone.app.domain.usecase.blockedapp.ObserveBlockingEnabledUseCase
 import com.unpostpone.app.domain.usecase.statistics.IncrementBlockCountUseCase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.first
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -17,6 +19,7 @@ class UnpostponeAccessibilityService : AccessibilityService() {
 
     @Inject lateinit var isAppBlockedUseCase: IsAppBlockedUseCase
     @Inject lateinit var incrementBlockCountUseCase: IncrementBlockCountUseCase
+    @Inject lateinit var observeBlockingEnabledUseCase: ObserveBlockingEnabledUseCase
 
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
@@ -39,6 +42,10 @@ class UnpostponeAccessibilityService : AccessibilityService() {
         if (packageName == temporarilyUnlockedPackage) return
 
         serviceScope.launch {
+            // Global gate: if the user has the master toggle off, do nothing
+            // — no per-app lookup, no block count, no blocker screen.
+            if (!observeBlockingEnabledUseCase().first()) return@launch
+
             if (isAppBlockedUseCase(packageName)) {
                 val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
                 incrementBlockCountUseCase(today)
