@@ -30,9 +30,9 @@ private val manropeBase = TextStyle(
 
 val DisplayLarge = manropeBase.copy(
     fontWeight    = FontWeight.ExtraBold,
-    fontSize      = 57.sp,
-    lineHeight    = 64.sp,
-    letterSpacing = (-0.5).sp,
+    fontSize      = 64.sp,
+    lineHeight    = 72.sp,
+    letterSpacing = (-1.0).sp,
 )
 
 val DisplayMedium = manropeBase.copy(
@@ -67,8 +67,8 @@ val HeadlineMedium = manropeBase.copy(
 
 val HeadlineSmall = manropeBase.copy(
     fontWeight    = FontWeight.SemiBold,
-    fontSize      = 24.sp,
-    lineHeight    = 32.sp,
+    fontSize      = 26.sp,
+    lineHeight    = 34.sp,
     letterSpacing = 0.sp,
 )
 
@@ -124,14 +124,14 @@ val LabelLarge = manropeBase.copy(
     fontWeight    = FontWeight.SemiBold,
     fontSize      = 14.sp,
     lineHeight    = 20.sp,
-    letterSpacing = 0.1.sp,
+    letterSpacing = 0.5.sp,
 )
 
 val LabelMedium = manropeBase.copy(
     fontWeight    = FontWeight.Medium,
     fontSize      = 12.sp,
     lineHeight    = 16.sp,
-    letterSpacing = 0.5.sp,
+    letterSpacing = 1.2.sp,
 )
 
 val LabelSmall = manropeBase.copy(
@@ -148,9 +148,9 @@ val LabelSmall = manropeBase.copy(
 val NumberDisplayLarge = TextStyle(
     fontFamily     = JetBrainsMonoFontFamily,
     fontWeight     = FontWeight.Bold,
-    fontSize       = 57.sp,
-    lineHeight     = 64.sp,
-    letterSpacing  = (-1).sp,
+    fontSize       = 64.sp,
+    lineHeight     = 72.sp,
+    letterSpacing  = (-1.5).sp,
     fontFeatureSettings = "tnum, lnum, zero",
     lineHeightStyle    = tightLineHeight,
 )
@@ -158,9 +158,9 @@ val NumberDisplayLarge = TextStyle(
 val NumberDisplayMedium = TextStyle(
     fontFamily     = JetBrainsMonoFontFamily,
     fontWeight     = FontWeight.SemiBold,
-    fontSize       = 45.sp,
-    lineHeight     = 52.sp,
-    letterSpacing  = (-0.5).sp,
+    fontSize       = 48.sp,
+    lineHeight     = 56.sp,
+    letterSpacing  = (-0.75).sp,
     fontFeatureSettings = "tnum, lnum, zero",
     lineHeightStyle    = tightLineHeight,
 )
@@ -171,6 +171,21 @@ val NumberDisplaySmall = TextStyle(
     fontSize       = 36.sp,
     lineHeight     = 44.sp,
     letterSpacing  = 0.sp,
+    fontFeatureSettings = "tnum, lnum, zero",
+    lineHeightStyle    = tightLineHeight,
+)
+
+/**
+ * The single most important number on a screen — used for the dashboard hero
+ * focus time. 72sp dominates the layout; tabular figures keep digits aligned
+ * as the value ticks up.
+ */
+val NumberHeadlineXLarge = TextStyle(
+    fontFamily     = JetBrainsMonoFontFamily,
+    fontWeight     = FontWeight.Bold,
+    fontSize       = 72.sp,
+    lineHeight     = 80.sp,
+    letterSpacing  = (-2).sp,
     fontFeatureSettings = "tnum, lnum, zero",
     lineHeightStyle    = tightLineHeight,
 )

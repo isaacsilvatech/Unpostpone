@@ -115,3 +115,13 @@ val DarkInverseOnSurface       = Color(0xFF0A0A0A)
 val DarkInversePrimary         = Teal
 val DarkScrim                  = Color(0xFF000000)
 val DarkSurfaceTint            = DarkPrimary
+
+// ── Hero surface tokens ────────────────────────────────────────────────────
+//   A whisper-of-teal block used only by the dashboard / statistics hero.
+//   Distinct from `LightSurface` (white) so the hero reads as a region, but
+//   cool enough to not break the neutral-first rule. These are intentionally
+//   NOT part of the M3 ColorScheme — they are applied as a one-off
+//   `containerColor` on the hero Card so we don't pollute M3 semantics.
+
+val LightHeroSurface = Color(0xFFF1F7F8)  // cool off-white, hint of teal
+val DarkHeroSurface  = Color(0xFF13262A)  // cool dark teal-tint

@@ -19,14 +19,18 @@ import androidx.compose.ui.unit.dp
 //   Extra Small        → 8dp    — chips, badges, small inline elements
 //   Small              → 12dp   — text fields, segmented controls
 //   Medium             → 20dp   — cards, dialogs, the signature shape
-//   Large              → 28dp   — bottom sheets, large cards, hero blocks
+//   Large              → 28dp   — bottom sheets, large cards
 //   Extra Large        → 36dp   — onboarding illustrations, splash elements
+//   Hero               → 32dp   — the dashboard / statistics hero block
+//                                  (bigger than Large so the hero reads as a
+//                                   distinct shape, not just a big card)
 
 val ExtraSmallRadius = 8.dp
 val SmallRadius      = 12.dp
 val MediumRadius     = 20.dp
 val LargeRadius      = 28.dp
 val ExtraLargeRadius = 36.dp
+val HeroRadius       = 32.dp
 
 val UnpostponeShapes = Shapes(
     extraSmall = RoundedCornerShape(ExtraSmallRadius),

@@ -1,6 +1,7 @@
 package com.unpostpone.app.ui.theme
 
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 // ════════════════════════════════════════════════════════════════════════════
 //  Unpostpone — Spacing & Layout Tokens
@@ -51,4 +52,21 @@ object Dimens {
     val FocusRingSize     = 240.dp
     val FocusRingStroke   = 14.dp
     val FocusRingTrack    = 6.dp
+
+    // ── Hero block tokens (dashboard / statistics 30-day hero) ───────
+    //   HeroPadding is the interior of the hero card (32dp — generous so
+    //   the ring has room to breathe). The ring dimensions already exist
+    //   above as FocusRingSize / FocusRingStroke — kept under both names
+    //   so the Blocker screen keeps compiling; new code should use the
+    //   HeroRing* aliases.
+    val HeroPadding          = 32.dp
+    val HeroRingSize         = FocusRingSize   // alias — 240dp
+    val HeroRingStroke       = FocusRingStroke // alias — 14dp
+
+    // ── Section rhythm ───────────────────────────────────────────────
+    val SectionTitleTopGap   = 24.dp  // gap above a section header
+    val StatValueSize        = 36.sp  // token used by the NumberHeadline in stat cards
+
+    // ── Hero card shape (alias of HeroRadius in Shape.kt) ───────────
+    val HeroCornerRadius     = 32.dp  // 32dp squircle for the hero band
 }
