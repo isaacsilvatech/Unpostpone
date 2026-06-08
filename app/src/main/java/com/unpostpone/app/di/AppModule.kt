@@ -1,10 +1,42 @@
 package com.unpostpone.app.di
 
+import android.content.Context
+import android.content.SharedPreferences
+import com.unpostpone.app.data.repository.OnboardingPreferencesImpl
+import com.unpostpone.app.domain.repository.OnboardingPreferences
+import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
-/** Reserved for future app-level bindings: analytics, DataStore, remote config, etc. */
+/**
+ * App-scoped Hilt bindings. Anything that does not fit cleanly into
+ * DatabaseModule / RepositoryModule goes here — analytics, remote config,
+ * local preferences, the application context itself.
+ */
 @Module
 @InstallIn(SingletonComponent::class)
-object AppModule
+object AppModule {
+
+    private const val PREFS_FILE = "unpostpone.prefs"
+
+    @Provides
+    @Singleton
+    fun provideSharedPreferences(
+        @ApplicationContext context: Context,
+    ): SharedPreferences = context.getSharedPreferences(PREFS_FILE, Context.MODE_PRIVATE)
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class AppModuleBinds {
+
+    @Binds
+    @Singleton
+    abstract fun bindOnboardingPreferences(
+        impl: OnboardingPreferencesImpl,
+    ): OnboardingPreferences
+}
