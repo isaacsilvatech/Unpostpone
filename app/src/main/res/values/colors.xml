@@ -1,14 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Brand colors para uso em XML (splash, notificações, etc.) -->
-    <color name="deep_focus">#0F5A67</color>
-    <color name="deep_focus_dark">#0A4650</color>
-    <color name="action_orange">#F7942D</color>
-    <color name="growth_green">#A7C592</color>
-    <color name="calm_ivory">#F4EFE5</color>
-    <color name="dark_background">#081A1F</color>
-    <color name="dark_surface">#10262C</color>
-    <!-- Mantidos para compatibilidade com assets existentes -->
+    <!--
+        Unpostpone — Brand Color Resources
+        Anchored to the icon (docs/icon.svg) and paleta-cores.txt.
+        These are the colors used by the Android system (splash, notifications,
+        status bar, task switcher). The Compose ColorScheme lives in
+        ui/theme/Color.kt — keep these two in sync.
+    -->
+
+    <!-- Primary brand teal — icon background, app identity -->
+    <color name="brand_teal">#0F4C5C</color>
+    <color name="brand_teal_dark">#08404E</color>
+    <color name="brand_teal_soft">#2D6A73</color>
+
+    <!-- Cream — the paper-like background -->
+    <color name="brand_cream">#F7F4EA</color>
+    <color name="brand_surface">#FBFAF5</color>
+
+    <!-- Action — kinetic moments, primary CTA, clock hands -->
+    <color name="brand_action">#F4A261</color>
+    <color name="brand_action_dark">#8C4F1F</color>
+
+    <!-- Sage — success, growth, streak -->
+    <color name="brand_sage">#84A98C</color>
+    <color name="brand_sage_dark">#4A6B45</color>
+
+    <!-- Dark theme surfaces -->
+    <color name="dark_background">#0F1413</color>
+    <color name="dark_surface">#0F1413</color>
+    <color name="dark_surface_variant">#1A2224</color>
+
+    <!-- Legacy aliases — kept for splash / notification assets that still
+         reference the old names. Prefer the brand_* names in new code. -->
+    <color name="deep_focus">#0F4C5C</color>
+    <color name="deep_focus_dark">#08404E</color>
+    <color name="action_orange">#F4A261</color>
+    <color name="growth_green">#84A98C</color>
+    <color name="calm_ivory">#F7F4EA</color>
+
+    <!-- System -->
     <color name="white">#FFFFFFFF</color>
     <color name="black">#FF000000</color>
+    <color name="transparent">#00000000</color>
 </resources>

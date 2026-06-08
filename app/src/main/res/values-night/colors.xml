@@ -1,6 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="deep_focus">#0A4650</color>
-    <color name="dark_background">#081A1F</color>
-    <color name="dark_surface">#10262C</color>
+    <!--
+        Unpostpone — Dark theme overrides
+        Mirrors the Compose DarkColorScheme so splash / status bar / task
+        switcher match the in-app surfaces.
+    -->
+    <color name="brand_teal">#84D0DC</color>
+    <color name="brand_teal_dark">#004E5A</color>
+    <color name="brand_teal_soft">#B3CACE</color>
+
+    <color name="brand_cream">#0F1413</color>
+    <color name="brand_surface">#0F1413</color>
+
+    <color name="brand_action">#FFB68C</color>
+    <color name="brand_action_dark">#6F3A14</color>
+
+    <color name="brand_sage">#9BC09A</color>
+    <color name="brand_sage_dark">#325032</color>
+
+    <color name="dark_background">#0F1413</color>
+    <color name="dark_surface">#0F1413</color>
+    <color name="dark_surface_variant">#1A2224</color>
+
+    <color name="deep_focus">#84D0DC</color>
+    <color name="deep_focus_dark">#004E5A</color>
+    <color name="action_orange">#FFB68C</color>
+    <color name="growth_green">#9BC09A</color>
+    <color name="calm_ivory">#0F1413</color>
 </resources>
