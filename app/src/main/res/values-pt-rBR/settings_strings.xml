@@ -3,6 +3,15 @@
     <string name="settings_title">Configurações</string>
     <string name="settings_back_cd">Voltar</string>
 
+    <!-- Section cards (redesign) -->
+    <string name="settings_section_focus">Foco</string>
+    <string name="settings_section_focus_subtitle">Apps bloqueados durante o foco e o serviço que faz o bloqueio.</string>
+    <string name="settings_section_preferences">Preferências</string>
+    <string name="settings_section_preferences_subtitle">Idioma do app.</string>
+    <string name="settings_section_about">Sobre</string>
+    <string name="settings_section_about_subtitle">Versão do app e onboarding.</string>
+    <string name="settings_empty_section">Não configurado</string>
+
     <string name="settings_blocked_apps_title">Apps Bloqueados</string>
     <string name="settings_blocked_apps_subtitle">Selecione quais apps serão bloqueados durante o foco</string>
     <string name="settings_blocked_apps_empty">Nenhum app disponível. Puxe para atualizar após instalar mais apps.</string>

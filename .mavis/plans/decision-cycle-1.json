@@ -1,0 +1,12 @@
+{
+  "last_cycle": [
+    {
+      "task_id": "ui-redesign",
+      "verdict": "manual_retry",
+      "reason": "Producer session errored out before producing any deliverable (status: ready, attempt 1, verdict_summary: 'Producer session error'). No code changes were written, so the brief is still correct as-is. Re-dispatch a fresh producer session to do the full redesign pass."
+    }
+  ],
+  "next_cycle": [],
+  "plan_complete": false,
+  "message_to_user": "Producer session died before producing any code. Re-dispatching the full UI redesign with the same brief."
+}

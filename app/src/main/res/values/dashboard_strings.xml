@@ -5,19 +5,38 @@
     <string name="dashboard_settings_cd">Open settings</string>
     <string name="dashboard_add_goal_cd">Add goal</string>
 
+    <!-- Hero (redesign) -->
+    <string name="dashboard_hero_eyebrow">Today</string>
+    <string name="dashboard_hero_subtitle">%1$d of %2$d goals complete</string>
+    <string name="dashboard_hero_subtitle_empty">Tap a goal to start focusing</string>
+    <string name="dashboard_section_activity">Today\'s activity</string>
+    <string name="dashboard_focused_short">focused</string>
+
+    <!-- Stat strip tiles -->
+    <string name="dashboard_stat_blocks">Blocks</string>
+    <string name="dashboard_stat_attempts">Attempts</string>
+    <string name="dashboard_stat_goals_done">Done</string>
+
     <!-- Toggle / progress cards -->
     <string name="dashboard_blocking_active">Blocking active</string>
     <string name="dashboard_blocking_inactive">Blocking inactive</string>
     <string name="dashboard_blocking_active_subtitle">Distractions are blocked</string>
     <string name="dashboard_blocking_inactive_subtitle">Tap to activate</string>
 
+    <!-- retained for backward compatibility, no longer referenced -->
     <string name="dashboard_progress_title">Overall progress</string>
+    <!-- retained for backward compatibility, no longer referenced -->
     <string name="dashboard_progress_subtitle">%1$d of %2$d goals</string>
+    <!-- retained for backward compatibility, no longer referenced -->
     <string name="dashboard_progress_percent">%1$d%% complete</string>
 
+    <!-- retained for backward compatibility, no longer referenced -->
     <string name="dashboard_today_stats_title">Today\'s statistics</string>
+    <!-- retained for backward compatibility, no longer referenced -->
     <string name="dashboard_today_stats_focused">Focused</string>
+    <!-- retained for backward compatibility, no longer referenced -->
     <string name="dashboard_today_stats_blocks">Blocks</string>
+    <!-- retained for backward compatibility, no longer referenced -->
     <string name="dashboard_today_stats_attempts">Attempts</string>
 
     <string name="dashboard_today_goals_title">Today\'s goals</string>

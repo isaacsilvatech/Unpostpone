@@ -1,31 +1,72 @@
 package com.unpostpone.app.presentation.dashboard
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.BarChart
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Flag
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.unpostpone.app.R
-import com.unpostpone.app.core.locale.AppLocale
 import com.unpostpone.app.domain.model.Goal
+import com.unpostpone.app.domain.model.Statistics
+import com.unpostpone.app.presentation.dashboard.components.HeroFocusRing
 import com.unpostpone.app.presentation.navigation.Screen
 import com.unpostpone.app.ui.theme.Dimens
-import com.unpostpone.app.ui.theme.NumberDisplaySmall
-import java.time.Instant
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
+import com.unpostpone.app.ui.theme.HeroRadius
+import com.unpostpone.app.ui.theme.NumberHeadline
+import com.unpostpone.app.ui.theme.NumberTitle
+import com.unpostpone.app.ui.theme.UnpostponeTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -34,15 +75,6 @@ fun DashboardScreen(
     viewModel: DashboardViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val locale = AppLocale.formatting
-
-    val today = remember(locale) {
-        DateTimeFormatter
-            .ofLocalizedDate(FormatStyle.FULL)
-            .withLocale(locale)
-            .withZone(ZoneId.systemDefault())
-            .format(Instant.now())
-    }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -93,51 +125,79 @@ fun DashboardScreen(
                 contentAlignment = Alignment.Center,
             ) { CircularProgressIndicator(color = MaterialTheme.colorScheme.primary) }
         } else {
+            val focusedMinutes = uiState.todayStatistics?.focusedMinutes ?: 0
+            val blockCount = uiState.todayStatistics?.blockCount ?: 0
+            val unlockAttempts = uiState.todayStatistics?.unlockAttempts ?: 0
+            val completedGoals = uiState.completedGoalsCount
+            val totalGoals = uiState.totalGoalsCount
+            val heroSubtitle = if (totalGoals == 0) {
+                stringResource(R.string.dashboard_hero_subtitle_empty)
+            } else {
+                stringResource(
+                    R.string.dashboard_hero_subtitle,
+                    completedGoals,
+                    totalGoals,
+                )
+            }
+
             LazyColumn(
                 modifier = Modifier.fillMaxSize().padding(paddingValues),
                 contentPadding = PaddingValues(
-                    horizontal = Dimens.SpacingL,
+                    horizontal = Dimens.SpacingXL,
                     vertical = Dimens.SpacingL,
                 ),
                 verticalArrangement = Arrangement.spacedBy(Dimens.SpacingL),
             ) {
+                // i. Hero focus ring
                 item {
-                    Text(
-                        text = today,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        HeroFocusRing(
+                            focusedMinutes = focusedMinutes,
+                            dailyTargetMinutes = 480,
+                            eyebrow = stringResource(R.string.dashboard_hero_eyebrow),
+                            subtitle = heroSubtitle,
+                        )
+                    }
                 }
+
+                // ii. Compact blocking-toggle row
                 item {
                     BlockingToggleCard(
                         isActive = uiState.isBlockingActive,
                         onToggle = viewModel::toggleBlocking,
                     )
                 }
+
+                // iii. "Today's activity" section header
                 item {
-                    ProgressSummaryCard(
-                        completed = uiState.completedGoalsCount,
-                        total = uiState.totalGoalsCount,
-                        progress = uiState.overallProgress,
+                    Spacer(Modifier.height(Dimens.SectionTitleTopGap))
+                    ActivitySectionHeader(focusedMinutes = focusedMinutes)
+                }
+
+                // iv. Stat strip (Blocks / Attempts / Goals done)
+                item {
+                    StatStrip(
+                        blocks = blockCount,
+                        attempts = unlockAttempts,
+                        goalsDone = completedGoals,
                     )
                 }
-                item {
-                    StatisticsCard(
-                        focusedMinutes = uiState.todayStatistics?.focusedMinutes ?: 0,
-                        blockCount = uiState.todayStatistics?.blockCount ?: 0,
-                        unlockAttempts = uiState.todayStatistics?.unlockAttempts ?: 0,
-                    )
-                }
+
+                // v + vi. Today's goals section
                 if (uiState.todayGoals.isEmpty()) {
+                    // vii. Empty state — small focus ring at 64dp
                     item { EmptyGoalsCard(onAddGoal = { navController.navigate(Screen.Goals.route) }) }
                 } else {
                     item {
+                        Spacer(Modifier.height(Dimens.SectionTitleTopGap))
                         Text(
                             text = stringResource(R.string.dashboard_today_goals_title),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.SemiBold,
                             color = MaterialTheme.colorScheme.onBackground,
-                            modifier = Modifier.padding(top = Dimens.SpacingS),
                         )
                     }
                     items(uiState.todayGoals) { goal -> GoalProgressCard(goal = goal) }
@@ -149,23 +209,31 @@ fun DashboardScreen(
     }
 }
 
+// ═══════════════════════════════════════════════════════════════════════════
+//  Blocking toggle — compact row, not a giant card
+// ═══════════════════════════════════════════════════════════════════════════
+
 @Composable
 private fun BlockingToggleCard(isActive: Boolean, onToggle: () -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth(),
+        shape = androidx.compose.foundation.shape.RoundedCornerShape(HeroRadius - 12.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface,
             contentColor = MaterialTheme.colorScheme.onSurface,
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-        border = androidx.compose.foundation.BorderStroke(
+        border = BorderStroke(
             width = 1.dp,
             color = if (isActive) MaterialTheme.colorScheme.primary
                     else MaterialTheme.colorScheme.outlineVariant,
         ),
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(Dimens.CardPadding),
+            modifier = Modifier.fillMaxWidth().padding(
+                horizontal = Dimens.CardPadding,
+                vertical = Dimens.SpacingS + Dimens.SpacingXS, // ~30% tighter
+            ),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -173,16 +241,18 @@ private fun BlockingToggleCard(isActive: Boolean, onToggle: () -> Unit) {
                 Text(
                     text = if (isActive) stringResource(R.string.dashboard_blocking_active)
                            else stringResource(R.string.dashboard_blocking_inactive),
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
-                Spacer(Modifier.height(Dimens.SpacingXS))
+                Spacer(Modifier.height(2.dp))
                 Text(
                     text = if (isActive) stringResource(R.string.dashboard_blocking_active_subtitle)
                            else stringResource(R.string.dashboard_blocking_inactive_subtitle),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
             Switch(
@@ -201,133 +271,121 @@ private fun BlockingToggleCard(isActive: Boolean, onToggle: () -> Unit) {
     }
 }
 
+// ═══════════════════════════════════════════════════════════════════════════
+//  "Today's activity" section header — title + JetBrains Mono focused span
+// ═══════════════════════════════════════════════════════════════════════════
+
 @Composable
-private fun ProgressSummaryCard(completed: Int, total: Int, progress: Float) {
-    Card(
+private fun ActivitySectionHeader(focusedMinutes: Int) {
+    val focusedText = remember(focusedMinutes) {
+        com.unpostpone.app.presentation.dashboard.format
+            .FocusTimeFormatter.formatFocusTime(focusedMinutes)
+    }
+    Row(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-            contentColor = MaterialTheme.colorScheme.onSurface,
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-        border = androidx.compose.foundation.BorderStroke(
-            width = 1.dp,
-            color = MaterialTheme.colorScheme.outlineVariant,
-        ),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        Column(modifier = Modifier.fillMaxWidth().padding(Dimens.CardPadding)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    text = stringResource(R.string.dashboard_progress_title),
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold,
-                )
-                Text(
-                    text = stringResource(R.string.dashboard_progress_subtitle, completed, total),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-            Spacer(Modifier.height(Dimens.SpacingM))
-            LinearProgressIndicator(
-                progress = { progress },
-                modifier = Modifier.fillMaxWidth().height(6.dp),
-                color = MaterialTheme.colorScheme.primary,
-                trackColor = MaterialTheme.colorScheme.surfaceVariant,
-            )
-            Spacer(Modifier.height(Dimens.SpacingS))
+        Text(
+            text = stringResource(R.string.dashboard_section_activity),
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onBackground,
+        )
+        Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
-                text = stringResource(R.string.dashboard_progress_percent, (progress * 100).toInt()),
-                style = MaterialTheme.typography.bodySmall,
+                text = focusedText,
+                style = NumberTitle,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Spacer(Modifier.width(Dimens.SpacingXS))
+            Text(
+                text = stringResource(R.string.dashboard_focused_short),
+                style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
     }
 }
 
+// ═══════════════════════════════════════════════════════════════════════════
+//  Stat strip — three equal columns separated by hairlines
+// ═══════════════════════════════════════════════════════════════════════════
+
 @Composable
-private fun StatisticsCard(focusedMinutes: Int, blockCount: Int, unlockAttempts: Int) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-            contentColor = MaterialTheme.colorScheme.onSurface,
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-        border = androidx.compose.foundation.BorderStroke(
-            width = 1.dp,
-            color = MaterialTheme.colorScheme.outlineVariant,
-        ),
+private fun StatStrip(
+    blocks: Int,
+    attempts: Int,
+    goalsDone: Int,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(top = Dimens.SpacingS),
+        verticalAlignment = Alignment.Bottom,
     ) {
-        Column(modifier = Modifier.fillMaxWidth().padding(Dimens.CardPadding)) {
-            Text(
-                text = stringResource(R.string.dashboard_today_stats_title),
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold,
-            )
-            Spacer(Modifier.height(Dimens.SpacingL))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                StatItem(
-                    Icons.Default.Timer,
-                    focusedMinutes.toString(),
-                    stringResource(R.string.dashboard_today_stats_focused),
-                    modifier = Modifier.weight(1f),
-                )
-                StatItem(
-                    Icons.Default.Block,
-                    blockCount.toString(),
-                    stringResource(R.string.dashboard_today_stats_blocks),
-                    modifier = Modifier.weight(1f),
-                )
-                StatItem(
-                    Icons.Default.LockOpen,
-                    unlockAttempts.toString(),
-                    stringResource(R.string.dashboard_today_stats_attempts),
-                    modifier = Modifier.weight(1f),
-                )
-            }
-        }
+        StatTile(
+            value = blocks.toString(),
+            label = stringResource(R.string.dashboard_stat_blocks),
+            modifier = Modifier.weight(1f),
+        )
+        VerticalHairline()
+        StatTile(
+            value = attempts.toString(),
+            label = stringResource(R.string.dashboard_stat_attempts),
+            modifier = Modifier.weight(1f),
+        )
+        VerticalHairline()
+        StatTile(
+            value = goalsDone.toString(),
+            label = stringResource(R.string.dashboard_stat_goals_done),
+            modifier = Modifier.weight(1f),
+        )
     }
 }
 
 @Composable
-private fun StatItem(
-    icon: ImageVector,
+private fun VerticalHairline() {
+    Box(
+        modifier = Modifier
+            .width(1.dp)
+            .height(40.dp),
+    ) {
+        HorizontalDivider(
+            modifier = Modifier
+                .width(1.dp)
+                .height(40.dp),
+            thickness = 1.dp,
+            color = MaterialTheme.colorScheme.outlineVariant,
+        )
+    }
+}
+
+@Composable
+private fun StatTile(
     value: String,
     label: String,
     modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier,
-        horizontalAlignment = Alignment.Start,
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Icon(
-            icon,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.size(Dimens.IconS),
-        )
-        Spacer(Modifier.height(Dimens.SpacingS))
         Text(
             text = value,
-            style = NumberDisplaySmall,
+            style = NumberHeadline,
             color = MaterialTheme.colorScheme.onSurface,
         )
         Spacer(Modifier.height(Dimens.SpacingXS))
         Text(
-            text = label,
-            style = MaterialTheme.typography.labelSmall,
+            text = label.uppercase(),
+            style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }
+
+// ═══════════════════════════════════════════════════════════════════════════
+//  Goal progress card
+// ═══════════════════════════════════════════════════════════════════════════
 
 @Composable
 private fun GoalProgressCard(goal: Goal) {
@@ -338,7 +396,7 @@ private fun GoalProgressCard(goal: Goal) {
             contentColor = MaterialTheme.colorScheme.onSurface,
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-        border = androidx.compose.foundation.BorderStroke(
+        border = BorderStroke(
             width = 1.dp,
             color = if (goal.isCompleted) MaterialTheme.colorScheme.primary
                     else MaterialTheme.colorScheme.outlineVariant,
@@ -367,9 +425,10 @@ private fun GoalProgressCard(goal: Goal) {
             Spacer(Modifier.height(Dimens.SpacingM))
             LinearProgressIndicator(
                 progress = { goal.progressPercent },
-                modifier = Modifier.fillMaxWidth().height(6.dp),
+                modifier = Modifier.fillMaxWidth().height(8.dp),
                 color = MaterialTheme.colorScheme.primary,
                 trackColor = MaterialTheme.colorScheme.surfaceVariant,
+                strokeCap = androidx.compose.ui.graphics.StrokeCap.Round,
             )
             Spacer(Modifier.height(Dimens.SpacingS))
             Text(
@@ -381,6 +440,10 @@ private fun GoalProgressCard(goal: Goal) {
     }
 }
 
+// ═══════════════════════════════════════════════════════════════════════════
+//  Empty goals card — small focus-ring instead of flag
+// ═══════════════════════════════════════════════════════════════════════════
+
 @Composable
 private fun EmptyGoalsCard(onAddGoal: () -> Unit) {
     Card(
@@ -390,7 +453,7 @@ private fun EmptyGoalsCard(onAddGoal: () -> Unit) {
             contentColor = MaterialTheme.colorScheme.onSurface,
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-        border = androidx.compose.foundation.BorderStroke(
+        border = BorderStroke(
             width = 1.dp,
             color = MaterialTheme.colorScheme.outlineVariant,
         ),
@@ -399,11 +462,14 @@ private fun EmptyGoalsCard(onAddGoal: () -> Unit) {
             modifier = Modifier.fillMaxWidth().padding(Dimens.CardPaddingLarge),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Icon(
-                Icons.Default.Flag,
-                contentDescription = null,
-                modifier = Modifier.size(Dimens.IconXL),
-                tint = MaterialTheme.colorScheme.outline,
+            // Small focus ring at 64dp — passing dailyTargetMinutes = 0
+            // tells the ring to render the track only (no progress arc).
+            HeroFocusRing(
+                focusedMinutes = 0,
+                dailyTargetMinutes = 0,
+                eyebrow = "",
+                subtitle = "",
+                modifier = Modifier.size(64.dp),
             )
             Spacer(Modifier.height(Dimens.SpacingM))
             Text(
@@ -414,7 +480,7 @@ private fun EmptyGoalsCard(onAddGoal: () -> Unit) {
             Spacer(Modifier.height(Dimens.SpacingM))
             TextButton(
                 onClick = onAddGoal,
-                colors = ButtonDefaults.textButtonColors(
+                colors = androidx.compose.material3.ButtonDefaults.textButtonColors(
                     contentColor = MaterialTheme.colorScheme.primary,
                 ),
             ) {
@@ -487,5 +553,129 @@ fun BottomNavigationBar(navController: NavController) {
                 unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
             ),
         )
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+//  Previews
+// ═══════════════════════════════════════════════════════════════════════════
+
+@Preview(name = "Dashboard — Populated (light)", showBackground = true)
+@Composable
+private fun DashboardScreenPreview_Populated() {
+    UnpostponeTheme(darkTheme = false) {
+        // We can't preview the real nav here — call the inner content directly.
+        DashboardContentPreview(
+            uiState = DashboardUiState(
+                isLoading = false,
+                isBlockingActive = true,
+                todayStatistics = Statistics(
+                    date = "2024-09-01",
+                    focusedMinutes = 145,
+                    blockCount = 12,
+                    unlockAttempts = 3,
+                ),
+                todayGoals = listOf(
+                    Goal(id = 1, name = "Write product spec", targetMinutes = 60, progressMinutes = 45, date = "2024-09-01"),
+                    Goal(id = 2, name = "Review pull requests", targetMinutes = 30, progressMinutes = 30, isCompleted = true, date = "2024-09-01"),
+                    Goal(id = 3, name = "Reply to customer emails", targetMinutes = 45, progressMinutes = 20, date = "2024-09-01"),
+                ),
+            ),
+        )
+    }
+}
+
+@Preview(name = "Dashboard — Empty (light)", showBackground = true)
+@Composable
+private fun DashboardScreenPreview_Empty() {
+    UnpostponeTheme(darkTheme = false) {
+        DashboardContentPreview(
+            uiState = DashboardUiState(isLoading = false, isBlockingActive = false),
+        )
+    }
+}
+
+/**
+ * Inner composable that mirrors the production [DashboardScreen] body but
+ * accepts a fake [DashboardUiState] so we can preview every state without
+ * the Hilt ViewModel. Re-uses the same private helpers.
+ */
+@Composable
+private fun DashboardContentPreview(uiState: DashboardUiState) {
+    Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {},
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+                shape = androidx.compose.foundation.shape.CircleShape,
+            ) { Icon(Icons.Default.Add, contentDescription = null) }
+        },
+    ) { paddingValues ->
+        val focusedMinutes = uiState.todayStatistics?.focusedMinutes ?: 0
+        val blockCount = uiState.todayStatistics?.blockCount ?: 0
+        val unlockAttempts = uiState.todayStatistics?.unlockAttempts ?: 0
+        val completedGoals = uiState.completedGoalsCount
+        val totalGoals = uiState.totalGoalsCount
+        val heroSubtitle = if (totalGoals == 0) {
+            stringResource(R.string.dashboard_hero_subtitle_empty)
+        } else {
+            stringResource(
+                R.string.dashboard_hero_subtitle,
+                completedGoals,
+                totalGoals,
+            )
+        }
+
+        LazyColumn(
+            modifier = Modifier.fillMaxSize().padding(paddingValues),
+            contentPadding = PaddingValues(
+                horizontal = Dimens.SpacingXL,
+                vertical = Dimens.SpacingL,
+            ),
+            verticalArrangement = Arrangement.spacedBy(Dimens.SpacingL),
+        ) {
+            item {
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    HeroFocusRing(
+                        focusedMinutes = focusedMinutes,
+                        dailyTargetMinutes = 480,
+                        eyebrow = stringResource(R.string.dashboard_hero_eyebrow),
+                        subtitle = heroSubtitle,
+                    )
+                }
+            }
+            item {
+                BlockingToggleCard(
+                    isActive = uiState.isBlockingActive,
+                    onToggle = {},
+                )
+            }
+            item {
+                Spacer(Modifier.height(Dimens.SectionTitleTopGap))
+                ActivitySectionHeader(focusedMinutes = focusedMinutes)
+            }
+            item {
+                StatStrip(blocks = blockCount, attempts = unlockAttempts, goalsDone = completedGoals)
+            }
+            if (uiState.todayGoals.isEmpty()) {
+                item { EmptyGoalsCard(onAddGoal = {}) }
+            } else {
+                item {
+                    Spacer(Modifier.height(Dimens.SectionTitleTopGap))
+                    Text(
+                        text = stringResource(R.string.dashboard_today_goals_title),
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onBackground,
+                    )
+                }
+                items(uiState.todayGoals) { goal -> GoalProgressCard(goal = goal) }
+            }
+        }
     }
 }

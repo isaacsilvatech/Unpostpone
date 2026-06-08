@@ -7,22 +7,46 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.Accessibility
+import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.Replay
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.unpostpone.app.R
 import com.unpostpone.app.BuildConfig
+import com.unpostpone.app.R
+import com.unpostpone.app.core.locale.SupportedLanguage
 import com.unpostpone.app.domain.model.BlockedApp
 import com.unpostpone.app.presentation.dashboard.BottomNavigationBar
 import com.unpostpone.app.ui.theme.Dimens
+import com.unpostpone.app.ui.theme.UnpostponeTheme
+
+// ═══════════════════════════════════════════════════════════════════════════
+//  Settings — premium redesign
+//
+//   Three explicit section cards (24dp gap between them):
+//     1. Focus        — Blocked apps list + Accessibility service card
+//     2. Preferences  — Language row
+//     3. About        — Version + Replay onboarding
+//
+//   Each section card:
+//     • Card with surface color, 1dp outlineVariant border, no elevation
+//     • TitleMedium SemiBold section name + BodySmall subtitle (SpacingXS gap)
+//     • Items separated by 1dp outlineVariant HorizontalDividers
+//     • Card interior padding 20dp horizontal, 16dp vertical
+//
+//   If a section is empty, the section card stays visible with a single
+//   subtle "Not set" placeholder row inside it. The card never collapses
+//   out of existence — the page is supposed to feel intentional.
+// ═══════════════════════════════════════════════════════════════════════════
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -62,72 +86,13 @@ fun SettingsScreen(
         },
         bottomBar = { BottomNavigationBar(navController = navController) },
     ) { paddingValues ->
-        LazyColumn(
-            modifier = Modifier.fillMaxSize().padding(paddingValues),
-            contentPadding = PaddingValues(
-                horizontal = Dimens.SpacingL,
-                vertical = Dimens.SpacingL,
-            ),
-            verticalArrangement = Arrangement.spacedBy(Dimens.SpacingL),
-        ) {
-            item {
-                SectionHeader(
-                    title = stringResource(R.string.settings_blocked_apps_title),
-                    subtitle = stringResource(R.string.settings_blocked_apps_subtitle),
-                )
-            }
-
-            when {
-                uiState.isLoading -> {
-                    item {
-                        Box(
-                            modifier = Modifier.fillMaxWidth().padding(Dimens.SpacingHuge),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
-                        }
-                    }
-                }
-                uiState.blockedApps.isEmpty() -> {
-                    item { EmptyBlockedAppsHint() }
-                }
-                else -> {
-                    items(uiState.blockedApps, key = { it.packageName }) { app ->
-                        AppBlockToggleItem(
-                            displayName = app.displayName,
-                            packageName = app.packageName,
-                            isBlocked = app.isEnabled,
-                            onToggle = { viewModel.toggleApp(app.packageName, it) },
-                        )
-                    }
-                }
-            }
-
-            item { SectionDivider() }
-            item { AccessibilityServiceCard() }
-
-            item { SectionDivider() }
-            item {
-                SectionHeader(
-                    title = stringResource(R.string.settings_language_title),
-                    subtitle = stringResource(R.string.settings_language_subtitle),
-                )
-            }
-            item {
-                LanguageRow(
-                    current = currentLanguage,
-                    onClick = { showLanguagePicker = true },
-                )
-            }
-
-            item { SectionDivider() }
-            item {
-                SectionHeader(
-                    title = stringResource(R.string.settings_about_title),
-                    subtitle = stringResource(R.string.settings_about_version, BuildConfig.VERSION_NAME),
-                )
-            }
-        }
+        SettingsContent(
+            uiState = uiState,
+            currentLanguage = currentLanguage,
+            onToggleApp = viewModel::toggleApp,
+            onLanguageClick = { showLanguagePicker = true },
+            contentPadding = paddingValues,
+        )
     }
 
     if (showLanguagePicker) {
@@ -135,106 +100,97 @@ fun SettingsScreen(
     }
 }
 
-@Composable
-private fun SectionHeader(title: String, subtitle: String) {
-    Column {
-        Text(
-            text = title,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.onBackground,
-        )
-        Spacer(Modifier.height(Dimens.SpacingXS))
-        Text(
-            text = subtitle,
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-    }
-}
+// ── Inner content (preview-friendly, takes pure state + lambdas) ────────
 
 @Composable
-private fun SectionDivider() {
-    HorizontalDivider(
-        thickness = 1.dp,
-        color = MaterialTheme.colorScheme.outlineVariant,
-    )
-}
-
-@Composable
-private fun AppBlockToggleItem(
-    displayName: String,
-    packageName: String,
-    isBlocked: Boolean,
-    onToggle: (Boolean) -> Unit,
+private fun SettingsContent(
+    uiState: SettingsUiState,
+    currentLanguage: SupportedLanguage,
+    onToggleApp: (String, Boolean) -> Unit,
+    onLanguageClick: () -> Unit,
+    contentPadding: PaddingValues,
 ) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-            contentColor = MaterialTheme.colorScheme.onSurface,
+    LazyColumn(
+        modifier = Modifier.fillMaxSize().padding(contentPadding),
+        contentPadding = PaddingValues(
+            horizontal = Dimens.ScreenGutter,
+            vertical = Dimens.SpacingL,
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        verticalArrangement = Arrangement.spacedBy(Dimens.SpacingXXL),
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(
-                horizontal = Dimens.CardPadding,
-                vertical = Dimens.SpacingM,
-            ),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = displayName,
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Medium,
-                )
-                Text(
-                    text = packageName,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+        // ── Section 1: Focus ─────────────────────────────────────────
+        item {
+            SettingsSectionCard(
+                title = stringResource(R.string.settings_section_focus),
+                subtitle = stringResource(R.string.settings_section_focus_subtitle),
+            ) {
+                when {
+                    uiState.isLoading -> {
+                        SettingsLoadingRow()
+                    }
+                    uiState.blockedApps.isEmpty() -> {
+                        SettingsEmptyRow(
+                            message = stringResource(R.string.settings_empty_section),
+                        )
+                    }
+                    else -> {
+                        uiState.blockedApps.forEachIndexed { index, app ->
+                            if (index > 0) SettingsRowDivider()
+                            AppBlockToggleItem(
+                                displayName = app.displayName,
+                                packageName = app.packageName,
+                                isBlocked = app.isEnabled,
+                                onToggle = { onToggleApp(app.packageName, it) },
+                            )
+                        }
+                    }
+                }
+                SettingsRowDivider()
+                AccessibilityServiceRow()
+            }
+        }
+
+        // ── Section 2: Preferences ───────────────────────────────────
+        item {
+            SettingsSectionCard(
+                title = stringResource(R.string.settings_section_preferences),
+                subtitle = stringResource(R.string.settings_section_preferences_subtitle),
+            ) {
+                LanguageRow(
+                    current = currentLanguage,
+                    onClick = onLanguageClick,
                 )
             }
-            Switch(
-                checked = isBlocked,
-                onCheckedChange = onToggle,
-                colors = SwitchDefaults.colors(
-                    checkedThumbColor = MaterialTheme.colorScheme.onPrimary,
-                    checkedTrackColor = MaterialTheme.colorScheme.primary,
-                    checkedBorderColor = MaterialTheme.colorScheme.primary,
-                    uncheckedThumbColor = MaterialTheme.colorScheme.outline,
-                    uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant,
-                    uncheckedBorderColor = MaterialTheme.colorScheme.outline,
-                ),
-            )
+        }
+
+        // ── Section 3: About ─────────────────────────────────────────
+        item {
+            SettingsSectionCard(
+                title = stringResource(R.string.settings_section_about),
+                subtitle = stringResource(R.string.settings_section_about_subtitle),
+            ) {
+                AboutVersionRow(
+                    version = BuildConfig.VERSION_NAME,
+                )
+                SettingsRowDivider()
+                ReplayOnboardingRow(
+                    onClick = { /* TODO: requires OnboardingPreferences.reset(); out of scope for this redesign */ },
+                )
+            }
         }
     }
 }
 
-@Composable
-private fun EmptyBlockedAppsHint() {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-            contentColor = MaterialTheme.colorScheme.onSurface,
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
-    ) {
-        Text(
-            text = stringResource(R.string.settings_blocked_apps_empty),
-            modifier = Modifier.padding(Dimens.CardPadding),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-    }
-}
+// ═══════════════════════════════════════════════════════════════════════════
+//  Section card primitives
+// ═══════════════════════════════════════════════════════════════════════════
 
 @Composable
-private fun AccessibilityServiceCard() {
+private fun SettingsSectionCard(
+    title: String,
+    subtitle: String,
+    content: @Composable ColumnScope.() -> Unit,
+) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
@@ -245,68 +201,282 @@ private fun AccessibilityServiceCard() {
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth().padding(Dimens.CardPadding),
-            verticalArrangement = Arrangement.spacedBy(Dimens.SpacingS),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = Dimens.SpacingXL, vertical = Dimens.SpacingL),
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(Dimens.SpacingS),
-            ) {
-                Icon(
-                    Icons.Default.Accessibility,
-                    null,
-                    tint = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.size(Dimens.IconS),
-                )
-                Text(
-                    text = stringResource(R.string.settings_accessibility_title),
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.SemiBold,
-                )
-            }
             Text(
-                text = stringResource(R.string.settings_accessibility_body),
+                text = title,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+            Spacer(Modifier.height(Dimens.SpacingXS))
+            Text(
+                text = subtitle,
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
+            Spacer(Modifier.height(Dimens.SpacingM))
+            HorizontalDivider(
+                thickness = 1.dp,
+                color = MaterialTheme.colorScheme.outlineVariant,
+            )
+            Column(content = content)
         }
     }
 }
 
 @Composable
-private fun LanguageRow(
-    current: com.unpostpone.app.core.locale.SupportedLanguage,
-    onClick: () -> Unit,
-) {
-    Card(
+private fun SettingsRowDivider() {
+    HorizontalDivider(
+        thickness = 1.dp,
+        color = MaterialTheme.colorScheme.outlineVariant,
+    )
+}
+
+@Composable
+private fun SettingsEmptyRow(message: String) {
+    Box(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-            contentColor = MaterialTheme.colorScheme.onSurface,
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+            .padding(vertical = Dimens.SpacingM),
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(
-                horizontal = Dimens.CardPadding,
-                vertical = Dimens.SpacingM,
-            ),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
+        Text(
+            text = message,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+}
+
+@Composable
+private fun SettingsLoadingRow() {
+    Box(
+        modifier = Modifier.fillMaxWidth().padding(vertical = Dimens.SpacingL),
+        contentAlignment = Alignment.Center,
+    ) {
+        CircularProgressIndicator(
+            color = MaterialTheme.colorScheme.primary,
+            strokeWidth = 2.dp,
+            modifier = Modifier.size(20.dp),
+        )
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+//  Row composables used inside section cards
+// ═══════════════════════════════════════════════════════════════════════════
+
+@Composable
+private fun AppBlockToggleItem(
+    displayName: String,
+    packageName: String,
+    isBlocked: Boolean,
+    onToggle: (Boolean) -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = Dimens.SpacingM),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = current.nativeName,
+                text = displayName,
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.onSurface,
             )
-            Icon(
-                Icons.Default.ChevronRight,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            Text(
+                text = packageName,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
+        Switch(
+            checked = isBlocked,
+            onCheckedChange = onToggle,
+            colors = SwitchDefaults.colors(
+                checkedThumbColor = MaterialTheme.colorScheme.onPrimary,
+                checkedTrackColor = MaterialTheme.colorScheme.primary,
+                checkedBorderColor = MaterialTheme.colorScheme.primary,
+                uncheckedThumbColor = MaterialTheme.colorScheme.outline,
+                uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant,
+                uncheckedBorderColor = MaterialTheme.colorScheme.outline,
+            ),
+        )
+    }
+}
+
+@Composable
+private fun AccessibilityServiceRow() {
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(vertical = Dimens.SpacingM),
+        verticalArrangement = Arrangement.spacedBy(Dimens.SpacingS),
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(Dimens.SpacingS),
+        ) {
+            Icon(
+                Icons.Default.Accessibility,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.size(Dimens.IconS),
+            )
+            Text(
+                text = stringResource(R.string.settings_accessibility_title),
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+        }
+        Text(
+            text = stringResource(R.string.settings_accessibility_body),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+}
+
+@Composable
+private fun LanguageRow(
+    current: SupportedLanguage,
+    onClick: () -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(vertical = Dimens.SpacingM),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = current.nativeName,
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = FontWeight.Medium,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        Icon(
+            Icons.Default.ChevronRight,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+}
+
+@Composable
+private fun AboutVersionRow(version: String) {
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(vertical = Dimens.SpacingM),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = stringResource(R.string.settings_about_version, version),
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = FontWeight.Medium,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+    }
+}
+
+@Composable
+private fun ReplayOnboardingRow(onClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(vertical = Dimens.SpacingM),
+        horizontalArrangement = Arrangement.spacedBy(Dimens.SpacingM),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(
+            Icons.Default.Replay,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.size(Dimens.IconS),
+        )
+        Text(
+            text = stringResource(R.string.settings_replay_onboarding),
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+//  Previews
+// ═══════════════════════════════════════════════════════════════════════════
+
+@Preview(name = "Settings — Populated (light)", showBackground = true)
+@Composable
+private fun SettingsContentPreview_Populated() {
+    UnpostponeTheme(darkTheme = false) {
+        SettingsContent(
+            uiState = SettingsUiState(
+                isLoading = false,
+                blockedApps = listOf(
+                    BlockedApp(packageName = "com.instagram.android", displayName = "Instagram", isEnabled = true),
+                    BlockedApp(packageName = "com.twitter.android",   displayName = "Twitter",   isEnabled = false),
+                    BlockedApp(packageName = "com.zhiliaoapp.musically", displayName = "TikTok", isEnabled = true),
+                ),
+            ),
+            currentLanguage = SupportedLanguage.English,
+            onToggleApp = { _, _ -> },
+            onLanguageClick = {},
+            contentPadding = PaddingValues(0.dp),
+        )
+    }
+}
+
+@Preview(name = "Settings — Empty blocked apps (light)", showBackground = true)
+@Composable
+private fun SettingsContentPreview_EmptyBlocked() {
+    UnpostponeTheme(darkTheme = false) {
+        SettingsContent(
+            uiState = SettingsUiState(isLoading = false),
+            currentLanguage = SupportedLanguage.PortugueseBrazil,
+            onToggleApp = { _, _ -> },
+            onLanguageClick = {},
+            contentPadding = PaddingValues(0.dp),
+        )
+    }
+}
+
+@Preview(name = "Settings — Loading (light)", showBackground = true)
+@Composable
+private fun SettingsContentPreview_Loading() {
+    UnpostponeTheme(darkTheme = false) {
+        SettingsContent(
+            uiState = SettingsUiState(isLoading = true),
+            currentLanguage = SupportedLanguage.SystemDefault,
+            onToggleApp = { _, _ -> },
+            onLanguageClick = {},
+            contentPadding = PaddingValues(0.dp),
+        )
+    }
+}
+
+@Preview(name = "Settings — Populated (dark)", showBackground = true)
+@Composable
+private fun SettingsContentPreview_Populated_Dark() {
+    UnpostponeTheme(darkTheme = true) {
+        SettingsContent(
+            uiState = SettingsUiState(
+                isLoading = false,
+                blockedApps = listOf(
+                    BlockedApp(packageName = "com.instagram.android", displayName = "Instagram", isEnabled = true),
+                    BlockedApp(packageName = "com.twitter.android",   displayName = "Twitter",   isEnabled = false),
+                ),
+            ),
+            currentLanguage = SupportedLanguage.English,
+            onToggleApp = { _, _ -> },
+            onLanguageClick = {},
+            contentPadding = PaddingValues(0.dp),
+        )
     }
 }

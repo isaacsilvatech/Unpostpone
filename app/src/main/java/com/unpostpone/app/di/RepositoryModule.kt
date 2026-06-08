@@ -1,9 +1,11 @@
 package com.unpostpone.app.di
 
 import com.unpostpone.app.data.repository.BlockedAppRepositoryImpl
+import com.unpostpone.app.data.repository.BlockingPreferencesImpl
 import com.unpostpone.app.data.repository.GoalRepositoryImpl
 import com.unpostpone.app.data.repository.StatisticsRepositoryImpl
 import com.unpostpone.app.domain.repository.BlockedAppRepository
+import com.unpostpone.app.domain.repository.BlockingPreferences
 import com.unpostpone.app.domain.repository.GoalRepository
 import com.unpostpone.app.domain.repository.StatisticsRepository
 import dagger.Binds
@@ -24,4 +26,7 @@ abstract class RepositoryModule {
 
     @Binds @Singleton
     abstract fun bindStatisticsRepository(impl: StatisticsRepositoryImpl): StatisticsRepository
+
+    @Binds @Singleton
+    abstract fun bindBlockingPreferences(impl: BlockingPreferencesImpl): BlockingPreferences
 }

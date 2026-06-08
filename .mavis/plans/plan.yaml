@@ -1,0 +1,447 @@
+version: 1
+plan:
+  name: 'Unpostpone premium UI redesign — dashboard hero, stats, settings'
+  max_concurrency: 1
+  max_consecutive_failures: 2
+  max_cycles: 6
+  auto_reject_retries: 1
+  verifier_config:
+    default_verifiers: [verifier]
+    audit_sample_rate: 0.0
+tasks:
+  - id: ui-redesign
+    title: 'Redesign Dashboard / Statistics / Settings + theme tokens to feel premium'
+    assigned_to: coder
+    verified_by: verifier
+    max_retries: 2
+    prompt: |-
+      You are doing a focused UI redesign pass on the Unpostpone Android
+      app (Kotlin + Jetpack Compose, Material 3). The product is a
+      procrastination-control app whose brand is a teal squircle mark
+      with a clock/focus motif. The current UI is competent but generic;
+      the goal of this pass is to make it feel like a premium productivity
+      app (think Linear, Notion, Loom, Vercel — calm, intentional, no
+      Material-default chrome).
+
+      ── Repo facts (already verified, no need to re-derive) ───────────────
+      • Workspace: C:\Users\Isaac\AndroidStudioProjects\Unpostpone
+      • Single-module app at `app/`, package `com.unpostpone.app`
+      • Compose theme at `app/src/main/java/com/unpostpone/app/ui/theme/`
+        (Color.kt, Theme.kt, Type.kt, Font.kt, Dimens.kt, Shape.kt, Motion.kt)
+        — already defines an 80/15/5 neutral-first palette anchored on
+        teal #0C4D5B. Dimens.kt already has `FocusRingSize = 240.dp`,
+        `FocusRingStroke = 14.dp`, `FocusRingTrack = 6.dp` — these are
+        the focus-ring dimensions the brief expects you to use.
+      • Typography in Type.kt has both Manrope (UI) and JetBrains Mono
+        (numbers) families. The NumberDisplay* styles already have
+        `fontFeatureSettings = "tnum, lnum, zero"` for tabular alignment.
+      • Screens in scope:
+          - `app/src/main/java/com/unpostpone/app/presentation/dashboard/DashboardScreen.kt`
+          - `app/src/main/java/com/unpostpone/app/presentation/statistics/StatisticsScreen.kt`
+          - `app/src/main/java/com/unpostpone/app/presentation/settings/SettingsScreen.kt`
+      • String resources (EN default + PT-BR):
+          - `app/src/main/res/values/dashboard_strings.xml`
+          - `app/src/main/res/values-pt-rBR/dashboard_strings.xml`
+          - `app/src/main/res/values/statistics_strings.xml`
+          - `app/src/main/res/values-pt-rBR/statistics_strings.xml`
+          - `app/src/main/res/values/settings_strings.xml`
+          - `app/src/main/res/values-pt-rBR/settings_strings.xml`
+      • State: `DashboardUiState` exposes
+        `todayStatistics?.focusedMinutes` (Int, minutes) — that is the
+        "today's focus time" KPI for the hero.
+      • Build commands (all must succeed):
+          - `./gradlew :app:assembleDebug`
+          - `./gradlew :app:lintDebug`
+          - `./gradlew :app:testDebugUnitTest`
+
+      ── Hard non-goals — do not touch these ──────────────────────────────
+      • Anything in `app/src/main/java/com/unpostpone/app/service/`
+      • Anything in `app/src/main/java/com/unpostpone/app/data/`
+      • Anything in `app/src/main/java/com/unpostpone/app/di/`
+      • `app/src/main/AndroidManifest.xml`
+      • `app/src/main/res/values/colors.xml` and `values-night/colors.xml`
+        (the system-level brand palette — already aligned with the brief)
+      • `app/src/main/res/values/themes.xml` and night variants
+      • `Bl blocker/`, `Onboarding/`, `FocusReminder/`, `Goals/`,
+        `Navigation/` screens (out of scope for this redesign)
+      • The brand colors in `docs/paleta-cores.txt` — do not edit
+      • Do not introduce new accent colors. The brand palette is teal
+        (#0C4D5B family). Action orange #F4A261 exists in the docs but
+        the brief explicitly says "avoid unnecessary accent colors" —
+        leave it for splash/onboarding, do not use on these screens.
+
+      ── Deliverables (numbered; do them in this order) ───────────────────
+
+      1. THEME TOKENS — strengthen the design system
+         a) `ui/theme/Type.kt`: tighten the display scale.
+            - `DisplayLarge` → 64sp / 72sp line / -1.0sp tracking, ExtraBold
+            - `NumberDisplayLarge` → 64sp / 72sp / -1.5sp, Bold, keep tnum
+            - `NumberDisplayMedium` → 48sp / 56sp / -0.75sp, SemiBold
+            - `HeadlineSmall` → 26sp / 34sp, SemiBold
+            - Add a new `NumberHeadlineXLarge` (72sp / 80sp / -2sp, Bold,
+              tnum) for the hero number — it is the single most important
+              number on the screen and must dominate.
+            - `LabelLarge` letter-spacing → 0.5sp, weight SemiBold
+            - `LabelMedium` letter-spacing → 1.2sp, weight Medium
+              (this is the "all-caps eyebrow" style — letter-spacing is
+              what makes it look premium)
+         b) `ui/theme/Color.kt`: add a hero-specific surface token.
+            - `LightHeroSurface` = Color(0xFFF1F7F8)  (whisper of teal,
+              barely-distinguishable from page bg #FAFAFA but slightly
+              cooler so the hero block reads as a distinct region)
+            - `DarkHeroSurface` = Color(0xFF13262A)   (cool dark teal-tint)
+            - Do NOT add these to the M3 ColorScheme — they are
+              custom tokens used only by the hero. Expose them as plain
+              `val` at the bottom of Color.kt next to the brand anchors.
+         c) `ui/theme/Dimens.kt`: add hero tokens.
+            - `HeroPadding = 32.dp`           (interior of the hero card)
+            - `HeroRingSize = 240.dp`         (already there as FocusRingSize;
+              add a comment alias, do not rename — keep FocusRingSize so
+              the Blocker screen keeps compiling)
+            - `HeroRingStroke = 14.dp`        (already there as FocusRingStroke)
+            - `SectionTitleTopGap = 24.dp`    (gap above a section title)
+            - `StatValueSize = 36.sp`         (token for the "NumberHeadline"
+              used in stat cards)
+         d) `ui/theme/Shape.kt`: add an extra-large squircle for the hero.
+            - `HeroRadius = 32.dp` (bigger than Large 28dp so the hero
+              feels like a distinct shape, not just a big card)
+
+      2. NEW COMPOSABLE — `presentation/dashboard/components/HeroFocusRing.kt`
+         A clock-inspired focus-time hero. Must be a real Canvas-based
+         component, not a `CircularProgressIndicator` wrapper.
+         Public API:
+           @Composable
+           fun HeroFocusRing(
+               focusedMinutes: Int,           // 0..480 (8h)
+               dailyTargetMinutes: Int = 480, // 8h default
+               eyebrow: String,               // small label above the time
+               subtitle: String,              // small label below the time
+               modifier: Modifier = Modifier,
+           )
+         Visual spec (exact):
+           - The whole composable is a Column, centered, with the ring on
+             top and the eyebrow + subtitle framing the central number.
+           - The ring is a 240dp Canvas:
+             • Track: full circle, color `MaterialTheme.colorScheme.surfaceVariant`,
+               stroke 6dp
+             • Progress arc: from 12 o'clock, clockwise, color
+               `MaterialTheme.colorScheme.primary`, stroke 14dp, rounded
+               caps. The arc length is `focusedMinutes / dailyTargetMinutes`
+               (clamped to 0..1). Use `drawArc` with `useCenter = false`.
+             • 12 o'clock tick mark: a small (4dp radius) filled circle in
+               `MaterialTheme.colorScheme.primary` at the top of the ring.
+             • Tip dot at the end of the progress arc: a small (8dp radius)
+               filled circle in `MaterialTheme.colorScheme.primary`,
+               positioned where the arc ends. This is the "clock hand tip"
+               that gives the visual its momentum.
+           - Inside the ring (overlaid via a Box, not in the Canvas):
+             • Eyebrow above the number: `LabelMedium` style, color
+               `MaterialTheme.colorScheme.onSurfaceVariant`,
+               letter-spacing 1.5sp, weight Medium.
+             • The number itself: `NumberHeadlineXLarge` (the new 72sp
+               style from Type.kt), color `MaterialTheme.colorScheme.onSurface`.
+               Format minutes as `Xh YYm` if >= 60, else `Ym`. Use
+               JetBrains Mono so digits align when the value changes.
+             • Subtitle below the number: `BodySmall` style, color
+               `MaterialTheme.colorScheme.onSurfaceVariant`, max 2 lines,
+               ellipsized.
+         Previews required (both light and dark):
+           - HeroFocusRingPreview_Empty: 0 minutes
+           - HeroFocusRingPreview_Quarter: 120 minutes
+           - HeroFocusRingPreview_Done: 480 minutes
+         Use `androidx.compose.ui.tooling.preview.Preview` and the
+         `UnpostponeTheme` wrapper. No fake ViewModels.
+
+      3. DASHBOARD SCREEN — restructure around the hero
+         `presentation/dashboard/DashboardScreen.kt`
+         New top-to-bottom layout (in this exact order, all in one
+         LazyColumn with the existing 20dp gutter):
+           i.   HeroFocusRing (focusedMinutes from uiState.todayStatistics,
+                eyebrow = "Today" / "Hoje" localized string,
+                subtitle = a 1-line composite like "X of Y goals complete"
+                built from completedGoalsCount / totalGoalsCount)
+           ii.  BlockingToggleCard — keep, but move it to a compact
+                "blocking is on/off" row below the hero, not a giant
+                card. Reduce vertical padding by ~30%, keep the
+                primary-tinted border when active.
+           iii. Section header "Today's activity" / "Atividade de hoje"
+                with `TitleMedium` SemiBold + a small label showing
+                "0m focused" as a `NumberTitle` JetBrains Mono span
+                next to the title.
+           iv.  StatStrip — a single horizontal Row with three tiles
+                (Blocks / Attempts / Goals done). Each tile:
+                  • value in `NumberHeadline` (24sp JetBrains Mono, SemiBold)
+                  • label in `LabelMedium` (uppercase, 1.2sp tracking)
+                  • no card, no border — just three columns separated by
+                    1dp vertical `outlineVariant` dividers
+                  • equal weight, baseline-aligned values
+                Remove the old `StatisticsCard` composable.
+           v.   "Today's goals" / "Metas de hoje" section header.
+           vi.  Goal cards (existing GoalProgressCard) — unchanged
+                behavior, but bump their `CardPadding` to
+                `Dimens.CardPadding` and the progress bar to 8dp height
+                with rounded caps.
+           vii. Empty state — keep EmptyGoalsCard, but its empty
+                illustration should be a small FocusRing at 64dp size
+                (a `HeroFocusRing` with `dailyTargetMinutes = 0` to
+                render just the empty ring outline), not the flag icon.
+         Stats strip data:
+           - blocks = uiState.todayStatistics?.blockCount ?: 0
+           - attempts = uiState.todayStatistics?.unlockAttempts ?: 0
+           - goals done = completedGoalsCount
+         The progress bar on the old `ProgressSummaryCard` is dropped —
+         the hero ring + goals list already convey progress. Keep the
+         "Overall progress" string out of the dashboard entirely; it
+         is no longer used. (If it appears in strings.xml, leave the
+         string but stop referencing it.)
+         The FAB stays as-is. The TopAppBar title becomes "Unpostpone"
+         in `HeadlineSmall` SemiBold. The settings icon stays.
+
+      4. STATISTICS SCREEN — bigger numbers, tighter rhythm
+         `presentation/statistics/StatisticsScreen.kt`
+         a) Add a small hero band at the top: a single stat (Total focus
+            minutes over 30 days) shown in `NumberDisplayLarge` (64sp)
+            with the eyebrow "Last 30 days" / "Últimos 30 dias" above it
+            in `LabelMedium` and a one-line subtitle ("From X sessions"
+            or similar) below. Wrap it in a Card with `containerColor
+            = LightHeroSurface` (use the new token directly, do NOT route
+            through M3 ColorScheme).
+         b) Below the hero: a 2-column grid of secondary summary cards
+            (Blocks, Unlock attempts) — keep the `SummaryCard` composable
+            but: value uses `NumberHeadline` (24sp SemiBold), title uses
+            `LabelMedium` 1.2sp tracking, icon moves to a small (20dp)
+            leading icon. Card padding reduced to 16dp.
+         c) The "Daily history" section header uses `TitleMedium` SemiBold
+            with 24dp top gap.
+         d) `DailyStatItem` rows: date in `BodyMedium` Medium, values
+            in `NumberBody` JetBrains Mono Medium, labels in
+            `LabelSmall`. Right-align the three value+label pairs and
+            give each pair a fixed min width (56dp) so the columns line
+            up across rows.
+
+      5. SETTINGS SCREEN — group into clear sections
+         `presentation/settings/SettingsScreen.kt`
+         Refactor the flat LazyColumn into three explicit section cards
+         stacked vertically with 24dp gaps. Each section card:
+           • `Card` with `containerColor = MaterialTheme.colorScheme.surface`,
+             1dp `outlineVariant` border, no elevation
+           • header inside the card: `TitleMedium` SemiBold for the
+             section name, `BodySmall` for the one-line subtitle, with
+             `SpacingXS` between them
+           • items inside the card separated by 1dp `outlineVariant`
+             HorizontalDividers
+           • card interior padding 20dp horizontal, 16dp vertical
+         The three sections:
+           a) "Focus" / "Foco" — Blocked apps list + Accessibility
+              service card. Subtitle: "Apps blocked during focus and
+              the service that does the blocking."
+           b) "Preferences" / "Preferências" — Language row. Subtitle:
+              "App language."
+           c) "About" / "Sobre" — Version + Replay onboarding. Subtitle:
+              "App version and onboarding."
+         If a section is empty (no blocked apps, no language), keep
+         the section card visible with a single subtle "Not set" /
+         "Nenhum app bloqueado" placeholder row inside it — do NOT
+         collapse the section out of existence. This is what makes
+         the page feel intentional.
+         Remove the old `SectionDivider` calls — the section cards
+         replace them.
+
+      6. STRINGS — add new keys in BOTH English (values/) and
+         Portuguese (values-pt-rBR/):
+         dashboard_strings.xml + values-pt-rBR/dashboard_strings.xml:
+           dashboard_hero_eyebrow            "Today" / "Hoje"
+           dashboard_hero_subtitle            "%1$d of %2$d goals complete" /
+                                              "%1$d de %2$d metas concluídas"
+           dashboard_hero_subtitle_empty      "Tap a goal to start focusing" /
+                                              "Toque em uma meta para começar"
+           dashboard_section_activity         "Today's activity" /
+                                              "Atividade de hoje"
+           dashboard_stat_blocks              "Blocks" / "Bloqueios"
+           dashboard_stat_attempts            "Attempts" / "Tentativas"
+           dashboard_stat_goals_done          "Done" / "Concluídas"
+           dashboard_focused_short            "focused" / "focado"
+         statistics_strings.xml + values-pt-rBR/statistics_strings.xml:
+           statistics_hero_eyebrow            "Last 30 days" / "Últimos 30 dias"
+           statistics_hero_subtitle           "%1$d hours of focus" /
+                                              "%1$d horas de foco"
+         settings_strings.xml + values-pt-rBR/settings_strings.xml:
+           settings_section_focus             "Focus" / "Foco"
+           settings_section_focus_subtitle    "Apps blocked during focus and the service that does the blocking." /
+                                              "Apps bloqueados durante o foco e o serviço que faz o bloqueio."
+           settings_section_preferences       "Preferences" / "Preferências"
+           settings_section_preferences_subtitle "App language." /
+                                                 "Idioma do app."
+           settings_section_about             "About" / "Sobre"
+           settings_section_about_subtitle    "App version and onboarding." /
+                                             "Versão do app e onboarding."
+           settings_empty_section             "Not set" / "Não configurado"
+         Do not delete any existing strings — only add. Some old strings
+         (`dashboard_progress_title`, `dashboard_today_stats_title`,
+         etc.) become unused; leave them in the file so older code paths
+         still compile, but document them with an XML comment
+         "<!-- retained for backward compatibility, no longer referenced -->".
+
+      7. UNIT TEST — extract the focus-time formatter and test it
+         Add a small pure-Kotlin helper:
+           app/src/main/java/com/unpostpone/app/presentation/dashboard/format/FocusTimeFormatter.kt
+         with two top-level functions:
+           fun formatFocusTime(minutes: Int): String
+             // returns "Xh YYm" if minutes >= 60, else "Ym"
+           fun formatMinutesLabel(minutes: Int): String
+             // returns the localized "X min" string via a passed-in
+             // `getString: (Int) -> String` callback so it stays
+             // platform-free and testable
+         Add unit tests at
+           app/src/test/java/com/unpostpone/app/presentation/dashboard/format/FocusTimeFormatterTest.kt
+         covering: 0, 1, 59, 60, 61, 119, 120, 480, -1 (defensive).
+         Use JUnit4. No Robolectric, no Android dependencies.
+
+      8. PREVIEWS — make sure every changed screen has a `@Preview` for
+         the new main state. Use fake `DashboardUiState` /
+         `StatisticsUiState` / `SettingsUiState` instances, never the
+         real ViewModels. Wrap in `UnpostponeTheme`.
+
+      9. BUILD + LINT + TEST — run all three, must be green:
+           cd C:\Users\Isaac\AndroidStudioProjects\Unpostpone
+           .\gradlew.bat :app:assembleDebug
+           .\gradlew.bat :app:lintDebug
+           .\gradlew.bat :app:testDebugUnitTest
+         Use the `.bat` form on Windows. If any of these fail, fix the
+         failure and re-run. Do not declare done with a red build.
+
+      ── Style reminders (the brief is explicit) ──────────────────────────
+      • Mostly neutral colors. Teal only for emphasis (progress, active
+        state, hero, brand mark).
+      • Subtle elevation through color only. No drop shadows. Cards
+        have a 1dp `outlineVariant` border, never an `elevation > 0`.
+      • Avoid generic Material chrome. The clock ring is the visual
+        anchor; the rest of the layout should feel like Linear — calm,
+        generous whitespace, strong type, no shouting.
+      • Compose previews for every new component. Test every state
+        boundary in the formatter.
+      • Conventional commits: one commit per logical change
+        (e.g. `feat(theme): hero tokens`, `feat(dashboard): hero focus ring`,
+         `feat(settings): section cards`, `test: focus time formatter`).
+        Do not push; just commit locally on a branch and report the
+        commit hashes.
+
+      ── Report when done ─────────────────────────────────────────────────
+      Return a short summary covering:
+        • branch name and list of commit hashes
+        • list of files created vs files modified
+        • new strings added (count for each locale)
+        • the three build commands and their PASS/FAIL result
+        • any deviation from the brief and why
+
+    verify_prompt: |-
+      You are independently verifying a UI redesign on the Unpostpone
+      Android app. Do NOT trust the producer's summary — re-derive every
+      claim from the code and the build.
+
+      Workspace: C:\Users\Isaac\AndroidStudioProjects\Unpostpone
+
+      ── Run these commands from the repo root, must all be green ────────
+      1. .\gradlew.bat :app:assembleDebug
+      2. .\gradlew.bat :app:lintDebug
+      3. .\gradlew.bat :app:testDebugUnitTest
+         (the new FocusTimeFormatterTest must run; confirm by reading
+         the test report XML under
+         app/build/test-results/testDebugUnitTest/ for a class named
+         FocusTimeFormatterTest)
+      If any of these fail, the verdict is FAIL — name the exact failure.
+
+      ── Code checks (open the files, do not skim) ───────────────────────
+      a) HeroFocusRing.kt must:
+         - use `Canvas` and `drawArc` directly, not wrap
+           `CircularProgressIndicator`
+         - render a 12 o'clock tick mark and a tip dot at the end of
+           the arc
+         - accept focusedMinutes, dailyTargetMinutes, eyebrow, subtitle
+         - have @Preview functions for the empty, quarter, and done states
+         - format the central number as "Xh YYm" / "Ym" (not raw minutes)
+      b) DashboardScreen.kt must:
+         - place HeroFocusRing as the first item in the LazyColumn
+         - no longer call the old StatisticsCard composable
+         - the StatStrip is a single Row with three tiles, no card /
+           border, separated by 1dp vertical dividers
+         - the FAB and BottomNavigationBar are still present
+      c) StatisticsScreen.kt must:
+         - show a hero band with a large JetBrains Mono number for total
+           focus minutes over 30 days
+         - have a 2-column grid for the two secondary summary cards
+         - DailyStatItem rows must right-align the three value+label
+           columns with consistent column widths
+      d) SettingsScreen.kt must:
+         - have three explicit section cards (Focus, Preferences, About)
+         - each section card has a TitleMedium header + BodySmall
+           subtitle inside the card
+         - dividers between items inside a section card are 1dp
+           `outlineVariant` HorizontalDividers
+         - the old `SectionDivider()` calls between sections are gone
+      e) Type.kt must:
+         - have a new `NumberHeadlineXLarge` at 72sp with tabular
+           figures enabled
+         - the LabelMedium letter-spacing is at least 1.0sp
+         - DisplayLarge and NumberDisplayLarge have been bumped up
+           (≥ 64sp)
+      f) Color.kt must:
+         - define `LightHeroSurface` ≈ #F1F7F8 and a `DarkHeroSurface`
+         - these are plain vals, NOT routed through M3 ColorScheme
+         - the existing 80/15/5 palette is intact
+      g) Strings (open all six files):
+         - all new keys listed in the producer brief exist in BOTH
+           values/ and values-pt-rBR/
+         - no new accent color literals introduced in the new code
+           (grep for #F4A261, #FFB68C, #84D0DC, #2D6A73 in the new
+           screen files and the new component — they must not appear
+           in any new code outside the existing brand anchors)
+         - unused old strings are marked with the
+           "no longer referenced" comment but still present
+
+      ── Out-of-scope check (FAIL if any of these were touched) ──────────
+      • `app/src/main/java/com/unpostpone/app/service/`
+      • `app/src/main/java/com/unpostpone/app/data/`
+      • `app/src/main/java/com/unpostpone/app/di/`
+      • `app/src/main/AndroidManifest.xml`
+      • `app/src/main/res/values/colors.xml` and `values-night/colors.xml`
+      • `app/src/main/res/values/themes.xml` and night variants
+      • `presentation/blocker/`, `presentation/onboarding/`,
+        `presentation/focusreminder/`, `presentation/goals/`,
+        `presentation/navigation/`
+      Use `git status --porcelain` and `git diff --stat main...HEAD` to
+      confirm. The branch should only touch theme tokens, the three
+      in-scope screens, the new dashboard/components/ and
+      presentation/dashboard/format/ packages, the six strings files,
+      and the unit test file.
+
+      ── Visual sanity (read the code, not the screen) ───────────────────
+      • HeroFocusRing uses `MaterialTheme.colorScheme.primary` for the
+        progress arc, `surfaceVariant` for the track. No hardcoded
+        Color(0xFF...) values inside the new component.
+      • The hero number uses JetBrains Mono (NumberHeadlineXLarge) and
+        has tnum enabled.
+      • Section headers in all three screens use SemiBold weight, not
+        Bold. The brief asks for stronger hierarchy, not louder
+        weight — keep headings SemiBold and rely on size + tracking
+        for emphasis.
+      • Cards have `elevation = CardDefaults.cardElevation(0.dp)` —
+        no shadow, color-only hierarchy.
+      • Switch colors use the teal `primary` for the checked state, not
+        a generic Material accent.
+
+      ── Verdict format ──────────────────────────────────────────────────
+      Report:
+        BUILD: PASS or FAIL (with the failing task and first error line)
+        LINT: PASS or FAIL (new errors only — pre-existing lint warnings
+              that are not introduced by this change do not count)
+        TESTS: PASS or FAIL (FocusTimeFormatterTest must appear in the
+               report)
+        HERO COMPONENT: PASS or FAIL (with the missing piece)
+        DASHBOARD: PASS or FAIL
+        STATISTICS: PASS or FAIL
+        SETTINGS: PASS or FAIL
+        THEME TOKENS: PASS or FAIL
+        STRINGS (EN + PT-BR): PASS or FAIL
+        SCOPE: PASS or FAIL (with any out-of-scope file)
+      Overall: PASS only if every row is PASS.

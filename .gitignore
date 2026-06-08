@@ -10,3 +10,6 @@
 local.properties
 /.kotlin/
 /.cu-screenshots/
+*.log
+/.mavis/
+/.opencode/
