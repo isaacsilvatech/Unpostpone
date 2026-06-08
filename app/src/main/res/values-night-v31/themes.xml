@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--
-        Unpostpone — Activity theme (dark).
-        In dark mode the brand teal brightens to a luminous sky-teal for
-        surfaces that should not feel heavy, but the windowBackground and
-        colorPrimary stay close to the brand so the splash and recent-apps
-        card still read as "ours".
+        Unpostpone — Activity theme (dark, Android 12+ SplashScreen).
+        Same intent as values-night/themes.xml, with the Android 12+ splash
+        background pinned to the dark brand surface so the cold-start flash
+        does not briefly show a default white frame.
     -->
     <style name="Theme.Unpostpone" parent="android:Theme.Material.NoActionBar">
         <item name="android:colorPrimary">@color/brand_teal</item>
@@ -13,6 +12,7 @@
         <item name="android:colorAccent">@color/brand_teal_soft</item>
         <item name="android:colorBackground">@color/dark_background</item>
         <item name="android:windowBackground">@color/dark_background</item>
+        <item name="android:windowSplashScreenBackground">@color/dark_background</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>

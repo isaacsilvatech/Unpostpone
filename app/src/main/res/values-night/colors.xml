@@ -2,29 +2,26 @@
 <resources>
     <!--
         Unpostpone — Dark theme overrides
-        Mirrors the Compose DarkColorScheme so splash / status bar / task
-        switcher match the in-app surfaces.
+        Mirrors the Compose DarkColorScheme so the status bar, task switcher
+        and any system surfaces that read the brand resources match the
+        in-app dark palette. The Compose ColorScheme lives in
+        ui/theme/Color.kt — keep these two in sync.
     -->
+
+    <!-- Primary tonal palette (in dark mode, primary lifts to a luminous
+         teal; the on-color text on top of it is the light-mode "primary
+         dark" #083944, so brand_teal_dark serves double duty as
+         dark-mode on-primary). -->
     <color name="brand_teal">#84D0DC</color>
-    <color name="brand_teal_dark">#004E5A</color>
-    <color name="brand_teal_soft">#B3CACE</color>
+    <color name="brand_teal_soft">#1F6778</color>
+    <color name="brand_teal_dark">#083944</color>
 
+    <!-- Cream slot is repurposed in dark mode as the dark surface. -->
     <color name="brand_cream">#0F1413</color>
-    <color name="brand_surface">#0F1413</color>
 
+    <!-- Action — kinetic accent, lightened for dark contrast -->
     <color name="brand_action">#FFB68C</color>
-    <color name="brand_action_dark">#6F3A14</color>
 
-    <color name="brand_sage">#9BC09A</color>
-    <color name="brand_sage_dark">#325032</color>
-
+    <!-- Dark surface for windowBackground in night themes.xml -->
     <color name="dark_background">#0F1413</color>
-    <color name="dark_surface">#0F1413</color>
-    <color name="dark_surface_variant">#1A2224</color>
-
-    <color name="deep_focus">#84D0DC</color>
-    <color name="deep_focus_dark">#004E5A</color>
-    <color name="action_orange">#FFB68C</color>
-    <color name="growth_green">#9BC09A</color>
-    <color name="calm_ivory">#0F1413</color>
 </resources>

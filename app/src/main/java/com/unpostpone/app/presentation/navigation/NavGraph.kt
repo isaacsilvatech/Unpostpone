@@ -15,16 +15,15 @@ import com.unpostpone.app.presentation.focusreminder.FocusReminderScreen
 import com.unpostpone.app.presentation.goals.GoalsScreen
 import com.unpostpone.app.presentation.onboarding.OnboardingScreen
 import com.unpostpone.app.presentation.settings.SettingsScreen
-import com.unpostpone.app.presentation.splash.SplashScreen
-import com.unpostpone.app.presentation.splash.SplashTarget
 import com.unpostpone.app.presentation.statistics.StatisticsScreen
 
 /**
  * The single source of truth for navigation in the app.
  *
- * The Splash is the start destination. After its animation, the SplashViewModel
- * decides whether to push Onboarding (first launch) or pop everything to
- * Dashboard (returning user).
+ * Onboarding is the start destination. The OnboardingViewModel reads the
+ * persisted completion flag on entry; if the user has already finished
+ * onboarding, it fires the completion callback and the nav graph replaces
+ * Onboarding with the Dashboard. First-launch users see the 4-page pager.
  *
  * Permission requests from the Onboarding pager launch the platform Settings
  * intent — Android does not let you grant Accessibility / Usage Access from
@@ -38,24 +37,8 @@ fun NavGraph(
 
     NavHost(
         navController = navController,
-        startDestination = Screen.Splash.route,
+        startDestination = Screen.Onboarding.route,
     ) {
-        // ── Splash ────────────────────────────────────────────────────
-        composable(Screen.Splash.route) {
-            SplashScreen(
-                onNavigateTo = { target ->
-                    navController.navigate(
-                        when (target) {
-                            SplashTarget.Onboarding -> Screen.Onboarding.route
-                            SplashTarget.Dashboard  -> Screen.Dashboard.route
-                        }
-                    ) {
-                        popUpTo(Screen.Splash.route) { inclusive = true }
-                    }
-                }
-            )
-        }
-
         // ── Onboarding ────────────────────────────────────────────────
         composable(Screen.Onboarding.route) {
             OnboardingScreen(

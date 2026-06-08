@@ -177,7 +177,7 @@ The full M3 15-step scale, tuned for the brand:
 
 | Role | Family | Weight | Size / lh | Use |
 |---|---|---|---|---|
-| displayLarge | Manrope | ExtraBold | 57/64 | Splash headline (one time) |
+| displayLarge | Manrope | ExtraBold | 57/64 | Reserved (was: splash headline) |
 | displayMedium | Manrope | Bold | 45/52 | Hero stats (e.g. weekly total) |
 | displaySmall | Manrope | Bold | 36/44 | Section hero |
 | headlineLarge | Manrope | Bold | 32/40 | Screen titles (rare) |

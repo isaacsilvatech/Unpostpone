@@ -28,7 +28,6 @@ import com.unpostpone.app.R
 import com.unpostpone.app.ui.components.BrandMark
 import com.unpostpone.app.ui.components.BrandMarkMode
 import com.unpostpone.app.ui.theme.Dimens
-import com.unpostpone.app.ui.theme.UnpostponeTheme
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -129,10 +128,10 @@ fun FocusReminderScreen(
                 modifier = Modifier.graphicsLayer { translationY = -floatY }.scale(scale),
             ) {
                 BrandMark(
-                    progress = 1f, size = 160.dp, mode = BrandMarkMode.Hero,
+                    size = 160.dp, mode = BrandMarkMode.Hero,
                     arcColor = MaterialTheme.colorScheme.onBackground,
-                    handColor = MaterialTheme.colorScheme.tertiary,
-                    leafColor = UnpostponeTheme.semantic.success,
+                    handColor = MaterialTheme.colorScheme.primary,
+                    leafColor = MaterialTheme.colorScheme.primaryContainer,
                 )
             }
 

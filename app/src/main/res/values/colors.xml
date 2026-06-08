@@ -1,42 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--
-        Unpostpone — Brand Color Resources
-        Anchored to the icon (docs/icon.svg) and paleta-cores.txt.
-        These are the colors used by the Android system (splash, notifications,
-        status bar, task switcher). The Compose ColorScheme lives in
+        Unpostpone — Brand Color Resources (light)
+        Anchored to a single teal primary with two tonal variants (light/dark).
+        These colors are used by the Android system (status bar, notifications,
+        task switcher, launcher background). The Compose ColorScheme lives in
         ui/theme/Color.kt — keep these two in sync.
     -->
 
-    <!-- Primary brand teal — icon background, app identity -->
-    <color name="brand_teal">#0F4C5C</color>
-    <color name="brand_teal_dark">#08404E</color>
-    <color name="brand_teal_soft">#2D6A73</color>
+    <!-- Primary tonal palette -->
+    <color name="brand_teal">#0C4D5B</color>          <!-- identity, primary -->
+    <color name="brand_teal_soft">#1F6778</color>     <!-- primary light -->
+    <color name="brand_teal_dark">#083944</color>     <!-- primary dark / pressed -->
 
     <!-- Cream — the paper-like background -->
     <color name="brand_cream">#F7F4EA</color>
-    <color name="brand_surface">#FBFAF5</color>
 
     <!-- Action — kinetic moments, primary CTA, clock hands -->
     <color name="brand_action">#F4A261</color>
     <color name="brand_action_dark">#8C4F1F</color>
-
-    <!-- Sage — success, growth, streak -->
-    <color name="brand_sage">#84A98C</color>
-    <color name="brand_sage_dark">#4A6B45</color>
-
-    <!-- Dark theme surfaces -->
-    <color name="dark_background">#0F1413</color>
-    <color name="dark_surface">#0F1413</color>
-    <color name="dark_surface_variant">#1A2224</color>
-
-    <!-- Legacy aliases — kept for splash / notification assets that still
-         reference the old names. Prefer the brand_* names in new code. -->
-    <color name="deep_focus">#0F4C5C</color>
-    <color name="deep_focus_dark">#08404E</color>
-    <color name="action_orange">#F4A261</color>
-    <color name="growth_green">#84A98C</color>
-    <color name="calm_ivory">#F7F4EA</color>
 
     <!-- System -->
     <color name="white">#FFFFFFFF</color>

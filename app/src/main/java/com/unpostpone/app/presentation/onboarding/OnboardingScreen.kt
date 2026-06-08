@@ -27,7 +27,6 @@ import com.unpostpone.app.domain.repository.OnboardingPreferences
 import com.unpostpone.app.ui.components.BrandMark
 import com.unpostpone.app.ui.components.BrandMarkMode
 import com.unpostpone.app.ui.theme.Dimens
-import com.unpostpone.app.ui.theme.UnpostponeTheme
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -43,6 +42,14 @@ class OnboardingViewModel @Inject constructor(
     private val _state = MutableStateFlow(OnboardingUiState())
     val state: StateFlow<OnboardingUiState> = _state.asStateFlow()
 
+    init {
+        val firstLaunch = !onboardingPreferences.hasCompletedOnboarding()
+        _state.value = _state.value.copy(
+            checkingPreferences = false,
+            completed = !firstLaunch,
+        )
+    }
+
     fun onPageChanged(index: Int) {
         _state.value = _state.value.copy(currentPage = index)
     }
@@ -56,6 +63,7 @@ class OnboardingViewModel @Inject constructor(
 data class OnboardingUiState(
     val currentPage: Int = 0,
     val completed: Boolean = false,
+    val checkingPreferences: Boolean = true,
 )
 
 @Composable
@@ -78,7 +86,11 @@ fun OnboardingScreen(
     }
 
     Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
-        Column(modifier = Modifier.fillMaxSize()) {
+        // Defensive no-flash guard. The ViewModel resolves the persisted
+        // completion flag in init, so this branch is only relevant for the
+        // single frame between first composition and the first state update.
+        if (!state.checkingPreferences) {
+            Column(modifier = Modifier.fillMaxSize()) {
             HorizontalPager(
                 state = pagerState,
                 modifier = Modifier.fillMaxWidth().weight(1f),
@@ -108,6 +120,7 @@ fun OnboardingScreen(
                 },
                 onLearnMore = { scope.launch { pagerState.animateScrollToPage(2) } },
             )
+            }
         }
     }
 }
@@ -120,10 +133,10 @@ private fun WelcomePage() {
         verticalArrangement = Arrangement.Center,
     ) {
         BrandMark(
-            progress = 1f, size = 180.dp, mode = BrandMarkMode.Hero,
+            size = 180.dp, mode = BrandMarkMode.Hero,
             arcColor = MaterialTheme.colorScheme.onBackground,
-            handColor = MaterialTheme.colorScheme.tertiary,
-            leafColor = UnpostponeTheme.semantic.success,
+            handColor = MaterialTheme.colorScheme.primary,
+            leafColor = MaterialTheme.colorScheme.primaryContainer,
         )
         Spacer(Modifier.height(Dimens.SpacingHuge))
         Text(stringResource(R.string.onboarding_welcome_title),
@@ -221,7 +234,7 @@ private fun PrivacyPage() {
             Icons.Default.PrivacyTip,
             stringResource(R.string.onboarding_privacy_no_collect_title),
             stringResource(R.string.onboarding_privacy_no_collect_body),
-            UnpostponeTheme.semantic.success,
+            MaterialTheme.colorScheme.primary,
         )
     }
 }

@@ -25,9 +25,6 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Push the persisted language to AppCompatDelegate BEFORE the
-        // first composition. This avoids a flash of the default locale
-        // when the user has a saved preference.
         languageManager.applyPersistedToAppCompat()
         enableEdgeToEdge()
 

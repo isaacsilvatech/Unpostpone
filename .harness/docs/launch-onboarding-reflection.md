@@ -9,14 +9,13 @@ informed → supported**. Not pressured, not gated, not guilt-tripped.
 ┌──────────────────────────────────────────────────────────────────────┐
 │  COLD START                                                          │
 │  ──────────                                                          │
-│  T+0.0s   Splash animation begins                                   │
-│  T+0.4s   Clock arc drawn — "time"                                  │
-│  T+0.7s   Center pulse — "focus"                                    │
-│  T+1.0s   Hands swing in — "what you do with time"                  │
-│  T+1.3s   Leaf grows — "what time can become"                       │
-│  T+1.7s   Wordmark fades in                                         │
-│  T+2.3s   Hold                                                      │
-│  T+2.6s   Navigate to Onboarding (first launch) or Dashboard        │
+│  T+0.0s   Onboarding screen is the start destination. The           │
+│           OnboardingViewModel reads the persisted completion        │
+│           flag synchronously in init, so the routing decision       │
+│           lands on the first frame.                                 │
+│                                                                      │
+│         first launch       → Onboarding (4-page pager)              │
+│         returning user     → Dashboard (no flash of Welcome)         │
 │                                                                      │
 │  ONBOARDING (first launch only)                                      │
 │  ─────────────────────────────                                      │
@@ -45,39 +44,27 @@ informed → supported**. Not pressured, not gated, not guilt-tripped.
 
 ## 2. Visual storyboards
 
-### Experience 1 — Splash
+### Experience 1 — Cold start
 
-```
-  ┌──────────────────────────────────────────────────┐
-  │                                                  │
-  │                                                  │
-  │                                                  │
-  │                                                  │
-  │                  ◔ ───●  ◯                       │
-  │                  │  ╲  ╱                        │
-  │                  ●   ╳                          │
-  │                       ╲                         │
-  │                        🍃                       │
-  │                                                  │
-  │                  Unpostpone                      │
-  │            Use your time intentionally           │
-  │                                                  │
-  │                                                  │
-  │                                                  │
-  └──────────────────────────────────────────────────┘
+The Onboarding screen is the start destination. There is no splash. The
+first frame the user sees depends on whether they have completed
+onboarding before:
 
-  Phase 1 (0.0–0.4s):   the C/arc draws in
-  Phase 2 (0.4–0.7s):   the orange center dot scales in
-  Phase 3 (0.5–0.75s):  the hour hand (shorter) and minute hand
-                        (longer) swing in from behind the center
-  Phase 4 (0.7–0.9s):   the leaf grows from the bottom-right
-  Phase 5 (0.85–1.0):   the wordmark fades in
-```
+- **First launch** → the Onboarding pager is composed immediately,
+  with `WelcomePage` (page 0) visible. The user starts swiping through
+  the four pages.
+- **Returning user** → the `OnboardingViewModel` reads the persisted
+  flag in `init` and sets `state.completed = true` on the same frame.
+  The `LaunchedEffect(state.completed)` block fires
+  `onOnboardingComplete()` and the NavGraph replaces the Onboarding
+  destination with the Dashboard. The Welcome page never composes.
 
-The background is `MaterialTheme.colorScheme.background` — the cream. The
-mark itself is drawn in `onBackground` (deep text), `tertiary` (orange),
-and `UnpostponeTheme.semantic.success` (sage). No image assets, no
-Lottie. The whole thing is `Canvas`.
+The transition is invisible to the user: SharedPreferences reads are
+synchronous and effectively free, so the routing decision lands in the
+same frame as the screen's first composition. A defensive
+`checkingPreferences` guard renders only the background color in the
+narrow window between the first composition and the first state update,
+just in case.
 
 ### Experience 2 — Onboarding (4 pages)
 
@@ -163,18 +150,15 @@ same infinite transition so they stay synchronized.
 
 ```
 presentation/
-  splash/
-    SplashScreen.kt          ← Composable: cream background, animated BrandMark
-    SplashViewModel.kt       ← drives master progress, picks next destination
   onboarding/
     OnboardingScreen.kt      ← HorizontalPager host, 4 page Composables
-    OnboardingViewModel.kt   ← tracks current page, completes onboarding
+    OnboardingViewModel.kt   ← resolves first-run flag, tracks page, completes
   focusreminder/
     FocusReminderScreen.kt   ← single screen with reflection delay
     FocusReminderViewModel.kt ← rotates message, fires actions after 5s
 
 ui/components/
-  BrandMark.kt               ← animated Canvas mark (the centerpiece)
+  BrandMark.kt               ← static Canvas mark (Hero + Focus modes)
 
 domain/repository/
   OnboardingPreferences.kt   ← interface (pure Kotlin, no Android types)
@@ -188,8 +172,10 @@ data/repository/
 - **Each screen owns its ViewModel.** MVVM + `StateFlow<UiState>` +
   `collectAsStateWithLifecycle()`, consistent with the rest of the app.
 - **`BrandMark` is in `ui/components/`, not in any one feature
-  package.** It's a shared visual primitive; the splash, the dashboard,
-  the blocker, and the reflection all draw it.
+  package.** It's a shared visual primitive; the dashboard, the
+  blocker, the onboarding, and the reflection all draw it. The
+  animated "Splash" mode was removed when the splash screen was
+  removed — only the static `Hero` and `Focus` modes remain.
 - **OnboardingPreferences is an interface in `domain/`, implemented in
   `data/`.** The ViewModel depends on the interface, not the
   implementation. Tests can swap in a fake.
@@ -201,9 +187,9 @@ data/repository/
 ## 4. Navigation flow
 
 ```
-   Splash
+   Onboarding  (start destination)
      │
-     ├── first launch  →  Onboarding
+     ├── first launch  →  4-page pager
      │                       │
      │                       ├── 0  Welcome
      │                       ├── 1  Features
@@ -216,7 +202,7 @@ data/repository/
      │                       │
      │                       └── "Get started"  →  Dashboard
      │
-     └── returning user ─→  Dashboard
+     └── returning user ─→  ViewModel fires completion → Dashboard
                               │
                               ├── Goals
                               ├── Statistics
@@ -240,11 +226,6 @@ lands in Settings → comes back. The onboarding pager stays in place.
 
 | Element | Animation | Duration | Easing |
 |---|---|---|---|
-| Splash — clock arc | sweep 0° → 270° | 400ms | Emphasized (0.2, 0, 0, 1) |
-| Splash — center | scale 0 → 1 | 150ms | Emphasized |
-| Splash — hands | angle lerp from tucked to final | 250ms | Emphasized |
-| Splash — leaf | scale + 12° rotation | 200ms | Emphasized |
-| Splash — wordmark | fade-in | 400ms | Linear |
 | Onboarding — page change | horizontal slide + fade | 300ms | Emphasized |
 | Page dots | width tween 8 → 24dp | 250ms | Emphasized |
 | Reflection — mark float | translateY -4 ↔ +4 | 3200ms | Sine (Reverse) |
@@ -275,11 +256,19 @@ Gradle change (`androidx.datastore:datastore-preferences:1.1.1`) and
 a one-flag storage is not worth that change. When the rest of the app
 adopts DataStore, swap the impl in one place — the interface stays.
 
-### Splash → first-run branching
-- The Splash is the start destination.
-- After the animation, `SplashViewModel` checks
-  `onboardingPreferences.hasCompletedOnboarding()`.
-- If false → push Onboarding. If true → pop Splash, push Dashboard.
+### First-run branching (formerly: Splash → first-run branching)
+- Onboarding is the start destination.
+- `OnboardingViewModel` reads
+  `onboardingPreferences.hasCompletedOnboarding()` synchronously in
+  `init`. If false, the pager composes normally. If true, the ViewModel
+  sets `state.completed = true` on the same frame, the existing
+  `LaunchedEffect(state.completed)` fires `onOnboardingComplete()`, and
+  the NavGraph replaces Onboarding with the Dashboard.
+- A defensive `checkingPreferences` flag in `OnboardingUiState` keeps
+  the screen rendering only its background color until the flag
+  resolves, so a returning user never sees a flash of the Welcome
+  page. In practice the flag resolves on the same frame, so the guard
+  is effectively invisible.
 
 ### Permission intents
 - Accessibility → `Settings.ACTION_ACCESSIBILITY_SETTINGS`
@@ -301,16 +290,14 @@ adopts DataStore, swap the impl in one place — the interface stays.
 ### Files added
 | File | Lines | Role |
 |---|---|---|
-| `ui/components/BrandMark.kt` | ~230 | Animated Canvas brand mark |
-| `presentation/splash/SplashScreen.kt` | ~95 | The launch experience |
-| `presentation/splash/SplashViewModel.kt` | ~70 | Drives animation + routing |
-| `presentation/onboarding/OnboardingScreen.kt` | ~430 | 4-page pager |
-| `presentation/onboarding/OnboardingViewModel.kt` | ~30 | Pager state + completion |
+| `ui/components/BrandMark.kt` | ~200 | Static Canvas brand mark (Hero + Focus) |
+| `presentation/onboarding/OnboardingScreen.kt` | ~430 | 4-page pager; owns the first-run routing decision |
+| `presentation/onboarding/OnboardingViewModel.kt` | ~50 | Pager state, completion, and first-run branch |
 | `presentation/focusreminder/FocusReminderScreen.kt` | ~250 | Reflection screen |
 | `presentation/focusreminder/FocusReminderViewModel.kt` | ~50 | Message rotation, 5s timer |
 | `domain/repository/OnboardingPreferences.kt` | ~10 | Domain interface |
 | `data/repository/OnboardingPreferencesImpl.kt` | ~25 | SharedPreferences impl |
-| `presentation/navigation/Screen.kt` | (updated) | Added Splash, Onboarding, FocusReminder |
-| `presentation/navigation/NavGraph.kt` | (updated) | Wired the new screens + permission intents |
+| `presentation/navigation/Screen.kt` | (updated) | Removed Splash route; Onboarding is the start destination |
+| `presentation/navigation/NavGraph.kt` | (updated) | Wired the screens + permission intents |
 | `di/AppModule.kt` | (updated) | Provides SharedPreferences + binds prefs |
-| `res/values/strings.xml` | (updated) | New strings for all three screens |
+| `res/values/strings.xml` | (updated) | New strings for all screens |

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--
-        Unpostpone — Activity theme (light).
-        The Compose ColorScheme in ui/theme/Color.kt owns the in-app surface
-        tokens; this XML theme only feeds the system surfaces that read
-        ?attr/* before Compose draws (status bar tint, splash background,
-        recent-apps card, system dialogs). The values MUST stay in sync with
-        Color.kt.
+        Unpostpone — Activity theme (light, Android 12+ SplashScreen).
+        On API 31+ the system applies a SplashScreen automatically. We pin
+        the background to the brand teal so the splash does not flash a
+        default (white) background or get tinted by Material You before the
+        Compose tree draws. Keep this in sync with values/themes.xml and the
+        Compose LightColors primary in ui/theme/Color.kt.
     -->
     <style name="Theme.Unpostpone" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:colorPrimary">@color/brand_teal</item>
@@ -14,6 +14,7 @@
         <item name="android:colorAccent">@color/brand_teal_soft</item>
         <item name="android:colorBackground">@color/brand_teal</item>
         <item name="android:windowBackground">@color/brand_teal</item>
+        <item name="android:windowSplashScreenBackground">@color/brand_teal</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
