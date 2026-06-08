@@ -3,59 +3,70 @@ package com.unpostpone.app.ui.theme
 import androidx.compose.ui.graphics.Color
 
 // ════════════════════════════════════════════════════════════════════════════
-//  Unpostpone — Color System (neutral, teal-anchored)
+//  Unpostpone — Color System (80 / 15 / 5)
 //
-//  Three teal brand anchors carry the identity; everything else is neutral
-//  (warm grays, no warm cream, no kinetic orange). This replaced the old
-//  four-anchor teal/cream/orange/sage system — the auxiliary sage, sienna and
-//  semantic success/warning families were folded back into the neutrals.
+//  The UI is neutral-first. Three teal shades are the only brand hues and
+//  they show up sparingly — FAB, primary buttons, selected states, progress,
+//  switches. Everything else is white / off-white / hairline gray.
 //
-//  Brand anchors (use these in marketing / icon / splash):
-//    #0C4D5B  Teal         — identity, primary
-//    #1F6778  Teal Light   — secondary, less assertive
-//    #083944  Teal Dark    — pressed, on-primary text in dark scheme
+//  Distribution target:
+//    ~80%  neutrals  — backgrounds, surfaces, text, borders, dividers
+//    ~15%  brand     — teal #0C4D5B on FABs, buttons, active progress
+//     ~5%  accents   — error red on the Blocker screen only; green is not
+//                      a brand color (success is conveyed by the check icon,
+//                      not a tinted background)
 //
-//  Every Material 3 token the app actually reads is declared explicitly —
-//  including the *Container family. The previous scheme left primaryContainer
-//  / secondaryContainer / errorContainer unset, which made them fall back to
-//  the M3 baseline (purple). That is now fixed below.
+//  `primaryContainer` is intentionally a *very* subtle teal tint (#E8F2F4)
+//  so it can be used for the bottom-nav selected indicator without
+//  screaming. It is NOT used for card backgrounds — cards are always
+//  `surface` (white).
 // ════════════════════════════════════════════════════════════════════════════
 
 // ── Brand anchors ─────────────────────────────────────────────────────────
-val Teal       = Color(0xFF0C4D5B)  // primary
-val TealLight  = Color(0xFF1F6778)  // primary light
-val TealDark   = Color(0xFF083944)  // primary dark
+val Teal       = Color(0xFF0C4D5B)  // primary — the only saturated color
+val TealLight  = Color(0xFF1F6778)  // primary light — softer teal
+val TealDark   = Color(0xFF083944)  // primary dark — pressed, on-primary text
+val TealHint   = Color(0xFFE8F2F4)  // primary container — whisper of teal
+val TealHintDark = Color(0xFF1F4047) // dark-mode primary container
 
 // ── Material 3 — Light scheme ─────────────────────────────────────────────
-//   Primary:    #0C4D5B  — the brand teal
-//   Secondary:  #1F6778  — softer teal for chrome that should not compete
-//   Tertiary:   neutral gray — keeps the kinetic role off the brand hue
-//   Background: neutral off-white — no warm cream
-//   Error:      calm red — used only for actual error states
+val LightBackground            = Color(0xFFFAFAFA)   // page bg
+val LightOnBackground          = Color(0xFF0A0A0A)   // primary text
+val LightSurface               = Color(0xFFFFFFFF)   // cards
+val LightOnSurface             = Color(0xFF0A0A0A)
+val LightSurfaceVariant        = Color(0xFFF4F4F4)   // subtle neutral fill
+val LightOnSurfaceVariant      = Color(0xFF6B6B6B)   // muted text
+
+// M3 1.4 surface container family — used by TopAppBar, NavigationBar, etc.
+val LightSurfaceContainerLowest  = Color(0xFFFFFFFF)
+val LightSurfaceContainerLow     = Color(0xFFFAFAFA)
+val LightSurfaceContainer        = Color(0xFFFAFAFA)
+val LightSurfaceContainerHigh    = Color(0xFFF4F4F4)
+val LightSurfaceContainerHighest = Color(0xFFEEEEEE)
+
+val LightOutline               = Color(0xFFD4D4D4)   // visible borders
+val LightOutlineVariant        = Color(0xFFEDEDED)   // hairline dividers
+
 val LightPrimary               = Teal
 val LightOnPrimary             = Color(0xFFFFFFFF)
-val LightPrimaryContainer      = Color(0xFFCFE8EE)   // light teal tonal step
-val LightOnPrimaryContainer    = TealDark
+val LightPrimaryContainer      = TealHint              // whisper of teal
+val LightOnPrimaryContainer    = Teal
+
 val LightSecondary             = TealLight
 val LightOnSecondary           = Color(0xFFFFFFFF)
-val LightSecondaryContainer    = Color(0xFFCFE8EE)   // light teal tonal step
-val LightOnSecondaryContainer  = TealDark
-val LightTertiary              = Color(0xFF525252)   // neutral gray
+val LightSecondaryContainer    = TealHint
+val LightOnSecondaryContainer  = Teal
+
+val LightTertiary              = Color(0xFF525252)   // neutral mid-gray
 val LightOnTertiary            = Color(0xFFFFFFFF)
-val LightTertiaryContainer     = Color(0xFFE5E5E5)   // neutral gray
+val LightTertiaryContainer     = Color(0xFFF0F0F0)
 val LightOnTertiaryContainer   = Color(0xFF1A1A1A)
-val LightError                 = Color(0xFFB91C1C)   // calm red
+
+val LightError                 = Color(0xFFB91C1C)
 val LightOnError               = Color(0xFFFFFFFF)
-val LightErrorContainer        = Color(0xFFFEE2E2)   // light red
-val LightOnErrorContainer      = Color(0xFF7F1D1D)   // dark red
-val LightBackground            = Color(0xFFFAFAFA)   // neutral off-white
-val LightOnBackground          = Color(0xFF1A1A1A)
-val LightSurface               = Color(0xFFFFFFFF)
-val LightOnSurface             = Color(0xFF1A1A1A)
-val LightSurfaceVariant        = Color(0xFFF0F0F0)
-val LightOnSurfaceVariant      = Color(0xFF525252)
-val LightOutline               = Color(0xFFD4D4D4)
-val LightOutlineVariant        = Color(0xFFE5E5E5)
+val LightErrorContainer        = Color(0xFFFEE2E2)
+val LightOnErrorContainer      = Color(0xFF7F1D1D)
+
 val LightInverseSurface        = Color(0xFF1A1A1A)
 val LightInverseOnSurface      = Color(0xFFF5F5F5)
 val LightInversePrimary        = Color(0xFF84D0DC)
@@ -63,36 +74,44 @@ val LightScrim                 = Color(0xFF000000)
 val LightSurfaceTint           = Teal
 
 // ── Material 3 — Dark scheme ──────────────────────────────────────────────
-//   The brand teal brightens to a luminous sky-teal so it still reads as the
-//   same family. Backgrounds are pure neutrals (no teal-black tint).
-//   Container roles shift: the *Container tokens become mid-teal in dark
-//   mode so a teal-tinted card on a near-black background still has contrast.
-val DarkPrimary                = Color(0xFF84D0DC)
+val DarkBackground             = Color(0xFF0A0A0A)
+val DarkOnBackground           = Color(0xFFF5F5F5)
+val DarkSurface                = Color(0xFF141414)
+val DarkOnSurface              = Color(0xFFF5F5F5)
+val DarkSurfaceVariant         = Color(0xFF1F1F1F)
+val DarkOnSurfaceVariant       = Color(0xFFA3A3A3)
+
+val DarkSurfaceContainerLowest  = Color(0xFF0A0A0A)
+val DarkSurfaceContainerLow     = Color(0xFF0A0A0A)
+val DarkSurfaceContainer        = Color(0xFF141414)
+val DarkSurfaceContainerHigh    = Color(0xFF1F1F1F)
+val DarkSurfaceContainerHighest = Color(0xFF262626)
+
+val DarkOutline                = Color(0xFF404040)
+val DarkOutlineVariant         = Color(0xFF2E2E2E)
+
+val DarkPrimary                = Color(0xFF5BA3B0)   // lifted teal for dark
 val DarkOnPrimary              = TealDark
-val DarkPrimaryContainer       = TealLight           // mid teal in dark
+val DarkPrimaryContainer       = TealHintDark
 val DarkOnPrimaryContainer     = Color(0xFFCFE8EE)
-val DarkSecondary              = Color(0xFFB3CACE)
-val DarkOnSecondary            = Color(0xFF1B353A)
-val DarkSecondaryContainer     = TealLight
+
+val DarkSecondary              = Color(0xFF84A8AE)
+val DarkOnSecondary            = Color(0xFF0A2226)
+val DarkSecondaryContainer     = TealHintDark
 val DarkOnSecondaryContainer   = Color(0xFFCFE8EE)
-val DarkTertiary               = Color(0xFFA3A3A3)   // neutral gray
+
+val DarkTertiary               = Color(0xFFA3A3A3)
 val DarkOnTertiary             = Color(0xFF1A1A1A)
-val DarkTertiaryContainer      = Color(0xFF262626)   // neutral dark gray
+val DarkTertiaryContainer      = Color(0xFF262626)
 val DarkOnTertiaryContainer    = Color(0xFFE5E5E5)
+
 val DarkError                  = Color(0xFFFCA5A5)
 val DarkOnError                = Color(0xFF450A0A)
-val DarkErrorContainer         = Color(0xFF7F1D1D)
-val DarkOnErrorContainer       = Color(0xFFFEE2E2)
-val DarkBackground             = Color(0xFF0A0A0A)   // neutral near-black
-val DarkOnBackground           = Color(0xFFE5E5E5)
-val DarkSurface                = Color(0xFF171717)
-val DarkOnSurface              = Color(0xFFE5E5E5)
-val DarkSurfaceVariant         = Color(0xFF262626)
-val DarkOnSurfaceVariant       = Color(0xFFA3A3A3)
-val DarkOutline                = Color(0xFF404040)
-val DarkOutlineVariant         = Color(0xFF262626)
-val DarkInverseSurface         = Color(0xFFE5E5E5)
-val DarkInverseOnSurface       = Color(0xFF1A1A1A)
+val DarkErrorContainer         = Color(0xFF5F1A1A)
+val DarkOnErrorContainer       = Color(0xFFFECACA)
+
+val DarkInverseSurface         = Color(0xFFF5F5F5)
+val DarkInverseOnSurface       = Color(0xFF0A0A0A)
 val DarkInversePrimary         = Teal
 val DarkScrim                  = Color(0xFF000000)
 val DarkSurfaceTint            = DarkPrimary

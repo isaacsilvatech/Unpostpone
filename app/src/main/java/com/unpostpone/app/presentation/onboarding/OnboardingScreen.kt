@@ -1,5 +1,6 @@
 package com.unpostpone.app.presentation.onboarding
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
@@ -85,41 +86,42 @@ fun OnboardingScreen(
         viewModel.onPageChanged(pagerState.currentPage)
     }
 
-    Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
-        // Defensive no-flash guard. The ViewModel resolves the persisted
-        // completion flag in init, so this branch is only relevant for the
-        // single frame between first composition and the first state update.
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background),
+    ) {
         if (!state.checkingPreferences) {
             Column(modifier = Modifier.fillMaxSize()) {
-            HorizontalPager(
-                state = pagerState,
-                modifier = Modifier.fillMaxWidth().weight(1f),
-                contentPadding = PaddingValues(horizontal = Dimens.ScreenGutter),
-                pageSpacing = Dimens.SpacingL,
-            ) { page ->
-                when (page) {
-                    0 -> WelcomePage()
-                    1 -> FeaturesPage()
-                    2 -> PrivacyPage()
-                    3 -> PermissionsPage(
-                        onRequestAccessibilityPermission = onRequestAccessibilityPermission,
-                        onRequestUsageAccessPermission = onRequestUsageAccessPermission,
-                        onRequestNotificationPermission = onRequestNotificationPermission,
-                    )
-                }
-            }
-            OnboardingBottomBar(
-                currentPage = pagerState.currentPage,
-                pagerState = pagerState,
-                onContinue = {
-                    if (pagerState.currentPage < 3) {
-                        scope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) }
-                    } else {
-                        viewModel.completeOnboarding()
+                HorizontalPager(
+                    state = pagerState,
+                    modifier = Modifier.fillMaxWidth().weight(1f),
+                    contentPadding = PaddingValues(horizontal = Dimens.ScreenGutter),
+                    pageSpacing = Dimens.SpacingL,
+                ) { page ->
+                    when (page) {
+                        0 -> WelcomePage()
+                        1 -> FeaturesPage()
+                        2 -> PrivacyPage()
+                        3 -> PermissionsPage(
+                            onRequestAccessibilityPermission = onRequestAccessibilityPermission,
+                            onRequestUsageAccessPermission = onRequestUsageAccessPermission,
+                            onRequestNotificationPermission = onRequestNotificationPermission,
+                        )
                     }
-                },
-                onLearnMore = { scope.launch { pagerState.animateScrollToPage(2) } },
-            )
+                }
+                OnboardingBottomBar(
+                    currentPage = pagerState.currentPage,
+                    pagerState = pagerState,
+                    onContinue = {
+                        if (pagerState.currentPage < 3) {
+                            scope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) }
+                        } else {
+                            viewModel.completeOnboarding()
+                        }
+                    },
+                    onLearnMore = { scope.launch { pagerState.animateScrollToPage(2) } },
+                )
             }
         }
     }
@@ -133,46 +135,62 @@ private fun WelcomePage() {
         verticalArrangement = Arrangement.Center,
     ) {
         BrandMark(
-            size = 180.dp, mode = BrandMarkMode.Hero,
+            size = 180.dp,
+            mode = BrandMarkMode.Hero,
             arcColor = MaterialTheme.colorScheme.onBackground,
             handColor = MaterialTheme.colorScheme.primary,
-            leafColor = MaterialTheme.colorScheme.primaryContainer,
+            leafColor = MaterialTheme.colorScheme.primary,
         )
         Spacer(Modifier.height(Dimens.SpacingHuge))
-        Text(stringResource(R.string.onboarding_welcome_title),
-            style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onBackground, textAlign = TextAlign.Center)
+        Text(
+            text = stringResource(R.string.onboarding_welcome_title),
+            style = MaterialTheme.typography.headlineLarge,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onBackground,
+            textAlign = TextAlign.Center,
+        )
         Spacer(Modifier.height(Dimens.SpacingL))
-        Text(stringResource(R.string.onboarding_welcome_subtitle),
+        Text(
+            text = stringResource(R.string.onboarding_welcome_subtitle),
             style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center,
-            modifier = Modifier.padding(horizontal = Dimens.SpacingL))
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(horizontal = Dimens.SpacingL),
+        )
     }
 }
 
 @Composable
 private fun FeaturesPage() {
-    Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
-        Text(stringResource(R.string.onboarding_features_title),
-            style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onBackground)
+    Column(
+        modifier = Modifier.fillMaxSize().padding(top = Dimens.SpacingHuge),
+        verticalArrangement = Arrangement.Top,
+    ) {
+        Text(
+            text = stringResource(R.string.onboarding_features_title),
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onBackground,
+        )
         Spacer(Modifier.height(Dimens.SpacingS))
-        Text(stringResource(R.string.onboarding_features_subtitle),
+        Text(
+            text = stringResource(R.string.onboarding_features_subtitle),
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant)
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
         Spacer(Modifier.height(Dimens.SpacingHuge))
         FeatureCard(
             Icons.Default.Timer,
             stringResource(R.string.onboarding_feature_focus_title),
             stringResource(R.string.onboarding_feature_focus_body),
         )
-        Spacer(Modifier.height(Dimens.SpacingL))
+        Spacer(Modifier.height(Dimens.SpacingM))
         FeatureCard(
             Icons.Default.Flag,
             stringResource(R.string.onboarding_feature_goals_title),
             stringResource(R.string.onboarding_feature_goals_body),
         )
-        Spacer(Modifier.height(Dimens.SpacingL))
+        Spacer(Modifier.height(Dimens.SpacingM))
         FeatureCard(
             Icons.Default.BarChart,
             stringResource(R.string.onboarding_feature_insights_title),
@@ -185,7 +203,12 @@ private fun FeaturesPage() {
 private fun FeatureCard(icon: ImageVector, title: String, body: String) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+            contentColor = MaterialTheme.colorScheme.onSurface,
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
         shape = MaterialTheme.shapes.medium,
     ) {
         Row(
@@ -193,20 +216,33 @@ private fun FeatureCard(icon: ImageVector, title: String, body: String) {
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Box(
-                modifier = Modifier.size(48.dp).clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primaryContainer),
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.surfaceVariant),
                 contentAlignment = Alignment.Center,
             ) {
-                Icon(icon, null, tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                    modifier = Modifier.size(24.dp))
+                Icon(
+                    icon,
+                    null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(20.dp),
+                )
             }
             Spacer(Modifier.size(Dimens.SpacingL))
             Column(modifier = Modifier.weight(1f)) {
-                Text(title, style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurface)
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
                 Spacer(Modifier.height(Dimens.SpacingXS))
-                Text(body, style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(
+                    text = body,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
         }
     }
@@ -214,36 +250,51 @@ private fun FeatureCard(icon: ImageVector, title: String, body: String) {
 
 @Composable
 private fun PrivacyPage() {
-    Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
-        Text(stringResource(R.string.onboarding_privacy_title),
-            style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onBackground)
+    Column(
+        modifier = Modifier.fillMaxSize().padding(top = Dimens.SpacingHuge),
+        verticalArrangement = Arrangement.Top,
+    ) {
+        Text(
+            text = stringResource(R.string.onboarding_privacy_title),
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onBackground,
+        )
         Spacer(Modifier.height(Dimens.SpacingS))
-        Text(stringResource(R.string.onboarding_privacy_subtitle),
+        Text(
+            text = stringResource(R.string.onboarding_privacy_subtitle),
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant)
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
         Spacer(Modifier.height(Dimens.SpacingHuge))
         PrivacyCard(
             Icons.Default.TrackChanges,
             stringResource(R.string.onboarding_privacy_collect_title),
             stringResource(R.string.onboarding_privacy_collect_body),
-            MaterialTheme.colorScheme.primary,
         )
-        Spacer(Modifier.height(Dimens.SpacingL))
+        Spacer(Modifier.height(Dimens.SpacingM))
         PrivacyCard(
             Icons.Default.PrivacyTip,
             stringResource(R.string.onboarding_privacy_no_collect_title),
             stringResource(R.string.onboarding_privacy_no_collect_body),
-            MaterialTheme.colorScheme.primary,
         )
     }
 }
 
 @Composable
-private fun PrivacyCard(icon: ImageVector, title: String, body: String, accent: androidx.compose.ui.graphics.Color) {
+private fun PrivacyCard(
+    icon: ImageVector,
+    title: String,
+    body: String,
+) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+            contentColor = MaterialTheme.colorScheme.onSurface,
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
         shape = MaterialTheme.shapes.medium,
     ) {
         Row(
@@ -251,19 +302,33 @@ private fun PrivacyCard(icon: ImageVector, title: String, body: String, accent: 
             verticalAlignment = Alignment.Top,
         ) {
             Box(
-                modifier = Modifier.size(40.dp).clip(CircleShape)
-                    .background(accent.copy(alpha = 0.15f)),
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.surfaceVariant),
                 contentAlignment = Alignment.Center,
             ) {
-                Icon(icon, null, tint = accent, modifier = Modifier.size(20.dp))
+                Icon(
+                    icon,
+                    null,
+                    tint = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.size(20.dp),
+                )
             }
             Spacer(Modifier.size(Dimens.SpacingL))
             Column(modifier = Modifier.weight(1f)) {
-                Text(title, style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurface)
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
                 Spacer(Modifier.height(Dimens.SpacingXS))
-                Text(body, style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(
+                    text = body,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
         }
     }
@@ -275,14 +340,22 @@ private fun PermissionsPage(
     onRequestUsageAccessPermission: () -> Unit,
     onRequestNotificationPermission: () -> Unit,
 ) {
-    Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
-        Text(stringResource(R.string.onboarding_permissions_title),
-            style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onBackground)
+    Column(
+        modifier = Modifier.fillMaxSize().padding(top = Dimens.SpacingHuge),
+        verticalArrangement = Arrangement.Top,
+    ) {
+        Text(
+            text = stringResource(R.string.onboarding_permissions_title),
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onBackground,
+        )
         Spacer(Modifier.height(Dimens.SpacingS))
-        Text(stringResource(R.string.onboarding_permissions_subtitle),
+        Text(
+            text = stringResource(R.string.onboarding_permissions_subtitle),
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant)
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
         Spacer(Modifier.height(Dimens.SpacingHuge))
         PermissionCard(
             Icons.Default.Accessibility,
@@ -290,14 +363,14 @@ private fun PermissionsPage(
             stringResource(R.string.perm_accessibility_body),
             onCta = onRequestAccessibilityPermission,
         )
-        Spacer(Modifier.height(Dimens.SpacingL))
+        Spacer(Modifier.height(Dimens.SpacingM))
         PermissionCard(
             Icons.Default.Timer,
             stringResource(R.string.perm_usage_title),
             stringResource(R.string.perm_usage_body),
             onCta = onRequestUsageAccessPermission,
         )
-        Spacer(Modifier.height(Dimens.SpacingL))
+        Spacer(Modifier.height(Dimens.SpacingM))
         PermissionCard(
             Icons.Default.TrackChanges,
             stringResource(R.string.perm_notifications_title),
@@ -309,34 +382,63 @@ private fun PermissionsPage(
 
 @Composable
 private fun PermissionCard(
-    icon: ImageVector, title: String, body: String, onCta: () -> Unit,
+    icon: ImageVector,
+    title: String,
+    body: String,
+    onCta: () -> Unit,
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+            contentColor = MaterialTheme.colorScheme.onSurface,
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
         shape = MaterialTheme.shapes.medium,
     ) {
         Column(modifier = Modifier.fillMaxWidth().padding(Dimens.CardPadding)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(
-                    modifier = Modifier.size(40.dp).clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.primaryContainer),
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.surfaceVariant),
                     contentAlignment = Alignment.Center,
                 ) {
-                    Icon(icon, null, tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                        modifier = Modifier.size(20.dp))
+                    Icon(
+                        icon,
+                        null,
+                        tint = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.size(20.dp),
+                    )
                 }
                 Spacer(Modifier.size(Dimens.SpacingM))
-                Text(title, style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurface)
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
             }
             Spacer(Modifier.height(Dimens.SpacingM))
-            Text(body, style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant)
-            Spacer(Modifier.height(Dimens.SpacingM))
-            TextButton(onClick = onCta,
-                colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.primary)) {
-                Text(stringResource(R.string.perm_enable), fontWeight = FontWeight.SemiBold)
+            Text(
+                text = body,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Spacer(Modifier.height(Dimens.SpacingS))
+            TextButton(
+                onClick = onCta,
+                colors = ButtonDefaults.textButtonColors(
+                    contentColor = MaterialTheme.colorScheme.primary,
+                ),
+            ) {
+                Text(
+                    text = stringResource(R.string.perm_enable),
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.SemiBold,
+                )
             }
         }
     }
@@ -350,11 +452,13 @@ private fun OnboardingBottomBar(
     onLearnMore: () -> Unit,
 ) {
     Column(
-        modifier = Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.background)
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = Dimens.ScreenGutter, vertical = Dimens.SpacingXL),
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(bottom = Dimens.SpacingXL),
+            modifier = Modifier.fillMaxWidth().padding(bottom = Dimens.SpacingL),
             horizontalArrangement = Arrangement.Center,
         ) {
             repeat(4) { index ->
@@ -366,8 +470,10 @@ private fun OnboardingBottomBar(
                         .padding(horizontal = 3.dp)
                         .size(width = width, height = 8.dp)
                         .clip(CircleShape)
-                        .background(if (isActive) MaterialTheme.colorScheme.primary
-                                    else MaterialTheme.colorScheme.outlineVariant)
+                        .background(
+                            if (isActive) MaterialTheme.colorScheme.primary
+                            else MaterialTheme.colorScheme.outlineVariant,
+                        )
                         .semantics { contentDescription = a11yLabel },
                 )
             }
@@ -378,16 +484,20 @@ private fun OnboardingBottomBar(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             TextButton(onClick = onLearnMore) {
-                Text(stringResource(R.string.action_learn_more),
+                Text(
+                    text = stringResource(R.string.action_learn_more),
                     style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
+            // The primary CTA — the 15% brand touch.
             Button(
                 onClick = onContinue,
                 shape = androidx.compose.foundation.shape.RoundedCornerShape(26.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.tertiary,
-                    contentColor = MaterialTheme.colorScheme.onTertiary,
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
                 ),
             ) {
                 Text(

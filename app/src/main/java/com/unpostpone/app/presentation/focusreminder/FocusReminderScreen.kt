@@ -131,7 +131,7 @@ fun FocusReminderScreen(
                     size = 160.dp, mode = BrandMarkMode.Hero,
                     arcColor = MaterialTheme.colorScheme.onBackground,
                     handColor = MaterialTheme.colorScheme.primary,
-                    leafColor = MaterialTheme.colorScheme.primaryContainer,
+                    leafColor = MaterialTheme.colorScheme.primary,
                 )
             }
 
@@ -170,8 +170,8 @@ fun FocusReminderScreen(
                         modifier = Modifier.fillMaxWidth(),
                         shape = androidx.compose.foundation.shape.RoundedCornerShape(26.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.tertiary,
-                            contentColor = MaterialTheme.colorScheme.onTertiary,
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary,
                         ),
                     ) {
                         Text(stringResource(R.string.focus_reminder_stay_focused),

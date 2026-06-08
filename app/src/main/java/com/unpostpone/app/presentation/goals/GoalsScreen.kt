@@ -1,5 +1,6 @@
 package com.unpostpone.app.presentation.goals
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -21,6 +22,7 @@ import androidx.navigation.NavController
 import com.unpostpone.app.R
 import com.unpostpone.app.domain.model.Goal
 import com.unpostpone.app.presentation.dashboard.BottomNavigationBar
+import com.unpostpone.app.ui.theme.Dimens
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -31,66 +33,91 @@ fun GoalsScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.goals_title)) },
+                title = {
+                    Text(
+                        text = stringResource(R.string.goals_title),
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(R.string.goals_back_cd),
+                            tint = MaterialTheme.colorScheme.onSurface,
                         )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                )
+                    containerColor = MaterialTheme.colorScheme.background,
+                    titleContentColor = MaterialTheme.colorScheme.onBackground,
+                ),
             )
         },
         bottomBar = { BottomNavigationBar(navController = navController) },
         floatingActionButton = {
-            FloatingActionButton(onClick = viewModel::showAddDialog) {
+            FloatingActionButton(
+                onClick = viewModel::showAddDialog,
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+                shape = androidx.compose.foundation.shape.CircleShape,
+            ) {
                 Icon(
                     Icons.Default.Add,
                     contentDescription = stringResource(R.string.goals_add_cd),
                 )
             }
-        }
+        },
     ) { paddingValues ->
         when {
             uiState.isLoading -> Box(
                 modifier = Modifier.fillMaxSize().padding(paddingValues),
-                contentAlignment = Alignment.Center
-            ) { CircularProgressIndicator() }
+                contentAlignment = Alignment.Center,
+            ) { CircularProgressIndicator(color = MaterialTheme.colorScheme.primary) }
 
             uiState.goals.isEmpty() -> Box(
                 modifier = Modifier.fillMaxSize().padding(paddingValues),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Icon(Icons.Default.Flag, null, modifier = Modifier.size(64.dp),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Spacer(Modifier.height(16.dp))
-                    Text(stringResource(R.string.goals_empty_title),
-                        style = MaterialTheme.typography.titleMedium)
-                    Spacer(Modifier.height(4.dp))
-                    Text(stringResource(R.string.goals_empty_subtitle),
+                    Icon(
+                        Icons.Default.Flag,
+                        null,
+                        modifier = Modifier.size(Dimens.IconXL),
+                        tint = MaterialTheme.colorScheme.outline,
+                    )
+                    Spacer(Modifier.height(Dimens.SpacingL))
+                    Text(
+                        text = stringResource(R.string.goals_empty_title),
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                    Spacer(Modifier.height(Dimens.SpacingS))
+                    Text(
+                        text = stringResource(R.string.goals_empty_subtitle),
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
                 }
             }
 
             else -> LazyColumn(
                 modifier = Modifier.fillMaxSize().padding(paddingValues),
-                contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                contentPadding = PaddingValues(
+                    horizontal = Dimens.SpacingL,
+                    vertical = Dimens.SpacingL,
+                ),
+                verticalArrangement = Arrangement.spacedBy(Dimens.SpacingM),
             ) {
                 items(uiState.goals, key = { it.id }) { goal ->
                     GoalItem(
                         goal = goal,
                         onDelete = { viewModel.deleteGoal(goal) },
-                        onProgressUpdate = { viewModel.updateProgress(goal, it) }
+                        onProgressUpdate = { viewModel.updateProgress(goal, it) },
                     )
                 }
             }
@@ -100,7 +127,7 @@ fun GoalsScreen(
     if (uiState.isAddDialogVisible) {
         AddGoalDialog(
             onDismiss = viewModel::hideAddDialog,
-            onConfirm = viewModel::addGoal
+            onConfirm = viewModel::addGoal,
         )
     }
 }
@@ -109,7 +136,7 @@ fun GoalsScreen(
 private fun GoalItem(
     goal: Goal,
     onDelete: () -> Unit,
-    onProgressUpdate: (Int) -> Unit
+    onProgressUpdate: (Int) -> Unit,
 ) {
     var showSlider by remember { mutableStateOf(false) }
     var sliderValue by remember(goal.progressMinutes, goal.targetMinutes) {
@@ -119,66 +146,108 @@ private fun GoalItem(
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
-            containerColor = if (goal.isCompleted)
-                MaterialTheme.colorScheme.primaryContainer
-            else
-                MaterialTheme.colorScheme.surface
+            containerColor = MaterialTheme.colorScheme.surface,
+            contentColor = MaterialTheme.colorScheme.onSurface,
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+        border = BorderStroke(
+            width = 1.dp,
+            color = if (goal.isCompleted) MaterialTheme.colorScheme.primary
+                    else MaterialTheme.colorScheme.outlineVariant,
+        ),
     ) {
-        Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+        Column(modifier = Modifier.fillMaxWidth().padding(Dimens.CardPadding)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    horizontalArrangement = Arrangement.spacedBy(Dimens.SpacingS),
                 ) {
                     if (goal.isCompleted) {
-                        Icon(Icons.Default.CheckCircle, null,
-                            tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
+                        Icon(
+                            Icons.Default.CheckCircle,
+                            null,
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(Dimens.IconS),
+                        )
                     }
-                    Text(goal.name, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
+                    Text(
+                        text = goal.name,
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Medium,
+                    )
                 }
                 Row {
-                    IconButton(onClick = { showSlider = !showSlider }, modifier = Modifier.size(36.dp)) {
-                        Icon(Icons.Default.Edit, null, modifier = Modifier.size(18.dp))
+                    IconButton(
+                        onClick = { showSlider = !showSlider },
+                        modifier = Modifier.size(36.dp),
+                    ) {
+                        Icon(
+                            Icons.Default.Edit,
+                            null,
+                            modifier = Modifier.size(Dimens.IconS),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
                     }
-                    IconButton(onClick = onDelete, modifier = Modifier.size(36.dp)) {
-                        Icon(Icons.Default.Delete, null,
-                            tint = MaterialTheme.colorScheme.error, modifier = Modifier.size(18.dp))
+                    IconButton(
+                        onClick = onDelete,
+                        modifier = Modifier.size(36.dp),
+                    ) {
+                        Icon(
+                            Icons.Default.Delete,
+                            null,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.size(Dimens.IconS),
+                        )
                     }
                 }
             }
 
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(Dimens.SpacingM))
             LinearProgressIndicator(
                 progress = { goal.progressPercent },
-                modifier = Modifier.fillMaxWidth(),
-                trackColor = MaterialTheme.colorScheme.surfaceVariant
+                modifier = Modifier.fillMaxWidth().height(6.dp),
+                color = MaterialTheme.colorScheme.primary,
+                trackColor = MaterialTheme.colorScheme.surfaceVariant,
             )
-            Spacer(Modifier.height(4.dp))
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text(stringResource(R.string.goals_progress_minutes_done, goal.progressMinutes),
+            Spacer(Modifier.height(Dimens.SpacingS))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Text(
+                    text = stringResource(R.string.goals_progress_minutes_done, goal.progressMinutes),
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant)
-                Text(stringResource(R.string.goals_target_minutes, goal.targetMinutes),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Text(
+                    text = stringResource(R.string.goals_target_minutes, goal.targetMinutes),
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
 
             if (showSlider) {
-                Spacer(Modifier.height(12.dp))
-                Text(stringResource(R.string.goals_progress_label, sliderValue.toInt()),
-                    style = MaterialTheme.typography.bodySmall)
+                Spacer(Modifier.height(Dimens.SpacingM))
+                Text(
+                    text = stringResource(R.string.goals_progress_label, sliderValue.toInt()),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
                 Slider(
                     value = sliderValue,
                     onValueChange = { sliderValue = it },
                     onValueChangeFinished = { onProgressUpdate(sliderValue.toInt()) },
                     valueRange = 0f..goal.targetMinutes.toFloat(),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = SliderDefaults.colors(
+                        activeTrackColor = MaterialTheme.colorScheme.primary,
+                        inactiveTrackColor = MaterialTheme.colorScheme.surfaceVariant,
+                        thumbColor = MaterialTheme.colorScheme.primary,
+                    ),
                 )
             }
         }
@@ -197,9 +266,15 @@ private fun AddGoalDialog(onDismiss: () -> Unit, onConfirm: (String, Int) -> Uni
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(stringResource(R.string.goals_add_dialog_title)) },
+        title = {
+            Text(
+                text = stringResource(R.string.goals_add_dialog_title),
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.SemiBold,
+            )
+        },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(Dimens.SpacingM)) {
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it; nameError = null },
@@ -208,7 +283,7 @@ private fun AddGoalDialog(onDismiss: () -> Unit, onConfirm: (String, Int) -> Uni
                     isError = nameError != null,
                     supportingText = nameError?.let { { Text(it) } },
                     singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 )
                 OutlinedTextField(
                     value = targetMinutesText,
@@ -219,23 +294,37 @@ private fun AddGoalDialog(onDismiss: () -> Unit, onConfirm: (String, Int) -> Uni
                     supportingText = minutesError?.let { { Text(it) } },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
         },
         confirmButton = {
-            Button(onClick = {
-                val targetMinutes = targetMinutesText.toIntOrNull()
-                var hasError = false
-                if (name.isBlank()) { nameError = nameErrorText; hasError = true }
-                if (targetMinutes == null || targetMinutes <= 0) { minutesError = minutesErrorText; hasError = true }
-                if (!hasError && targetMinutes != null) onConfirm(name.trim(), targetMinutes)
-            }) { Text(stringResource(R.string.goals_add_create)) }
+            Button(
+                onClick = {
+                    val targetMinutes = targetMinutesText.toIntOrNull()
+                    var hasError = false
+                    if (name.isBlank()) { nameError = nameErrorText; hasError = true }
+                    if (targetMinutes == null || targetMinutes <= 0) { minutesError = minutesErrorText; hasError = true }
+                    if (!hasError && targetMinutes != null) onConfirm(name.trim(), targetMinutes)
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                ),
+            ) {
+                Text(
+                    text = stringResource(R.string.goals_add_create),
+                    fontWeight = FontWeight.SemiBold,
+                )
+            }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text(stringResource(R.string.action_cancel))
+                Text(
+                    text = stringResource(R.string.action_cancel),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
-        }
+        },
     )
 }
