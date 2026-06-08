@@ -4,18 +4,36 @@
     <string name="dashboard_settings_cd">Abrir configurações</string>
     <string name="dashboard_add_goal_cd">Adicionar meta</string>
 
+    <!-- Hero (redesign) -->
+    <string name="dashboard_hero_eyebrow">Hoje</string>
+    <string name="dashboard_hero_subtitle">%1$d de %2$d metas concluídas</string>
+    <string name="dashboard_hero_subtitle_empty">Toque em uma meta para começar</string>
+    <string name="dashboard_section_activity">Atividade de hoje</string>
+    <string name="dashboard_focused_short">focado</string>
+
+    <string name="dashboard_stat_blocks">Bloqueios</string>
+    <string name="dashboard_stat_attempts">Tentativas</string>
+    <string name="dashboard_stat_goals_done">Concluídas</string>
+
     <string name="dashboard_blocking_active">Bloqueio ativo</string>
     <string name="dashboard_blocking_inactive">Bloqueio inativo</string>
     <string name="dashboard_blocking_active_subtitle">Distrações estão bloqueadas</string>
     <string name="dashboard_blocking_inactive_subtitle">Toque para ativar</string>
 
+    <!-- retained for backward compatibility, no longer referenced -->
     <string name="dashboard_progress_title">Progresso geral</string>
+    <!-- retained for backward compatibility, no longer referenced -->
     <string name="dashboard_progress_subtitle">%1$d de %2$d metas</string>
+    <!-- retained for backward compatibility, no longer referenced -->
     <string name="dashboard_progress_percent">%1$d%% concluído</string>
 
+    <!-- retained for backward compatibility, no longer referenced -->
     <string name="dashboard_today_stats_title">Estatísticas de hoje</string>
+    <!-- retained for backward compatibility, no longer referenced -->
     <string name="dashboard_today_stats_focused">Focado</string>
+    <!-- retained for backward compatibility, no longer referenced -->
     <string name="dashboard_today_stats_blocks">Bloqueios</string>
+    <!-- retained for backward compatibility, no longer referenced -->
     <string name="dashboard_today_stats_attempts">Tentativas</string>
 
     <string name="dashboard_today_goals_title">Metas de hoje</string>
