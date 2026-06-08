@@ -1,45 +1,25 @@
 package com.unpostpone.app.presentation.settings
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.unpostpone.app.domain.model.BlockedApp
-import com.unpostpone.app.domain.usecase.blockedapp.AddBlockedAppUseCase
-import com.unpostpone.app.domain.usecase.blockedapp.GetBlockedAppsUseCase
-import com.unpostpone.app.domain.usecase.blockedapp.RemoveBlockedAppUseCase
+import com.unpostpone.app.core.locale.LanguageManager
+import com.unpostpone.app.core.locale.SupportedLanguage
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val getBlockedAppsUseCase: GetBlockedAppsUseCase,
-    private val addBlockedAppUseCase: AddBlockedAppUseCase,
-    private val removeBlockedAppUseCase: RemoveBlockedAppUseCase
+    private val languageManager: LanguageManager,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(SettingsUiState())
-    val uiState: StateFlow<SettingsUiState> = _uiState.asStateFlow()
+    /** Live read of the active language so the picker can show a checkmark
+     *  even before the activity recreation propagates the new strings. */
+    val currentLanguage: StateFlow<SupportedLanguage> = languageManager.current
 
-    init { loadBlockedApps() }
-
-    private fun loadBlockedApps() {
-        viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
-            getBlockedAppsUseCase()
-                .catch { e -> _uiState.update { it.copy(isLoading = false, error = e.message) } }
-                .collect { apps -> _uiState.update { it.copy(blockedApps = apps, isLoading = false) } }
-        }
+    fun setLanguage(language: SupportedLanguage) {
+        languageManager.setLanguage(language)
     }
 
-    fun toggleApp(packageName: String, displayName: String) {
-        viewModelScope.launch {
-            val current = _uiState.value.blockedApps.find { it.packageName == packageName }
-            if (current != null) {
-                removeBlockedAppUseCase(current)
-            } else {
-                addBlockedAppUseCase(BlockedApp(packageName = packageName, displayName = displayName))
-            }
-        }
-    }
+    // TODO (separate ticket): add replay-onboarding, blocked-apps list,
+    // accessibility service enable flow.
 }

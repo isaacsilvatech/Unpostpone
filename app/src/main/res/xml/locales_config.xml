@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Per-app language preferences (Android 13+, API 33+).
+    The system shows these in the device Settings → App → Language picker.
+    AppCompatDelegate backports the same set on API 29-32.
+-->
+<locale-config xmlns:android="http://schemas.android.com/apk/res/android">
+    <locale android:name="en" />
+    <locale android:name="pt-BR" />
+</locale-config>

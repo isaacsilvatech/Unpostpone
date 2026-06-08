@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="perm_accessibility_title">Acessibilidade</string>
+    <string name="perm_accessibility_body">Necessário para detectar quando você abre um app que distrai e mostrar um lembrete calmo. Não lemos o conteúdo da tela.</string>
+    <string name="perm_usage_title">Acesso ao uso</string>
+    <string name="perm_usage_body">Usado para contar o tempo gasto em apps. Armazenado localmente, nunca enviado.</string>
+    <string name="perm_notifications_title">Notificações</string>
+    <string name="perm_notifications_body">Opcional. Usado para mostrar lembretes de início e fim de sessão de foco.</string>
+    <string name="perm_enable">Ativar</string>
+</resources>

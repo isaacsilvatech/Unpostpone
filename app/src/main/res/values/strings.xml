@@ -1,50 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--
+        Common / app-wide strings.
+        Anything that doesn't belong to a single feature lives here.
+    -->
     <string name="app_name">Unpostpone</string>
+    <string name="app_tagline">Use your time intentionally</string>
+
+    <!-- Generic actions -->
+    <string name="action_back">Back</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_confirm">Confirm</string>
+    <string name="action_save">Save</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_edit">Edit</string>
+    <string name="action_close">Close</string>
+    <string name="action_continue">Continue</string>
+    <string name="action_get_started">Get started</string>
+    <string name="action_learn_more">Learn more</string>
+    <string name="action_replay">Replay</string>
+    <string name="action_retry">Retry</string>
+
+    <!-- Bottom navigation -->
+    <string name="nav_dashboard">Dashboard</string>
+    <string name="nav_goals">Goals</string>
+    <string name="nav_statistics">Statistics</string>
+    <string name="nav_settings">Settings</string>
 
     <!-- Accessibility service description (manifest reference) -->
-    <string name="accessibility_service_description">O Unpostpone monitora qual aplicativo está em uso para bloquear distrações enquanto você trabalha nas suas metas.</string>
+    <string name="accessibility_service_description">Unpostpone monitors which app is in use to block distractions while you work on your goals.</string>
 
-    <!-- Splash -->
-    <string name="splash_tagline">Use your time intentionally</string>
-
-    <!-- Onboarding — Welcome -->
-    <string name="onboarding_welcome_title">Take control of your time</string>
-    <string name="onboarding_welcome_subtitle">Unpostpone helps you stay focused, build healthy digital habits, and spend time on what matters most — without the noise.</string>
-    <string name="onboarding_get_started">Get started</string>
-    <string name="onboarding_continue">Continue</string>
-    <string name="onboarding_learn_more">Learn more</string>
-
-    <!-- Onboarding — Features -->
-    <string name="onboarding_features_title">Designed for focus</string>
-    <string name="onboarding_features_subtitle">Three tools, one calm interface.</string>
-    <string name="onboarding_feature_focus_title">Focus Sessions</string>
-    <string name="onboarding_feature_focus_body">Start a session and stay with one activity. We\'ll hold the line for you.</string>
-    <string name="onboarding_feature_goals_title">Daily Goals</string>
-    <string name="onboarding_feature_goals_body">Pick the work that matters today. Unpostpone keeps it visible.</string>
-    <string name="onboarding_feature_insights_title">Gentle Insights</string>
-    <string name="onboarding_feature_insights_body">See your week at a glance. No streaks to defend, no scores to chase.</string>
-
-    <!-- Onboarding — Privacy -->
-    <string name="onboarding_privacy_title">Privacy first</string>
-    <string name="onboarding_privacy_subtitle">What stays on your device, and what never leaves it.</string>
-    <string name="onboarding_privacy_collect_title">What we use</string>
-    <string name="onboarding_privacy_collect_body">Only the data needed to detect which app you\'re using. Stored locally, on your phone, never uploaded.</string>
-    <string name="onboarding_privacy_no_collect_title">What we don\'t collect</string>
-    <string name="onboarding_privacy_no_collect_body">No analytics, no tracking, no ads, no account required. No content from your apps. No screenshots. No keystrokes.</string>
-
-    <!-- Onboarding — Permissions -->
-    <string name="onboarding_permissions_title">A few permissions</string>
-    <string name="onboarding_permissions_subtitle">Unpostpone only asks for what\'s needed to do its job.</string>
-    <string name="onboarding_perm_accessibility_title">Accessibility</string>
-    <string name="onboarding_perm_accessibility_body">Required to detect when you open a distracting app and show you a calm reminder. We do not read screen content.</string>
-    <string name="onboarding_perm_usage_title">Usage access</string>
-    <string name="onboarding_perm_usage_body">Used to count time spent in apps. Stored locally, never sent anywhere.</string>
-    <string name="onboarding_perm_notifications_title">Notifications</string>
-    <string name="onboarding_perm_notifications_body">Optional. Used to surface focus-session start and end reminders.</string>
-    <string name="onboarding_perm_enable">Enable</string>
-
-    <!-- Focus Reminder -->
-    <string name="focus_reminder_take_moment">Take a moment.</string>
-    <string name="focus_reminder_stay_focused">Stay focused</string>
-    <string name="focus_reminder_continue">Continue</string>
+    <!-- Errors -->
+    <string name="error_generic">Something went wrong. Please try again.</string>
+    <string name="error_network">No connection. Check your network and retry.</string>
+    <string name="error_empty_field">This field cannot be empty.</string>
+    <string name="error_invalid_number">Enter a valid number.</string>
 </resources>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Statistics screen -->
+    <string name="statistics_title">Statistics</string>
+
+    <string name="statistics_summary_30d">Summary — last 30 days</string>
+    <string name="statistics_total_focus">Total focus</string>
+    <string name="statistics_total_blocks">Blocks</string>
+    <string name="statistics_unlock_attempts">Unlock attempts</string>
+
+    <string name="statistics_daily_history">Daily history</string>
+    <string name="statistics_empty">No data yet</string>
+
+    <string name="statistics_label_focus">focus</string>
+    <string name="statistics_label_blocks">blocks</string>
+    <string name="statistics_label_attempts">attempts</string>
+
+    <!-- Plurals -->
+    <plurals name="statistics_focus_minutes">
+        <item quantity="one">%d min</item>
+        <item quantity="other">%d min</item>
+    </plurals>
+</resources>

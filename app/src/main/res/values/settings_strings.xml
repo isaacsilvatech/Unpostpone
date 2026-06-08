@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Settings screen -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_back_cd">Back</string>
+
+    <string name="settings_blocked_apps_title">Blocked apps</string>
+    <string name="settings_blocked_apps_subtitle">Choose which apps to block during focus</string>
+
+    <string name="settings_accessibility_title">Accessibility service</string>
+    <string name="settings_accessibility_body">To block apps automatically, enable the Unpostpone accessibility service at: Settings → Accessibility → Installed apps.</string>
+
+    <!-- Language -->
+    <string name="settings_language_title">Language</string>
+    <string name="settings_language_subtitle">Choose your preferred language</string>
+    <string name="settings_language_system">System default</string>
+    <string name="settings_language_picker_title">Choose language</string>
+    <string name="settings_language_changed">Language updated</string>
+
+    <!-- Onboarding re-entry -->
+    <string name="settings_replay_onboarding">Replay onboarding</string>
+
+    <!-- Replay / about -->
+    <string name="settings_about_title">About</string>
+    <string name="settings_about_version">Version %1$s</string>
+</resources>

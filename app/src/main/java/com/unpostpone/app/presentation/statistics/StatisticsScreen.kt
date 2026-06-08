@@ -10,11 +10,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.unpostpone.app.R
 import com.unpostpone.app.domain.model.Statistics
 import com.unpostpone.app.presentation.dashboard.BottomNavigationBar
 
@@ -29,7 +31,7 @@ fun StatisticsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Estatísticas") },
+                title = { Text(stringResource(R.string.statistics_title)) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
@@ -49,31 +51,31 @@ fun StatisticsScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 item {
-                    Text("Resumo — últimos 30 dias",
+                    Text(stringResource(R.string.statistics_summary_30d),
                         style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                 }
                 item {
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                        SummaryCard(Modifier.weight(1f), "Foco Total",
-                            "${uiState.totalFocusedMinutes}min", Icons.Default.Timer)
-                        SummaryCard(Modifier.weight(1f), "Bloqueios",
-                            "${uiState.totalBlockCount}", Icons.Default.Block)
+                        SummaryCard(Modifier.weight(1f), stringResource(R.string.statistics_total_focus),
+                            uiState.totalFocusedMinutes.toString(), Icons.Default.Timer)
+                        SummaryCard(Modifier.weight(1f), stringResource(R.string.statistics_total_blocks),
+                            uiState.totalBlockCount.toString(), Icons.Default.Block)
                     }
                 }
                 item {
-                    SummaryCard(Modifier.fillMaxWidth(), "Tentativas de Desbloqueio",
-                        "${uiState.totalUnlockAttempts}", Icons.Default.LockOpen)
+                    SummaryCard(Modifier.fillMaxWidth(), stringResource(R.string.statistics_unlock_attempts),
+                        uiState.totalUnlockAttempts.toString(), Icons.Default.LockOpen)
                 }
                 if (uiState.recentStats.isNotEmpty()) {
                     item {
-                        Text("Histórico diário",
+                        Text(stringResource(R.string.statistics_daily_history),
                             style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
                     }
                     items(uiState.recentStats) { stat -> DailyStatItem(stat) }
                 } else {
                     item {
                         Box(modifier = Modifier.fillMaxWidth().padding(32.dp), contentAlignment = Alignment.Center) {
-                            Text("Nenhum dado disponível ainda",
+                            Text(stringResource(R.string.statistics_empty),
                                 color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                     }
@@ -109,9 +111,9 @@ private fun DailyStatItem(stat: Statistics) {
         ) {
             Text(stat.date, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Medium)
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                StatColumn("${stat.focusedMinutes}m", "foco")
-                StatColumn("${stat.blockCount}", "bloqueios")
-                StatColumn("${stat.unlockAttempts}", "tentativas")
+                StatColumn("${stat.focusedMinutes}m", stringResource(R.string.statistics_label_focus))
+                StatColumn("${stat.blockCount}", stringResource(R.string.statistics_label_blocks))
+                StatColumn("${stat.unlockAttempts}", stringResource(R.string.statistics_label_attempts))
             }
         }
     }

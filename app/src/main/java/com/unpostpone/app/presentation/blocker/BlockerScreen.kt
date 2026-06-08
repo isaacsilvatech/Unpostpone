@@ -9,12 +9,14 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.unpostpone.app.R
 import com.unpostpone.app.domain.model.Goal
 
 @Composable
@@ -37,36 +39,34 @@ fun BlockerScreen(
         ) {
             Spacer(Modifier.height(48.dp))
 
-            // Header
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Icon(Icons.Default.Lock, null, modifier = Modifier.size(80.dp),
-                    tint = MaterialTheme.colorScheme.onErrorContainer)
+                     tint = MaterialTheme.colorScheme.onErrorContainer)
                 Text(
-                    text = "App Bloqueado",
+                    text = stringResource(R.string.blocker_title),
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onErrorContainer,
                     textAlign = TextAlign.Center
                 )
                 Text(
-                    text = "Conclua suas metas antes de acessar este app.",
+                    text = stringResource(R.string.blocker_subtitle),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onErrorContainer,
                     textAlign = TextAlign.Center
                 )
             }
 
-            // Active goals
             if (uiState.activeGoals.isNotEmpty()) {
                 Column(
                     modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(
-                        text = "Metas Pendentes",
+                        text = stringResource(R.string.blocker_pending_goals),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onErrorContainer
@@ -75,7 +75,6 @@ fun BlockerScreen(
                 }
             }
 
-            // Actions
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -85,7 +84,7 @@ fun BlockerScreen(
                     Card(colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.error)) {
                         Text(
-                            text = "Desbloqueado por ${uiState.unlockCountdown}s",
+                            text = stringResource(R.string.blocker_unlocked_for, uiState.unlockCountdown),
                             modifier = Modifier.padding(12.dp),
                             color = MaterialTheme.colorScheme.onError,
                             style = MaterialTheme.typography.bodyMedium
@@ -100,7 +99,7 @@ fun BlockerScreen(
                     ) {
                         Icon(Icons.Default.LockOpen, null)
                         Spacer(Modifier.width(8.dp))
-                        Text("Desbloquear por 5 minutos")
+                        Text(stringResource(R.string.blocker_unlock_for, 5))
                     }
                 }
 
@@ -114,7 +113,7 @@ fun BlockerScreen(
                 ) {
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, null)
                     Spacer(Modifier.width(8.dp))
-                    Text("Voltar e Focar")
+                    Text(stringResource(R.string.blocker_back_to_focus))
                 }
             }
         }

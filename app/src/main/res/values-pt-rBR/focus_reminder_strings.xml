@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="focus_reminder_take_moment">Tire um momento.</string>
+    <string name="focus_reminder_stay_focused">Manter o foco</string>
+    <string name="focus_reminder_continue">Continuar</string>
+
+    <string name="focus_reminder_message_1">Pequenos progressos diários criam resultados significativos.</string>
+    <string name="focus_reminder_message_2">Seus objetivos futuros merecem sua atenção agora.</string>
+    <string name="focus_reminder_message_3">A consistência constrói momentum — um momento de cada vez.</string>
+    <string name="focus_reminder_message_4">Foque no que mais importa hoje.</string>
+    <string name="focus_reminder_message_5">O trabalho que você faz agora é o trabalho que se acumula.</string>
+</resources>

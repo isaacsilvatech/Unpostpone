@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="dashboard_top_bar_title">Unpostpone</string>
+    <string name="dashboard_settings_cd">Abrir configurações</string>
+    <string name="dashboard_add_goal_cd">Adicionar meta</string>
+
+    <string name="dashboard_blocking_active">Bloqueio ativo</string>
+    <string name="dashboard_blocking_inactive">Bloqueio inativo</string>
+    <string name="dashboard_blocking_active_subtitle">Distrações estão bloqueadas</string>
+    <string name="dashboard_blocking_inactive_subtitle">Toque para ativar</string>
+
+    <string name="dashboard_progress_title">Progresso geral</string>
+    <string name="dashboard_progress_subtitle">%1$d de %2$d metas</string>
+    <string name="dashboard_progress_percent">%1$d%% concluído</string>
+
+    <string name="dashboard_today_stats_title">Estatísticas de hoje</string>
+    <string name="dashboard_today_stats_focused">Focado</string>
+    <string name="dashboard_today_stats_blocks">Bloqueios</string>
+    <string name="dashboard_today_stats_attempts">Tentativas</string>
+
+    <string name="dashboard_today_goals_title">Metas de hoje</string>
+    <string name="dashboard_empty_goals_title">Nenhuma meta para hoje</string>
+    <string name="dashboard_empty_goals_action">Adicionar meta</string>
+
+    <string name="dashboard_goal_completed_cd">Concluído</string>
+
+    <plurals name="dashboard_minutes_focused">
+        <item quantity="one">%d min</item>
+        <item quantity="other">%d min</item>
+    </plurals>
+    <plurals name="dashboard_goals_count">
+        <item quantity="one">%d meta</item>
+        <item quantity="other">%d metas</item>
+    </plurals>
+</resources>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_title">Configurações</string>
+    <string name="settings_back_cd">Voltar</string>
+
+    <string name="settings_blocked_apps_title">Apps Bloqueados</string>
+    <string name="settings_blocked_apps_subtitle">Selecione quais apps serão bloqueados durante o foco</string>
+
+    <string name="settings_accessibility_title">Serviço de Acessibilidade</string>
+    <string name="settings_accessibility_body">Para bloquear apps automaticamente, ative o serviço de acessibilidade do Unpostpone em: Configurações → Acessibilidade → Aplicativos instalados.</string>
+
+    <string name="settings_language_title">Idioma</string>
+    <string name="settings_language_subtitle">Escolha seu idioma preferido</string>
+    <string name="settings_language_system">Padrão do sistema</string>
+    <string name="settings_language_picker_title">Escolha o idioma</string>
+    <string name="settings_language_changed">Idioma atualizado</string>
+
+    <string name="settings_replay_onboarding">Rever onboarding</string>
+
+    <string name="settings_about_title">Sobre</string>
+    <string name="settings_about_version">Versão %1$s</string>
+</resources>

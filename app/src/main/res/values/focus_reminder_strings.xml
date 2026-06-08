@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="focus_reminder_take_moment">Take a moment.</string>
+    <string name="focus_reminder_stay_focused">Stay focused</string>
+    <string name="focus_reminder_continue">Continue</string>
+
+    <!-- Reflective messages (5, rotated) -->
+    <string name="focus_reminder_message_1">Small progress every day creates meaningful results.</string>
+    <string name="focus_reminder_message_2">Your future goals deserve your attention right now.</string>
+    <string name="focus_reminder_message_3">Consistency builds momentum — one moment at a time.</string>
+    <string name="focus_reminder_message_4">Focus on what matters most today.</string>
+    <string name="focus_reminder_message_5">The work you do now is the work that compounds.</string>
+</resources>

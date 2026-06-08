@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="statistics_title">Estatísticas</string>
+
+    <string name="statistics_summary_30d">Resumo — últimos 30 dias</string>
+    <string name="statistics_total_focus">Foco Total</string>
+    <string name="statistics_total_blocks">Bloqueios</string>
+    <string name="statistics_unlock_attempts">Tentativas de Desbloqueio</string>
+
+    <string name="statistics_daily_history">Histórico diário</string>
+    <string name="statistics_empty">Nenhum dado disponível ainda</string>
+
+    <string name="statistics_label_focus">foco</string>
+    <string name="statistics_label_blocks">bloqueios</string>
+    <string name="statistics_label_attempts">tentativas</string>
+
+    <plurals name="statistics_focus_minutes">
+        <item quantity="one">%d min</item>
+        <item quantity="other">%d min</item>
+    </plurals>
+</resources>

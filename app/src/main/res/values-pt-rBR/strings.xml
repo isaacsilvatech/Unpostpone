@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Unpostpone</string>
+    <string name="app_tagline">Use seu tempo com intenção</string>
+
+    <string name="action_back">Voltar</string>
+    <string name="action_cancel">Cancelar</string>
+    <string name="action_confirm">Confirmar</string>
+    <string name="action_save">Salvar</string>
+    <string name="action_delete">Excluir</string>
+    <string name="action_edit">Editar</string>
+    <string name="action_close">Fechar</string>
+    <string name="action_continue">Continuar</string>
+    <string name="action_get_started">Começar</string>
+    <string name="action_learn_more">Saiba mais</string>
+    <string name="action_replay">Rever</string>
+    <string name="action_retry">Tentar novamente</string>
+
+    <string name="nav_dashboard">Painel</string>
+    <string name="nav_goals">Metas</string>
+    <string name="nav_statistics">Estatísticas</string>
+    <string name="nav_settings">Configurações</string>
+
+    <string name="accessibility_service_description">O Unpostpone monitora qual aplicativo está em uso para bloquear distrações enquanto você trabalha nas suas metas.</string>
+
+    <string name="error_generic">Algo deu errado. Tente novamente.</string>
+    <string name="error_network">Sem conexão. Verifique sua rede e tente novamente.</string>
+    <string name="error_empty_field">Este campo não pode estar vazio.</string>
+    <string name="error_invalid_number">Digite um número válido.</string>
+</resources>

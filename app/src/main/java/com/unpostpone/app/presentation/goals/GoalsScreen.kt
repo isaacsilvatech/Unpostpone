@@ -11,12 +11,14 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.unpostpone.app.R
 import com.unpostpone.app.domain.model.Goal
 import com.unpostpone.app.presentation.dashboard.BottomNavigationBar
 
@@ -31,10 +33,13 @@ fun GoalsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Minhas Metas") },
+                title = { Text(stringResource(R.string.goals_title)) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Voltar")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.goals_back_cd),
+                        )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -46,7 +51,10 @@ fun GoalsScreen(
         bottomBar = { BottomNavigationBar(navController = navController) },
         floatingActionButton = {
             FloatingActionButton(onClick = viewModel::showAddDialog) {
-                Icon(Icons.Default.Add, contentDescription = "Nova Meta")
+                Icon(
+                    Icons.Default.Add,
+                    contentDescription = stringResource(R.string.goals_add_cd),
+                )
             }
         }
     ) { paddingValues ->
@@ -64,9 +72,10 @@ fun GoalsScreen(
                     Icon(Icons.Default.Flag, null, modifier = Modifier.size(64.dp),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant)
                     Spacer(Modifier.height(16.dp))
-                    Text("Nenhuma meta criada", style = MaterialTheme.typography.titleMedium)
+                    Text(stringResource(R.string.goals_empty_title),
+                        style = MaterialTheme.typography.titleMedium)
                     Spacer(Modifier.height(4.dp))
-                    Text("Crie sua primeira meta de foco",
+                    Text(stringResource(R.string.goals_empty_subtitle),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
@@ -152,17 +161,18 @@ private fun GoalItem(
             )
             Spacer(Modifier.height(4.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text("${goal.progressMinutes} min concluídos",
+                Text(stringResource(R.string.goals_progress_minutes_done, goal.progressMinutes),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant)
-                Text("Meta: ${goal.targetMinutes} min",
+                Text(stringResource(R.string.goals_target_minutes, goal.targetMinutes),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
 
             if (showSlider) {
                 Spacer(Modifier.height(12.dp))
-                Text("Progresso: ${sliderValue.toInt()} min", style = MaterialTheme.typography.bodySmall)
+                Text(stringResource(R.string.goals_progress_label, sliderValue.toInt()),
+                    style = MaterialTheme.typography.bodySmall)
                 Slider(
                     value = sliderValue,
                     onValueChange = { sliderValue = it },
@@ -182,16 +192,19 @@ private fun AddGoalDialog(onDismiss: () -> Unit, onConfirm: (String, Int) -> Uni
     var nameError by remember { mutableStateOf<String?>(null) }
     var minutesError by remember { mutableStateOf<String?>(null) }
 
+    val nameErrorText = stringResource(R.string.goals_add_name_error)
+    val minutesErrorText = stringResource(R.string.goals_add_minutes_error)
+
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Nova Meta") },
+        title = { Text(stringResource(R.string.goals_add_dialog_title)) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it; nameError = null },
-                    label = { Text("Nome da Meta") },
-                    placeholder = { Text("Ex: Estudar Kotlin") },
+                    label = { Text(stringResource(R.string.goals_add_name_label)) },
+                    placeholder = { Text(stringResource(R.string.goals_add_name_placeholder)) },
                     isError = nameError != null,
                     supportingText = nameError?.let { { Text(it) } },
                     singleLine = true,
@@ -200,8 +213,8 @@ private fun AddGoalDialog(onDismiss: () -> Unit, onConfirm: (String, Int) -> Uni
                 OutlinedTextField(
                     value = targetMinutesText,
                     onValueChange = { targetMinutesText = it; minutesError = null },
-                    label = { Text("Tempo alvo (minutos)") },
-                    placeholder = { Text("Ex: 60") },
+                    label = { Text(stringResource(R.string.goals_add_minutes_label)) },
+                    placeholder = { Text(stringResource(R.string.goals_add_minutes_placeholder)) },
                     isError = minutesError != null,
                     supportingText = minutesError?.let { { Text(it) } },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -214,11 +227,15 @@ private fun AddGoalDialog(onDismiss: () -> Unit, onConfirm: (String, Int) -> Uni
             Button(onClick = {
                 val targetMinutes = targetMinutesText.toIntOrNull()
                 var hasError = false
-                if (name.isBlank()) { nameError = "Digite o nome da meta"; hasError = true }
-                if (targetMinutes == null || targetMinutes <= 0) { minutesError = "Digite um tempo válido"; hasError = true }
+                if (name.isBlank()) { nameError = nameErrorText; hasError = true }
+                if (targetMinutes == null || targetMinutes <= 0) { minutesError = minutesErrorText; hasError = true }
                 if (!hasError && targetMinutes != null) onConfirm(name.trim(), targetMinutes)
-            }) { Text("Criar") }
+            }) { Text(stringResource(R.string.goals_add_create)) }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.action_cancel))
+            }
+        }
     )
 }

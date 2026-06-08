@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Blocker screen (legacy) -->
+    <string name="blocker_title">App blocked</string>
+    <string name="blocker_subtitle">Complete your goals before opening this app.</string>
+    <string name="blocker_pending_goals">Pending goals</string>
+    <string name="blocker_unlock_for">Unlock for %1$d minutes</string>
+    <string name="blocker_back_to_focus">Back to focus</string>
+    <string name="blocker_unlocked_for">Unlocked for %1$ds</string>
+</resources>
