@@ -24,10 +24,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.unpostpone.app.R
 import com.unpostpone.app.presentation.navigation.Screen
 import com.unpostpone.app.ui.components.BrandMark
 import com.unpostpone.app.ui.components.BrandMarkMode
 import com.unpostpone.app.ui.theme.Dimens
+import com.unpostpone.app.ui.theme.UnpostponeTheme
 
 /**
  * The launch experience.

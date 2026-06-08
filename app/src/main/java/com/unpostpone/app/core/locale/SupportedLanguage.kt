@@ -38,7 +38,7 @@ enum class SupportedLanguage(
     ),
     PortugueseBrazil(
         tag = "pt-BR",
-        javaLocale = Locale("pt", "BR"),
+        javaLocale = Locale.forLanguageTag("pt-BR"),
         nativeName = "Português (Brasil)",
         displayName = "Português (Brasil)",
     ),

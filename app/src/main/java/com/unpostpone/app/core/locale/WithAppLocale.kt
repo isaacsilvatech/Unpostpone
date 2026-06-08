@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.hilt.navigation.compose.hiltInject
 import com.unpostpone.app.data.locale.LanguageManagerImpl
 
 /**
@@ -20,11 +19,17 @@ import com.unpostpone.app.data.locale.LanguageManagerImpl
  * for the rare case where a composable needs to read the language
  * directly (e.g. to show a checkmark in a language picker without a
  * recreation lag).
+ *
+ * The `LanguageManager` is passed in from `MainActivity` (where Hilt
+ * has already injected it) to keep this wrapper free of Hilt plumbing
+ * — it has no `hiltViewModel` / `hiltInject` calls inside.
  */
 @Composable
-fun WithAppLocale(content: @Composable () -> Unit) {
-    val manager: LanguageManager = hiltInject<LanguageManagerImpl>()
-    val language by manager.current.collectAsState()
+fun WithAppLocale(
+    languageManager: LanguageManagerImpl,
+    content: @Composable () -> Unit,
+) {
+    val language by languageManager.current.collectAsState()
     CompositionLocalProvider(LocalAppLocale provides language) {
         content()
     }

@@ -1,10 +1,9 @@
 package com.unpostpone.app.ui.components
 
-import androidx.compose.animation.core.Easing
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -77,7 +76,7 @@ fun BrandMark(
         modifier = modifier.size(size),
     ) {
         Canvas(modifier = Modifier.matchParentSize()) {
-            val canvasSize = min(size.width.toPx(), size.height.toPx())
+            val canvasSize = size.toPx()
             val centerX = this.size.width / 2f
             val centerY = this.size.height / 2f
             val radius = canvasSize * 0.34f
@@ -208,17 +207,17 @@ private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawLeaf(
     val widthCtrl = length * 0.45f
     val path = Path().apply {
         moveTo(baseX, baseY)
-        quadraticBezierTo(
-            controlX = widthCtrl,
-            controlY = 0f,
-            endX = tipX,
-            endY = tipY,
+        quadraticTo(
+            widthCtrl,
+            0f,
+            tipX,
+            tipY,
         )
-        quadraticBezierTo(
-            controlX = -widthCtrl,
-            controlY = 0f,
-            endX = baseX,
-            endY = baseY,
+        quadraticTo(
+            -widthCtrl,
+            0f,
+            baseX,
+            baseY,
         )
         close()
     }

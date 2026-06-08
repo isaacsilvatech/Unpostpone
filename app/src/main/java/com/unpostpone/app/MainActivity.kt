@@ -33,7 +33,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             UnpostponeTheme(darkTheme = isSystemInDarkTheme()) {
-                WithAppLocale {
+                WithAppLocale(languageManager = languageManager) {
                     val navController = rememberNavController()
                     NavGraph(navController = navController)
                 }
