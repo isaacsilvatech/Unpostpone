@@ -2,6 +2,10 @@
 <resources>
     <string name="statistics_title">Estatísticas</string>
 
+    <!-- Hero (redesign) -->
+    <string name="statistics_hero_eyebrow">Últimos 30 dias</string>
+    <string name="statistics_hero_subtitle">%1$d horas de foco</string>
+
     <string name="statistics_summary_30d">Resumo — últimos 30 dias</string>
     <string name="statistics_total_focus">Foco Total</string>
     <string name="statistics_total_blocks">Bloqueios</string>

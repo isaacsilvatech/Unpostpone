@@ -3,6 +3,10 @@
     <!-- Statistics screen -->
     <string name="statistics_title">Statistics</string>
 
+    <!-- Hero (redesign) -->
+    <string name="statistics_hero_eyebrow">Last 30 days</string>
+    <string name="statistics_hero_subtitle">%1$d hours of focus</string>
+
     <string name="statistics_summary_30d">Summary — last 30 days</string>
     <string name="statistics_total_focus">Total focus</string>
     <string name="statistics_total_blocks">Blocks</string>
