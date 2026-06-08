@@ -4,6 +4,15 @@
     <string name="settings_title">Settings</string>
     <string name="settings_back_cd">Back</string>
 
+    <!-- Section cards (redesign) -->
+    <string name="settings_section_focus">Focus</string>
+    <string name="settings_section_focus_subtitle">Apps blocked during focus and the service that does the blocking.</string>
+    <string name="settings_section_preferences">Preferences</string>
+    <string name="settings_section_preferences_subtitle">App language.</string>
+    <string name="settings_section_about">About</string>
+    <string name="settings_section_about_subtitle">App version and onboarding.</string>
+    <string name="settings_empty_section">Not set</string>
+
     <string name="settings_blocked_apps_title">Blocked apps</string>
     <string name="settings_blocked_apps_subtitle">Choose which apps to block during focus</string>
     <string name="settings_blocked_apps_empty">No apps available. Pull to refresh after installing more apps.</string>
