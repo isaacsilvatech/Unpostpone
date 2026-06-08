@@ -1,0 +1,15 @@
+version: 1
+plan:
+  name: 'minimal with verifier'
+  max_concurrency: 1
+  max_consecutive_failures: 2
+  max_cycles: 2
+  auto_reject_retries: 1
+tasks:
+  - id: hello
+    title: 'say hello'
+    assigned_to: coder
+    verified_by: verifier
+    max_retries: 1
+    prompt: 'Echo hello world and exit.'
+    verify_prompt: 'Check that the deliverable mentions hello.'

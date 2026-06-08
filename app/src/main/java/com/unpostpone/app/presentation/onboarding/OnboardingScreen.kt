@@ -1,6 +1,7 @@
 package com.unpostpone.app.presentation.onboarding
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
@@ -15,6 +16,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -25,8 +28,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.unpostpone.app.R
 import com.unpostpone.app.domain.repository.OnboardingPreferences
-import com.unpostpone.app.ui.components.BrandMark
-import com.unpostpone.app.ui.components.BrandMarkMode
 import com.unpostpone.app.ui.theme.Dimens
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -134,12 +135,11 @@ private fun WelcomePage() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        BrandMark(
-            size = 180.dp,
-            mode = BrandMarkMode.Hero,
-            arcColor = MaterialTheme.colorScheme.onBackground,
-            handColor = MaterialTheme.colorScheme.primary,
-            leafColor = MaterialTheme.colorScheme.primary,
+        Image(
+            painter = painterResource(R.drawable.ic_app_darckbluegreen),
+            contentDescription = null,
+            modifier = Modifier.size(180.dp),
+            contentScale = ContentScale.Fit,
         )
         Spacer(Modifier.height(Dimens.SpacingHuge))
         Text(
