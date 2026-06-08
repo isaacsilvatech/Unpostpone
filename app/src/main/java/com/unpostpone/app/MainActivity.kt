@@ -13,7 +13,9 @@ import androidx.navigation.compose.rememberNavController
 import com.unpostpone.app.core.locale.LocalAppLocale
 import com.unpostpone.app.core.locale.WithAppLocale
 import com.unpostpone.app.data.locale.LanguageManagerImpl
+import com.unpostpone.app.domain.repository.OnboardingPreferences
 import com.unpostpone.app.presentation.navigation.NavGraph
+import com.unpostpone.app.presentation.navigation.Screen
 import com.unpostpone.app.ui.theme.UnpostponeTheme
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -22,17 +24,29 @@ import javax.inject.Inject
 class MainActivity : ComponentActivity() {
 
     @Inject lateinit var languageManager: LanguageManagerImpl
+    @Inject lateinit var onboardingPreferences: OnboardingPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         languageManager.applyPersistedToAppCompat()
         enableEdgeToEdge()
 
+        // Decide the start destination BEFORE setContent so the NavHost never
+        // composes the OnboardingScreen on subsequent launches — that was the
+        // source of the "onboarding-as-splash" flash. SharedPreferences reads
+        // are synchronous, so there is no race against the first frame.
+        val startDestination =
+            if (onboardingPreferences.hasCompletedOnboarding()) Screen.Dashboard.route
+            else Screen.Onboarding.route
+
         setContent {
             UnpostponeTheme(darkTheme = isSystemInDarkTheme()) {
                 WithAppLocale(languageManager = languageManager) {
                     val navController = rememberNavController()
-                    NavGraph(navController = navController)
+                    NavGraph(
+                        navController = navController,
+                        startDestination = startDestination,
+                    )
                 }
             }
         }

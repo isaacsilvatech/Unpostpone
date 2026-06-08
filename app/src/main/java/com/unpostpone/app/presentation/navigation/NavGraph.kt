@@ -20,10 +20,12 @@ import com.unpostpone.app.presentation.statistics.StatisticsScreen
 /**
  * The single source of truth for navigation in the app.
  *
- * Onboarding is the start destination. The OnboardingViewModel reads the
- * persisted completion flag on entry; if the user has already finished
- * onboarding, it fires the completion callback and the nav graph replaces
- * Onboarding with the Dashboard. First-launch users see the 4-page pager.
+ * The start destination is decided by the host (MainActivity) by reading the
+ * persisted onboarding-completion flag synchronously. Returning users land
+ * directly on the Dashboard — the OnboardingScreen is never composed — so
+ * there is no "onboarding-as-splash" flash on cold start. First-launch users
+ * land on Onboarding and the pager's completeOnboarding() callback navigates
+ * to Dashboard with the Onboarding entry popped off the back stack.
  *
  * Permission requests from the Onboarding pager launch the platform Settings
  * intent — Android does not let you grant Accessibility / Usage Access from
@@ -32,12 +34,13 @@ import com.unpostpone.app.presentation.statistics.StatisticsScreen
 @Composable
 fun NavGraph(
     navController: NavHostController,
+    startDestination: String = Screen.Onboarding.route,
 ) {
     val context = LocalContext.current
 
     NavHost(
         navController = navController,
-        startDestination = Screen.Onboarding.route,
+        startDestination = startDestination,
     ) {
         // ── Onboarding ────────────────────────────────────────────────
         composable(Screen.Onboarding.route) {
