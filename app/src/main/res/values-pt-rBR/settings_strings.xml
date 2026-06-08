@@ -5,6 +5,7 @@
 
     <string name="settings_blocked_apps_title">Apps Bloqueados</string>
     <string name="settings_blocked_apps_subtitle">Selecione quais apps serão bloqueados durante o foco</string>
+    <string name="settings_blocked_apps_empty">Nenhum app disponível. Puxe para atualizar após instalar mais apps.</string>
 
     <string name="settings_accessibility_title">Serviço de Acessibilidade</string>
     <string name="settings_accessibility_body">Para bloquear apps automaticamente, ative o serviço de acessibilidade do Unpostpone em: Configurações → Acessibilidade → Aplicativos instalados.</string>

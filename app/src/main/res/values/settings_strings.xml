@@ -6,6 +6,7 @@
 
     <string name="settings_blocked_apps_title">Blocked apps</string>
     <string name="settings_blocked_apps_subtitle">Choose which apps to block during focus</string>
+    <string name="settings_blocked_apps_empty">No apps available. Pull to refresh after installing more apps.</string>
 
     <string name="settings_accessibility_title">Accessibility service</string>
     <string name="settings_accessibility_body">To block apps automatically, enable the Unpostpone accessibility service at: Settings → Accessibility → Installed apps.</string>

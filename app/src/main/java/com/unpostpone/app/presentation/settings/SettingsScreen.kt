@@ -19,7 +19,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.unpostpone.app.R
 import com.unpostpone.app.BuildConfig
-import com.unpostpone.app.core.util.Constants
+import com.unpostpone.app.domain.model.BlockedApp
 import com.unpostpone.app.presentation.dashboard.BottomNavigationBar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -28,9 +28,8 @@ fun SettingsScreen(
     navController: NavController,
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
-    // The original SettingsScreen had a complex state (blocked-apps list, etc).
-    // In this i18n pass we add the language row; the rest stays as it was.
     val currentLanguage by viewModel.currentLanguage.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var showLanguagePicker by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -68,16 +67,30 @@ fun SettingsScreen(
                 Spacer(Modifier.height(8.dp))
             }
 
-            items(Constants.DEFAULT_BLOCKED_APPS) { app ->
-                // The toggle item intentionally stays in Portuguese here
-                // because the user's install list is already in PT-BR.
-                // A follow-up will source these names from PackageManager.
-                AppBlockToggleItem(
-                    displayName = app.displayName,
-                    packageName = app.packageName,
-                    isBlocked = false,
-                    onToggle = { /* no-op in i18n pass */ }
-                )
+            when {
+                uiState.isLoading -> {
+                    item {
+                        Box(
+                            modifier = Modifier.fillMaxWidth().padding(24.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    }
+                }
+                uiState.blockedApps.isEmpty() -> {
+                    item { EmptyBlockedAppsHint() }
+                }
+                else -> {
+                    items(uiState.blockedApps, key = { it.packageName }) { app ->
+                        AppBlockToggleItem(
+                            displayName = app.displayName,
+                            packageName = app.packageName,
+                            isBlocked = app.isEnabled,
+                            onToggle = { viewModel.toggleApp(app.packageName, it) }
+                        )
+                    }
+                }
             }
 
             item {
@@ -132,7 +145,7 @@ private fun AppBlockToggleItem(
     displayName: String,
     packageName: String,
     isBlocked: Boolean,
-    onToggle: () -> Unit
+    onToggle: (Boolean) -> Unit
 ) {
     Card(modifier = Modifier.fillMaxWidth()) {
         Row(
@@ -140,13 +153,37 @@ private fun AppBlockToggleItem(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Column {
-                Text(displayName, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
-                Text(packageName, style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    displayName,
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Medium
+                )
+                Text(
+                    packageName,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
-            Switch(checked = isBlocked, onCheckedChange = { onToggle() })
+            Switch(checked = isBlocked, onCheckedChange = onToggle)
         }
+    }
+}
+
+@Composable
+private fun EmptyBlockedAppsHint() {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        )
+    ) {
+        Text(
+            text = stringResource(R.string.settings_blocked_apps_empty),
+            modifier = Modifier.padding(16.dp),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
     }
 }
 
