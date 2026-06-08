@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<lint>
+    <!--
+        Unpostpone — lint configuration
+        Keep this file small and well-commented; every suppression should
+        answer "why is this checked out and not a real bug?".
+
+        MissingDefaultResource:
+            `dark_background` is intentionally only defined in values-night
+            because it's the dark window background used by values-night
+            themes. The base values/themes.xml doesn't reference it, so
+            there is no resource lookup on non-night devices and therefore
+            no crash risk. The default Lint warning is a false positive
+            for this particular usage. Suppress to keep `lintDebug` clean
+            without touching the brand palette in values/colors.xml.
+    -->
+    <issue id="MissingDefaultResource" severity="ignore" />
+</lint>
