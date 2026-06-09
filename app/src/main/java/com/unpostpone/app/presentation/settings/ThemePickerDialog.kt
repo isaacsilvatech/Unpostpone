@@ -28,27 +28,27 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.unpostpone.app.R
-import com.unpostpone.app.core.locale.SupportedLanguage
+import com.unpostpone.app.core.theme.ThemeMode
 import com.unpostpone.app.ui.theme.Dimens
 
 @Composable
-fun LanguagePickerDialog(
+fun ThemePickerDialog(
     onDismiss: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
-    val current by viewModel.currentLanguage.collectAsState()
+    val current by viewModel.currentTheme.collectAsState()
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(stringResource(R.string.settings_language_picker_title)) },
+        title = { Text(stringResource(R.string.settings_theme_picker_title)) },
         text = {
             LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                items(SupportedLanguage.entries.toList()) { language ->
-                    LanguageRow(
-                        language = language,
-                        isSelected = language == current,
+                items(ThemeMode.pickable) { mode ->
+                    ThemeRow(
+                        mode = mode,
+                        isSelected = mode == current,
                         onClick = {
-                            viewModel.setLanguage(language)
+                            viewModel.setTheme(mode)
                             onDismiss()
                         },
                     )
@@ -64,8 +64,8 @@ fun LanguagePickerDialog(
 }
 
 @Composable
-private fun LanguageRow(
-    language: SupportedLanguage,
+private fun ThemeRow(
+    mode: ThemeMode,
     isSelected: Boolean,
     onClick: () -> Unit,
 ) {
@@ -78,7 +78,7 @@ private fun LanguageRow(
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         Text(
-            text = language.nativeName,
+            text = mode.nativeName,
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
             color = if (isSelected)

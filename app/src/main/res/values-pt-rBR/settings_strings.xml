@@ -7,9 +7,9 @@
     <string name="settings_section_focus">Foco</string>
     <string name="settings_section_focus_subtitle">Apps bloqueados durante o foco e o serviço que faz o bloqueio.</string>
     <string name="settings_section_preferences">Preferências</string>
-    <string name="settings_section_preferences_subtitle">Idioma do app.</string>
+    <string name="settings_section_preferences_subtitle">Aparência.</string>
     <string name="settings_section_about">Sobre</string>
-    <string name="settings_section_about_subtitle">Versão do app e onboarding.</string>
+    <string name="settings_section_about_subtitle">Versão.</string>
     <string name="settings_empty_section">Não configurado</string>
 
     <string name="settings_blocked_apps_title">Apps Bloqueados</string>
@@ -19,11 +19,10 @@
     <string name="settings_accessibility_title">Serviço de Acessibilidade</string>
     <string name="settings_accessibility_body">Para bloquear apps automaticamente, ative o serviço de acessibilidade do Unpostpone em: Configurações → Acessibilidade → Aplicativos instalados.</string>
 
-    <string name="settings_language_title">Idioma</string>
-    <string name="settings_language_subtitle">Escolha seu idioma preferido</string>
-    <string name="settings_language_system">Padrão do sistema</string>
-    <string name="settings_language_picker_title">Escolha o idioma</string>
-    <string name="settings_language_changed">Idioma atualizado</string>
+    <!-- Theme -->
+    <string name="settings_theme_title">Tema</string>
+    <string name="settings_theme_subtitle">Claro, escuro ou seguir o sistema</string>
+    <string name="settings_theme_picker_title">Escolha o tema</string>
 
     <string name="settings_replay_onboarding">Rever onboarding</string>
 

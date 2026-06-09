@@ -2,11 +2,11 @@ package com.unpostpone.app.presentation.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.unpostpone.app.core.locale.LanguageManager
-import com.unpostpone.app.core.locale.SupportedLanguage
+import com.unpostpone.app.core.theme.ThemeMode
 import com.unpostpone.app.core.util.Constants
 import com.unpostpone.app.domain.model.BlockedApp
 import com.unpostpone.app.domain.repository.OnboardingPreferences
+import com.unpostpone.app.domain.repository.ThemePreferences
 import com.unpostpone.app.domain.usecase.blockedapp.AddBlockedAppUseCase
 import com.unpostpone.app.domain.usecase.blockedapp.GetBlockedAppsUseCase
 import com.unpostpone.app.domain.usecase.blockedapp.SetAppEnabledUseCase
@@ -21,13 +21,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val languageManager: LanguageManager,
     private val getBlockedApps: GetBlockedAppsUseCase,
     private val addBlockedApp: AddBlockedAppUseCase,
     private val setAppEnabled: SetAppEnabledUseCase,
     private val onboardingPreferences: OnboardingPreferences,
+    private val themePreferences: ThemePreferences,
 ) : ViewModel() {
-    val currentLanguage: StateFlow<SupportedLanguage> = languageManager.current
+
+    val currentTheme: StateFlow<ThemeMode> = themePreferences.current
 
     private val _uiState = MutableStateFlow(SettingsUiState(isLoading = true))
     val uiState: StateFlow<SettingsUiState> = _uiState.asStateFlow()
@@ -36,14 +37,16 @@ class SettingsViewModel @Inject constructor(
         observeBlockedApps()
     }
 
-    fun setLanguage(language: SupportedLanguage) {
-        languageManager.setLanguage(language)
-    }
     fun toggleApp(packageName: String, isEnabled: Boolean) {
         viewModelScope.launch {
             setAppEnabled(packageName, isEnabled)
         }
     }
+
+    fun setTheme(mode: ThemeMode) {
+        themePreferences.setTheme(mode)
+    }
+
     fun replayOnboarding() {
         onboardingPreferences.resetOnboarding()
     }

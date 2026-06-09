@@ -27,7 +27,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.unpostpone.app.BuildConfig
 import com.unpostpone.app.R
-import com.unpostpone.app.core.locale.SupportedLanguage
+import com.unpostpone.app.core.theme.ThemeMode
 import com.unpostpone.app.domain.model.BlockedApp
 import com.unpostpone.app.presentation.dashboard.BottomNavigationBar
 import com.unpostpone.app.presentation.navigation.Screen
@@ -41,10 +41,10 @@ fun SettingsScreen(
     navController: NavController,
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
-    val currentLanguage by viewModel.currentLanguage.collectAsStateWithLifecycle()
+    val currentTheme by viewModel.currentTheme.collectAsStateWithLifecycle()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
-    var showLanguagePicker by remember { mutableStateOf(false) }
+    var showThemePicker by remember { mutableStateOf(false) }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -76,9 +76,9 @@ fun SettingsScreen(
     ) { paddingValues ->
         SettingsContent(
             uiState = uiState,
-            currentLanguage = currentLanguage,
+            currentTheme = currentTheme,
             onToggleApp = viewModel::toggleApp,
-            onLanguageClick = { showLanguagePicker = true },
+            onThemeClick = { showThemePicker = true },
             onAccessibilityClick = {
                 val serviceComponent = ComponentName(
                     context,
@@ -103,8 +103,8 @@ fun SettingsScreen(
         )
     }
 
-    if (showLanguagePicker) {
-        LanguagePickerDialog(onDismiss = { showLanguagePicker = false })
+    if (showThemePicker) {
+        ThemePickerDialog(onDismiss = { showThemePicker = false })
     }
 }
 
@@ -113,9 +113,9 @@ fun SettingsScreen(
 @Composable
 private fun SettingsContent(
     uiState: SettingsUiState,
-    currentLanguage: SupportedLanguage,
+    currentTheme: ThemeMode,
     onToggleApp: (String, Boolean) -> Unit,
-    onLanguageClick: () -> Unit,
+    onThemeClick: () -> Unit,
     onAccessibilityClick: () -> Unit,
     onReplayOnboardingClick: () -> Unit,
     contentPadding: PaddingValues,
@@ -166,9 +166,9 @@ private fun SettingsContent(
                 title = stringResource(R.string.settings_section_preferences),
                 subtitle = stringResource(R.string.settings_section_preferences_subtitle),
             ) {
-                LanguageRow(
-                    current = currentLanguage,
-                    onClick = onLanguageClick,
+                ThemeRow(
+                    current = currentTheme,
+                    onClick = onThemeClick,
                 )
             }
         }
@@ -355,8 +355,8 @@ private fun AccessibilityServiceRow(onClick: () -> Unit) {
 }
 
 @Composable
-private fun LanguageRow(
-    current: SupportedLanguage,
+private fun ThemeRow(
+    current: ThemeMode,
     onClick: () -> Unit,
 ) {
     Row(
@@ -438,9 +438,9 @@ private fun SettingsContentPreview_Populated() {
                     BlockedApp(packageName = "com.zhiliaoapp.musically", displayName = "TikTok", isEnabled = true),
                 ),
             ),
-            currentLanguage = SupportedLanguage.English,
+            currentTheme = ThemeMode.SystemDefault,
             onToggleApp = { _, _ -> },
-            onLanguageClick = {},
+            onThemeClick = {},
             onAccessibilityClick = {},
             onReplayOnboardingClick = {},
             contentPadding = PaddingValues(0.dp),
@@ -454,9 +454,9 @@ private fun SettingsContentPreview_EmptyBlocked() {
     UnpostponeTheme(darkTheme = false) {
         SettingsContent(
             uiState = SettingsUiState(isLoading = false),
-            currentLanguage = SupportedLanguage.PortugueseBrazil,
+            currentTheme = ThemeMode.Light,
             onToggleApp = { _, _ -> },
-            onLanguageClick = {},
+            onThemeClick = {},
             onAccessibilityClick = {},
             onReplayOnboardingClick = {},
             contentPadding = PaddingValues(0.dp),
@@ -470,9 +470,9 @@ private fun SettingsContentPreview_Loading() {
     UnpostponeTheme(darkTheme = false) {
         SettingsContent(
             uiState = SettingsUiState(isLoading = true),
-            currentLanguage = SupportedLanguage.SystemDefault,
+            currentTheme = ThemeMode.SystemDefault,
             onToggleApp = { _, _ -> },
-            onLanguageClick = {},
+            onThemeClick = {},
             onAccessibilityClick = {},
             onReplayOnboardingClick = {},
             contentPadding = PaddingValues(0.dp),
@@ -492,9 +492,9 @@ private fun SettingsContentPreview_Populated_Dark() {
                     BlockedApp(packageName = "com.twitter.android",   displayName = "Twitter",   isEnabled = false),
                 ),
             ),
-            currentLanguage = SupportedLanguage.English,
+            currentTheme = ThemeMode.Dark,
             onToggleApp = { _, _ -> },
-            onLanguageClick = {},
+            onThemeClick = {},
             onAccessibilityClick = {},
             onReplayOnboardingClick = {},
             contentPadding = PaddingValues(0.dp),

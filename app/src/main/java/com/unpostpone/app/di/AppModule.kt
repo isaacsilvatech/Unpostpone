@@ -3,7 +3,9 @@ package com.unpostpone.app.di
 import android.content.Context
 import android.content.SharedPreferences
 import com.unpostpone.app.data.repository.OnboardingPreferencesImpl
+import com.unpostpone.app.data.repository.ThemePreferencesImpl
 import com.unpostpone.app.domain.repository.OnboardingPreferences
+import com.unpostpone.app.domain.repository.ThemePreferences
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -34,4 +36,10 @@ abstract class AppModuleBinds {
     abstract fun bindOnboardingPreferences(
         impl: OnboardingPreferencesImpl,
     ): OnboardingPreferences
+
+    @Binds
+    @Singleton
+    abstract fun bindThemePreferences(
+        impl: ThemePreferencesImpl,
+    ): ThemePreferences
 }
