@@ -297,7 +297,7 @@ fun DashboardScreen(
 // ═══════════════════════════════════════════════════════════════════════════
 
 @Composable
-private fun BlockingToggleCard(isActive: Boolean, onToggle: () -> Unit) {
+private fun BlockingToggleCard(isActive: Boolean, onToggle: (Boolean) -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = androidx.compose.foundation.shape.RoundedCornerShape(HeroRadius - 12.dp),
@@ -340,7 +340,7 @@ private fun BlockingToggleCard(isActive: Boolean, onToggle: () -> Unit) {
             }
             Switch(
                 checked = isActive,
-                onCheckedChange = { onToggle() },
+                onCheckedChange = { wantActive -> onToggle(wantActive) },
                 colors = SwitchDefaults.colors(
                     checkedThumbColor = MaterialTheme.colorScheme.onPrimary,
                     checkedTrackColor = MaterialTheme.colorScheme.primary,

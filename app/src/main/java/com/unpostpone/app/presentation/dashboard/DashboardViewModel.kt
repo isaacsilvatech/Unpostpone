@@ -60,10 +60,9 @@ class DashboardViewModel @Inject constructor(
         }
     }
 
-    fun onToggleBlocking() {
+    fun onToggleBlocking(wantActive: Boolean) {
         viewModelScope.launch {
-            val current = observeBlockingEnabledUseCase().first()
-            if (current) {
+            if (!wantActive) {
                 setBlockingEnabledUseCase(false)
                 return@launch
             }

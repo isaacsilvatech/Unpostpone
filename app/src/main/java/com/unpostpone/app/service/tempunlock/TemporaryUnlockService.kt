@@ -137,7 +137,7 @@ class TemporaryUnlockService : Service() {
         return NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle(getString(R.string.blocker_unlock_notification_title, displayName))
             .setContentText(getString(R.string.blocker_unlock_notification_body, timeStr))
-            .setSmallIcon(android.R.drawable.ic_lock_idle_lock)
+            .setSmallIcon(R.drawable.ic_lock_open)
             .setOngoing(true)
             .setOnlyAlertOnce(true)
             .setSilent(true)
