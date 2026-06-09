@@ -2,27 +2,30 @@ package com.unpostpone.app.presentation.blocker
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.unpostpone.app.core.tempunlock.TemporaryUnlockManager
 import com.unpostpone.app.domain.model.Goal
 import com.unpostpone.app.domain.usecase.goal.GetGoalsUseCase
 import com.unpostpone.app.domain.usecase.statistics.IncrementUnlockAttemptUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 
 data class BlockerUiState(
     val activeGoals: List<Goal> = emptyList(),
-    val isTemporarilyUnlocked: Boolean = false,
-    val unlockCountdown: Int = 0
 )
 
 @HiltViewModel
 class BlockerViewModel @Inject constructor(
     private val getGoalsUseCase: GetGoalsUseCase,
-    private val incrementUnlockAttemptUseCase: IncrementUnlockAttemptUseCase
+    private val incrementUnlockAttemptUseCase: IncrementUnlockAttemptUseCase,
+    private val temporaryUnlockManager: TemporaryUnlockManager,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(BlockerUiState())
@@ -41,17 +44,14 @@ class BlockerViewModel @Inject constructor(
         }
     }
 
-    fun requestTemporaryUnlock() {
+    fun requestTemporaryUnlock(packageName: String, displayName: String) {
         viewModelScope.launch {
             incrementUnlockAttemptUseCase(today)
-            _uiState.update { it.copy(isTemporarilyUnlocked = true, unlockCountdown = 300) }
-            var remaining = 300
-            while (remaining > 0) {
-                delay(1_000)
-                remaining--
-                _uiState.update { it.copy(unlockCountdown = remaining) }
-            }
-            _uiState.update { it.copy(isTemporarilyUnlocked = false, unlockCountdown = 0) }
+            temporaryUnlockManager.start(
+                packageName = packageName,
+                displayName = displayName,
+                durationSeconds = TemporaryUnlockManager.DEFAULT_DURATION_SECONDS,
+            )
         }
     }
 }

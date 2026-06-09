@@ -6,14 +6,21 @@ import android.content.ComponentName
 import android.content.Intent
 import android.view.accessibility.AccessibilityEvent
 import com.unpostpone.app.MainActivity
+import com.unpostpone.app.core.tempunlock.TemporaryUnlockManager
 import com.unpostpone.app.domain.usecase.blockedapp.IsAppBlockedUseCase
 import com.unpostpone.app.domain.usecase.blockedapp.ObserveBlockingEnabledUseCase
 import com.unpostpone.app.domain.usecase.statistics.IncrementBlockCountUseCase
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -22,10 +29,9 @@ class UnpostponeAccessibilityService : AccessibilityService() {
     @Inject lateinit var isAppBlockedUseCase: IsAppBlockedUseCase
     @Inject lateinit var incrementBlockCountUseCase: IncrementBlockCountUseCase
     @Inject lateinit var observeBlockingEnabledUseCase: ObserveBlockingEnabledUseCase
+    @Inject lateinit var temporaryUnlockManager: TemporaryUnlockManager
 
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-
-    @Volatile private var temporarilyUnlockedPackage: String? = null
 
     override fun onServiceConnected() {
         serviceInfo = AccessibilityServiceInfo().apply {
@@ -40,7 +46,7 @@ class UnpostponeAccessibilityService : AccessibilityService() {
         if (event?.eventType != AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) return
         val packageName = event.packageName?.toString() ?: return
         if (packageName == applicationContext.packageName) return
-        if (packageName == temporarilyUnlockedPackage) return
+        if (temporaryUnlockManager.isActive(packageName)) return
 
         serviceScope.launch {
             if (!observeBlockingEnabledUseCase().first()) return@launch
@@ -64,14 +70,6 @@ class UnpostponeAccessibilityService : AccessibilityService() {
             putExtra(EXTRA_BLOCKED_PACKAGE, packageName)
         }
         startActivity(intent)
-    }
-
-    fun grantTemporaryUnlock(packageName: String) {
-        temporarilyUnlockedPackage = packageName
-        serviceScope.launch {
-            delay(5 * 60 * 1_000L)
-            temporarilyUnlockedPackage = null
-        }
     }
 
     override fun onInterrupt() = Unit

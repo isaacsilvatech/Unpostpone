@@ -5,5 +5,12 @@
     <string name="blocker_pending_goals">Metas Pendentes</string>
     <string name="blocker_unlock_for">Desbloquear por %1$d minutos</string>
     <string name="blocker_back_to_focus">Voltar e Focar</string>
-    <string name="blocker_unlocked_for">Desbloqueado por %1$ds</string>
+
+    <string name="blocker_unlock_dialog_title">Desbloquear este app?</string>
+    <string name="blocker_unlock_dialog_body">Você terá 5 minutos de acesso. Depois disso, o app será bloqueado novamente e você voltará para esta tela.</string>
+
+    <string name="blocker_unlock_notification_title">%1$s desbloqueado</string>
+    <string name="blocker_unlock_notification_body">Tempo restante: %1$s</string>
+    <string name="blocker_unlock_channel_name">Desbloqueio temporário</string>
+    <string name="blocker_unlock_channel_description">Mostra a contagem regressiva enquanto um app está temporariamente desbloqueado.</string>
 </resources>
