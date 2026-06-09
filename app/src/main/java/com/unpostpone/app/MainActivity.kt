@@ -56,10 +56,17 @@ class MainActivity : ComponentActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         setIntent(intent)
-        val packageName = intent.getStringExtra(UnpostponeAccessibilityService.EXTRA_BLOCKED_PACKAGE)
-        if (!packageName.isNullOrBlank()) {
-            if (navController?.currentDestination?.route != Screen.Blocker.route) {
-                navController?.navigate(Screen.Blocker.createRoute(packageName))
+        val blockedPackage = intent.getStringExtra(UnpostponeAccessibilityService.EXTRA_BLOCKED_PACKAGE)
+        if (!blockedPackage.isNullOrBlank()) {
+            val target = if (intent.getBooleanExtra(EXTRA_FROM_UNLOCK_NOTIFICATION, false)) {
+                Screen.ReBlock.createRoute(blockedPackage)
+            } else {
+                Screen.Blocker.createRoute(blockedPackage)
+            }
+            if (navController?.currentDestination?.route != Screen.ReBlock.route &&
+                navController?.currentDestination?.route != Screen.Blocker.route
+            ) {
+                navController?.navigate(target)
             }
         }
     }
@@ -67,9 +74,17 @@ class MainActivity : ComponentActivity() {
     private fun resolveStartDestination(intent: Intent?): String {
         val blockedPackage = intent?.getStringExtra(UnpostponeAccessibilityService.EXTRA_BLOCKED_PACKAGE)
         if (!blockedPackage.isNullOrBlank()) {
-            return Screen.Blocker.createRoute(blockedPackage)
+            return if (intent.getBooleanExtra(EXTRA_FROM_UNLOCK_NOTIFICATION, false)) {
+                Screen.ReBlock.createRoute(blockedPackage)
+            } else {
+                Screen.Blocker.createRoute(blockedPackage)
+            }
         }
         return if (onboardingPreferences.hasCompletedOnboarding()) Screen.Dashboard.route
         else Screen.Onboarding.route
+    }
+
+    companion object {
+        const val EXTRA_FROM_UNLOCK_NOTIFICATION = "extra_from_unlock_notification"
     }
 }

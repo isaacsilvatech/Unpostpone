@@ -14,6 +14,7 @@ import com.unpostpone.app.presentation.dashboard.DashboardScreen
 import com.unpostpone.app.presentation.focusreminder.FocusReminderScreen
 import com.unpostpone.app.presentation.goals.GoalsScreen
 import com.unpostpone.app.presentation.onboarding.OnboardingScreen
+import com.unpostpone.app.presentation.reblock.ReBlockScreen
 import com.unpostpone.app.presentation.settings.SettingsScreen
 import com.unpostpone.app.presentation.statistics.StatisticsScreen
 
@@ -77,6 +78,14 @@ fun NavGraph(
         ) { backStackEntry ->
             val packageName = backStackEntry.arguments?.getString("packageName").orEmpty()
             BlockerScreen(packageName = packageName, navController = navController)
+        }
+
+        composable(
+            route = Screen.ReBlock.route,
+            arguments = listOf(navArgument("packageName") { type = NavType.StringType }),
+        ) { backStackEntry ->
+            val packageName = backStackEntry.arguments?.getString("packageName").orEmpty()
+            ReBlockScreen(packageName = packageName, navController = navController)
         }
 
         composable(

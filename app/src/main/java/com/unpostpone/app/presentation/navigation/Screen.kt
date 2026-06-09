@@ -12,6 +12,10 @@ sealed class Screen(val route: String) {
         fun createRoute(packageName: String) = "blocker/$packageName"
     }
 
+    data object ReBlock : Screen("reblock/{packageName}") {
+        fun createRoute(packageName: String) = "reblock/$packageName"
+    }
+
     data object FocusReminder : Screen("focus-reminder/{packageName}") {
         fun createRoute(packageName: String) = "focus-reminder/$packageName"
     }

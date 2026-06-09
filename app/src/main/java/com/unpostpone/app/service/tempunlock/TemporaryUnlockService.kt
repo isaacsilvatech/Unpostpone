@@ -18,6 +18,7 @@ import com.unpostpone.app.service.accessibility.UnpostponeAccessibilityService
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
@@ -32,6 +33,7 @@ class TemporaryUnlockService : Service() {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     private var currentPackage: String? = null
     private var currentDisplayName: String? = null
+    private var tickerJob: Job? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -62,7 +64,8 @@ class TemporaryUnlockService : Service() {
         val initial = buildNotification(displayName, duration)
         startForegroundCompat(initial)
 
-        scope.launch {
+        tickerJob?.cancel()
+        tickerJob = scope.launch {
             while (true) {
                 val remaining = manager.state.value.remainingSeconds
                 if (remaining <= 0) {
@@ -76,7 +79,15 @@ class TemporaryUnlockService : Service() {
     }
 
     private fun handleStop() {
+        tickerJob?.cancel()
+        tickerJob = null
         manager.clear()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            stopForeground(STOP_FOREGROUND_REMOVE)
+        } else {
+            @Suppress("DEPRECATION")
+            stopForeground(true)
+        }
         stopSelf()
     }
 
@@ -125,6 +136,7 @@ class TemporaryUnlockService : Service() {
                         Intent.FLAG_ACTIVITY_CLEAR_TOP
                 )
                 putExtra(UnpostponeAccessibilityService.EXTRA_BLOCKED_PACKAGE, pkg)
+                putExtra(MainActivity.EXTRA_FROM_UNLOCK_NOTIFICATION, true)
             }
             PendingIntent.getActivity(
                 this,
