@@ -56,7 +56,12 @@ class MainActivity : ComponentActivity() {
             // already on top, singleTop + onNewIntent reuses the existing
             // instance — we have to drive the navController directly because
             // startDestination was already decided in onCreate.
-            navController?.navigate(Screen.Blocker.createRoute(packageName))
+            // Guard against stacking duplicate Blocker entries: every
+            // TYPE_WINDOW_STATE_CHANGED in the blocked app re-fires this
+            // intent, and each one would push another Blocker route.
+            if (navController?.currentDestination?.route != Screen.Blocker.route) {
+                navController?.navigate(Screen.Blocker.createRoute(packageName))
+            }
         }
     }
 

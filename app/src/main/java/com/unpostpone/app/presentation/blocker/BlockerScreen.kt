@@ -18,6 +18,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.unpostpone.app.R
 import com.unpostpone.app.domain.model.Goal
+import com.unpostpone.app.presentation.navigation.Screen
 
 @Composable
 fun BlockerScreen(
@@ -104,7 +105,11 @@ fun BlockerScreen(
                 }
 
                 Button(
-                    onClick = { navController.popBackStack() },
+                    onClick = {
+                        navController.navigate(Screen.FocusReminder.createRoute(packageName)) {
+                            popUpTo(Screen.Blocker.route) { inclusive = true }
+                        }
+                    },
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.onErrorContainer,
