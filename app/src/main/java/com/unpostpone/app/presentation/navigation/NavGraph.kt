@@ -17,20 +17,6 @@ import com.unpostpone.app.presentation.onboarding.OnboardingScreen
 import com.unpostpone.app.presentation.settings.SettingsScreen
 import com.unpostpone.app.presentation.statistics.StatisticsScreen
 
-/**
- * The single source of truth for navigation in the app.
- *
- * The start destination is decided by the host (MainActivity) by reading the
- * persisted onboarding-completion flag synchronously. Returning users land
- * directly on the Dashboard — the OnboardingScreen is never composed — so
- * there is no "onboarding-as-splash" flash on cold start. First-launch users
- * land on Onboarding and the pager's completeOnboarding() callback navigates
- * to Dashboard with the Onboarding entry popped off the back stack.
- *
- * Permission requests from the Onboarding pager launch the platform Settings
- * intent — Android does not let you grant Accessibility / Usage Access from
- * a normal in-app dialog.
- */
 @Composable
 fun NavGraph(
     navController: NavHostController,
@@ -63,9 +49,6 @@ fun NavGraph(
                     )
                 },
                 onRequestNotificationPermission = {
-                    // Posted from the MainActivity at request time; for now we open app
-                    // notification settings. The actual request is a POST_NOTIFICATIONS
-                    // runtime permission on Android 13+ — handled in the host activity.
                     context.startActivity(
                         Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
                             .putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
@@ -75,7 +58,6 @@ fun NavGraph(
             )
         }
 
-        // ── Main app ──────────────────────────────────────────────────
         composable(Screen.Dashboard.route) {
             DashboardScreen(navController = navController)
         }
@@ -89,7 +71,6 @@ fun NavGraph(
             SettingsScreen(navController = navController)
         }
 
-        // ── System-driven surfaces ────────────────────────────────────
         composable(
             route = Screen.Blocker.route,
             arguments = listOf(navArgument("packageName") { type = NavType.StringType }),
@@ -105,13 +86,9 @@ fun NavGraph(
             val packageName = backStackEntry.arguments?.getString("packageName").orEmpty()
             FocusReminderScreen(
                 onStayFocused = {
-                    // The accessibility service listens for the home key — we exit
-                    // back to the previous app by finishing this activity.
                     navController.popBackStack()
                 },
                 onContinue = {
-                    // The user chose to continue; close the reminder and let the
-                    // service bring the original app to the foreground.
                     navController.popBackStack()
                 },
             )

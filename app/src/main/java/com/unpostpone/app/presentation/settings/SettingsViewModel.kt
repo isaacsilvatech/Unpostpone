@@ -25,13 +25,6 @@ class SettingsViewModel @Inject constructor(
     private val addBlockedApp: AddBlockedAppUseCase,
     private val setAppEnabled: SetAppEnabledUseCase,
 ) : ViewModel() {
-
-    /**
-     * Live read of the active language so the picker can show a checkmark
-     * even before the activity recreation propagates the new strings.
-     * Kept separate from [uiState] so language changes don't churn the
-     * blocked-apps list for the spinner/loading state.
-     */
     val currentLanguage: StateFlow<SupportedLanguage> = languageManager.current
 
     private val _uiState = MutableStateFlow(SettingsUiState(isLoading = true))
@@ -44,13 +37,6 @@ class SettingsViewModel @Inject constructor(
     fun setLanguage(language: SupportedLanguage) {
         languageManager.setLanguage(language)
     }
-
-    /**
-     * Flip the on/off state of a single blocked-app row. The row must
-     * already exist (seeded on first run). We use [SetAppEnabledUseCase]
-     * (a targeted UPDATE) instead of [AddBlockedAppUseCase] (REPLACE) so
-     * the `addedAt` timestamp is preserved.
-     */
     fun toggleApp(packageName: String, isEnabled: Boolean) {
         viewModelScope.launch {
             setAppEnabled(packageName, isEnabled)
@@ -59,9 +45,6 @@ class SettingsViewModel @Inject constructor(
 
     private fun observeBlockedApps() {
         viewModelScope.launch {
-            // Seed the default list once. We insert with isEnabled = false so
-            // the user explicitly opts in to blocking each app — nothing
-            // changes at runtime until they tap a switch.
             val current = getBlockedApps().first()
             if (current.isEmpty()) {
                 Constants.DEFAULT_BLOCKED_APPS.forEach { def ->
@@ -74,7 +57,6 @@ class SettingsViewModel @Inject constructor(
                     )
                 }
             }
-            // Now stream the live list to the UI.
             getBlockedApps().collect { apps ->
                 _uiState.update { it.copy(blockedApps = apps, isLoading = false) }
             }

@@ -29,25 +29,6 @@ import com.unpostpone.app.presentation.dashboard.BottomNavigationBar
 import com.unpostpone.app.ui.theme.Dimens
 import com.unpostpone.app.ui.theme.UnpostponeTheme
 
-// ═══════════════════════════════════════════════════════════════════════════
-//  Settings — premium redesign
-//
-//   Three explicit section cards (24dp gap between them):
-//     1. Focus        — Blocked apps list + Accessibility service card
-//     2. Preferences  — Language row
-//     3. About        — Version + Replay onboarding
-//
-//   Each section card:
-//     • Card with surface color, 1dp outlineVariant border, no elevation
-//     • TitleMedium SemiBold section name + BodySmall subtitle (SpacingXS gap)
-//     • Items separated by 1dp outlineVariant HorizontalDividers
-//     • Card interior padding 20dp horizontal, 16dp vertical
-//
-//   If a section is empty, the section card stays visible with a single
-//   subtle "Not set" placeholder row inside it. The card never collapses
-//   out of existence — the page is supposed to feel intentional.
-// ═══════════════════════════════════════════════════════════════════════════
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(

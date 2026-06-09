@@ -51,15 +51,6 @@ class DashboardViewModel @Inject constructor(
         }
     }
 
-    /**
-     * Flips the persisted blocking flag. Reads the current value straight
-     * from [observeBlockingEnabledUseCase] (a hot, replay-1 flow backed by
-     * SharedPreferences) instead of a [StateFlow] mirror, so we never read
-     * a stale [SharingStarted.WhileSubscribed] cache that no UI is
-     * collecting. This is what makes the second tap (off) actually
-     * register after the first tap (on) — the mirror previously froze at
-     * `false` and forced every toggle to write `true`.
-     */
     fun toggleBlocking() {
         viewModelScope.launch {
             val current = observeBlockingEnabledUseCase().first()

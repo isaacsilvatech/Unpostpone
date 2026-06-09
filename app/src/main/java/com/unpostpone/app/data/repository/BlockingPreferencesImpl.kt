@@ -7,16 +7,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/**
- * SharedPreferences-backed [BlockingPreferences]. The current value is held
- * in a [MutableStateFlow] so observers receive a hot, replay-1 stream
- * independent of any UI lifecycle. The flow is kept in sync with the disk
- * in two ways:
- *   1. [setBlockingEnabled] writes to the prefs and then updates the flow.
- *   2. A [SharedPreferences.OnSharedPreferenceChangeListener] pushes external
- *      mutations (e.g. another process, a future backup-restore path) back
- *      into the flow.
- */
 @Singleton
 class BlockingPreferencesImpl @Inject constructor(
     private val sharedPreferences: SharedPreferences,

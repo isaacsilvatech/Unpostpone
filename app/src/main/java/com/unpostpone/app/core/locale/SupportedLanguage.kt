@@ -5,19 +5,7 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.staticCompositionLocalOf
 import java.util.Locale
 
-/**
- * The locales Unpostpone ships with.
- *
- *  • `displayName`     — the name the user sees in the language picker
- *  • `nativeName`      — the name in its OWN language ("Português", not "Portuguese")
- *  • `tag`             — BCP-47 tag used by Android resources
- *  • `javaLocale`      — the `java.util.Locale` for `DateTimeFormatter` / `NumberFormat`
- *
- * To add a language:
- *   1. Add an entry here (and `nativeName` in its own script).
- *   2. Create `res/values-<tag>/<feature>_strings.xml` mirror files.
- *   3. Add any locale-specific plural rules in the resources (not in code).
- */
+
 enum class SupportedLanguage(
     val tag: String,
     val javaLocale: Locale,
@@ -48,19 +36,10 @@ enum class SupportedLanguage(
         fun fromTag(tag: String?): SupportedLanguage =
             entries.firstOrNull { it.tag == tag } ?: SystemDefault
 
-        /** Languages the user can actually pick (excludes the system default). */
         val pickable: List<SupportedLanguage> = listOf(English, PortugueseBrazil)
     }
 }
 
-/**
- * Composition-local for the active language. Updated by the top-level
- * `UnpostponeRoot` so all composables can react to language switches
- * without a full activity recreation.
- *
- * Read it via `LocalAppLocale.current`. Defaults to `SystemDefault` so
- * previews and unit tests never crash.
- */
 val LocalAppLocale = staticCompositionLocalOf { SupportedLanguage.SystemDefault }
 
 object AppLocale {
@@ -69,10 +48,6 @@ object AppLocale {
         @ReadOnlyComposable
         get() = LocalAppLocale.current
 
-    /**
-     * The `Locale` to use for formatting (dates, numbers, plurals).
-     * For `SystemDefault` we return `Locale.getDefault()`.
-     */
     val formatting: Locale
         @Composable
         @ReadOnlyComposable

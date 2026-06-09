@@ -2,25 +2,6 @@ package com.unpostpone.app.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// ════════════════════════════════════════════════════════════════════════════
-//  Unpostpone — Color System (80 / 15 / 5)
-//
-//  The UI is neutral-first. Three teal shades are the only brand hues and
-//  they show up sparingly — FAB, primary buttons, selected states, progress,
-//  switches. Everything else is white / off-white / hairline gray.
-//
-//  Distribution target:
-//    ~80%  neutrals  — backgrounds, surfaces, text, borders, dividers
-//    ~15%  brand     — teal #0C4D5B on FABs, buttons, active progress
-//     ~5%  accents   — error red on the Blocker screen only; green is not
-//                      a brand color (success is conveyed by the check icon,
-//                      not a tinted background)
-//
-//  `primaryContainer` is intentionally a *very* subtle teal tint (#E8F2F4)
-//  so it can be used for the bottom-nav selected indicator without
-//  screaming. It is NOT used for card backgrounds — cards are always
-//  `surface` (white).
-// ════════════════════════════════════════════════════════════════════════════
 
 // ── Brand anchors ─────────────────────────────────────────────────────────
 val Teal       = Color(0xFF0C4D5B)  // primary — the only saturated color
@@ -115,13 +96,6 @@ val DarkInverseOnSurface       = Color(0xFF0A0A0A)
 val DarkInversePrimary         = Teal
 val DarkScrim                  = Color(0xFF000000)
 val DarkSurfaceTint            = DarkPrimary
-
-// ── Hero surface tokens ────────────────────────────────────────────────────
-//   A whisper-of-teal block used only by the dashboard / statistics hero.
-//   Distinct from `LightSurface` (white) so the hero reads as a region, but
-//   cool enough to not break the neutral-first rule. These are intentionally
-//   NOT part of the M3 ColorScheme — they are applied as a one-off
-//   `containerColor` on the hero Card so we don't pollute M3 semantics.
 
 val LightHeroSurface = Color(0xFFF1F7F8)  // cool off-white, hint of teal
 val DarkHeroSurface  = Color(0xFF13262A)  // cool dark teal-tint

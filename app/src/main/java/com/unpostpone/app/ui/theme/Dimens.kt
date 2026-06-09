@@ -3,12 +3,6 @@ package com.unpostpone.app.ui.theme
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-// ════════════════════════════════════════════════════════════════════════════
-//  Unpostpone — Spacing & Layout Tokens
-//  4dp grid, doubled. Use these everywhere instead of magic numbers.
-//  Card padding = SpacingL (16). Screen gutter = SpacingXL (20). Hero block
-//  vertical padding = SpacingHuge (32). The app should feel like it breathes.
-// ════════════════════════════════════════════════════════════════════════════
 
 object Dimens {
     // 4dp grid
@@ -53,12 +47,6 @@ object Dimens {
     val FocusRingStroke   = 14.dp
     val FocusRingTrack    = 6.dp
 
-    // ── Hero block tokens (dashboard / statistics 30-day hero) ───────
-    //   HeroPadding is the interior of the hero card (32dp — generous so
-    //   the ring has room to breathe). The ring dimensions already exist
-    //   above as FocusRingSize / FocusRingStroke — kept under both names
-    //   so the Blocker screen keeps compiling; new code should use the
-    //   HeroRing* aliases.
     val HeroPadding          = 32.dp
     val HeroRingSize         = FocusRingSize   // alias — 240dp
     val HeroRingStroke       = FocusRingStroke // alias — 14dp

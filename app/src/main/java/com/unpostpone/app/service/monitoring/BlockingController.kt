@@ -14,18 +14,6 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/**
- * Bridges the persisted "is blocking enabled" flag to the
- * [AppMonitoringService] lifecycle. When the flag flips to `true` a
- * `startForegroundService` intent with [AppMonitoringService.ACTION_START] is
- * dispatched; when it flips to `false` a `stopService` intent with
- * [AppMonitoringService.ACTION_STOP] is dispatched.
- *
- * Owned by the application — kicked off in
- * [com.unpostpone.app.UnpostponeApplication.onCreate]. Idempotent:
- * calling [start] more than once is a no-op; a single coroutine owns the
- * collector for the lifetime of the application.
- */
 @Singleton
 class BlockingController     @Inject constructor(
     @param:ApplicationContext private val context: Context,

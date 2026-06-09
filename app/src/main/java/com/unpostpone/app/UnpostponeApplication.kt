@@ -8,12 +8,6 @@ import javax.inject.Inject
 @HiltAndroidApp
 class UnpostponeApplication : Application() {
 
-    /**
-     * Bridges the persisted blocking flag to the [com.unpostpone.app.service.monitoring.AppMonitoringService]
-     * foreground service. Started eagerly in [onCreate] so the service
-     * mirrors whatever the last persisted value was, even on a cold start
-     * where no UI has been shown yet.
-     */
     @Inject lateinit var blockingController: BlockingController
 
     override fun onCreate() {

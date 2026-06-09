@@ -20,30 +20,8 @@ import kotlin.math.cos
 import kotlin.math.min
 import kotlin.math.sin
 
-// ════════════════════════════════════════════════════════════════════════════
-//  Unpostpone — Brand Mark
-//  The icon, drawn entirely in Compose Canvas. No image assets, no Lottie —
-//  every shape is a drawArc / drawCircle / drawLine / drawPath, so the mark
-//  scales to any size and inherits the active theme.
-//
-//  Two visual modes are supported via the static `mode` parameter:
-//    • Hero    — fully drawn mark, used on dashboard, blocker, focus screens
-//    • Focus   — drawn at a smaller size with a thin progress overlay (the
-//                the C/arc becomes a progress ring the user is filling)
-// ════════════════════════════════════════════════════════════════════════════
-
 enum class BrandMarkMode { Hero, Focus }
 
-/**
- * Draw the Unpostpone brand mark.
- *
- * @param size     outer size; the mark draws inside a square
- * @param mode     visual mode (Hero = static, Focus = static + slim)
- * @param arcProgress  for Focus mode: 0..1 ring progress to overlay on the arc
- * @param arcColor     color of the clock arc (defaults to TealLight)
- * @param handColor    color of the clock hands + center (defaults to Teal)
- * @param leafColor    color of the leaf — caller-provided, no default
- */
 @Composable
 fun BrandMark(
     modifier: Modifier = Modifier,

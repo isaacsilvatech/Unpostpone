@@ -6,13 +6,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.sp
 
-// ════════════════════════════════════════════════════════════════════════════
-//  Unpostpone — Typography Scale
-//  Built on the M3 15-step scale. Two families: Manrope (UI) and
-//  JetBrains Mono (numbers). Tabular figures (tnum) are enabled on every
-//  number-bearing style so focus time, streaks, and stats align vertically
-//  in lists.
-// ════════════════════════════════════════════════════════════════════════════
 
 private val tightLineHeight = LineHeightStyle(
     alignment = LineHeightStyle.Alignment.Center,
@@ -25,8 +18,6 @@ private val manropeBase = TextStyle(
 )
 
 // ── Display — onboarding, splash, hero numbers ────────────────────────────
-//   Used sparingly. The dashboard's "1h 24m" should use displayMedium with
-//   JetBrains Mono; the splash headline uses displayLarge in Manrope.
 
 val DisplayLarge = manropeBase.copy(
     fontWeight    = FontWeight.ExtraBold,

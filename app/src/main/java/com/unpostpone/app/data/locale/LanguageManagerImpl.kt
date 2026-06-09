@@ -32,17 +32,9 @@ class LanguageManagerImpl @Inject constructor(
         applyToAppCompat(language)
     }
 
-    /**
-     * Called once from `MainActivity.onCreate` to push the persisted
-     * language into the Activity's `AppCompatDelegate` before the first
-     * composition. This means a returning user sees the right strings
-     * immediately, with no flash of English-then-Portuguese.
-     */
     fun applyPersistedToAppCompat() {
         applyToAppCompat(_current.value)
     }
-
-    // ── internals ─────────────────────────────────────────────────────
 
     private fun readPersisted(): SupportedLanguage {
         val tag = sharedPreferences.getString(KEY_LOCALE_TAG, null)
@@ -67,8 +59,6 @@ class LanguageManagerImpl @Inject constructor(
         } else {
             LocaleListCompat.forLanguageTags(language.tag)
         }
-        // setApplicationLocales handles both API 33+ (native) and API 29-32
-        // (via the AppCompat backport that we're now depending on).
         AppCompatDelegate.setApplicationLocales(list)
     }
 

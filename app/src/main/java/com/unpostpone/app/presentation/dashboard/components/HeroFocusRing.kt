@@ -24,23 +24,7 @@ import com.unpostpone.app.ui.theme.Dimens
 import com.unpostpone.app.ui.theme.NumberHeadlineXLarge
 import com.unpostpone.app.ui.theme.UnpostponeTheme
 
-/**
- * The hero focus-time ring. A 240dp clock-inspired Canvas that anchors the
- * dashboard and gives the screen a real visual identity. The ring is drawn
- * on a [Canvas] (not wrapped in [androidx.compose.material3.CircularProgressIndicator])
- * because we want pixel-level control over the rounded caps, the 12 o'clock
- * tick mark, and the tip dot at the end of the progress arc.
- *
- * The eyebrow / number / subtitle stack is overlaid on top of the ring via a
- * [Box], not drawn inside the Canvas — the text is rendered by the normal
- * Compose text pipeline so accessibility and font scaling work.
- *
- * @param focusedMinutes minutes of focus time accumulated today (0..480)
- * @param dailyTargetMinutes the target for the full ring (8h = 480 default)
- * @param eyebrow small all-caps label above the number ("TODAY")
- * @param subtitle small label below the number ("1 of 3 goals complete")
- * @param modifier parent modifier
- */
+
 @Composable
 fun HeroFocusRing(
     focusedMinutes: Int,
@@ -50,8 +34,8 @@ fun HeroFocusRing(
     modifier: Modifier = Modifier,
 ) {
     val progress = if (dailyTargetMinutes <= 0) 0f
-                   else (focusedMinutes.toFloat() / dailyTargetMinutes.toFloat())
-                       .coerceIn(0f, 1f)
+    else (focusedMinutes.toFloat() / dailyTargetMinutes.toFloat())
+        .coerceIn(0f, 1f)
     val ringColor = MaterialTheme.colorScheme.primary
     val trackColor = MaterialTheme.colorScheme.surfaceVariant
     val onSurface = MaterialTheme.colorScheme.onSurface

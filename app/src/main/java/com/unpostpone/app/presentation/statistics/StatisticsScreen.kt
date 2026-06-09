@@ -2,15 +2,35 @@ package com.unpostpone.app.presentation.statistics
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Block
 import androidx.compose.material.icons.filled.LockOpen
-import androidx.compose.material.icons.filled.Timer
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -31,16 +51,6 @@ import com.unpostpone.app.ui.theme.NumberBody
 import com.unpostpone.app.ui.theme.NumberDisplayLarge
 import com.unpostpone.app.ui.theme.NumberHeadline
 import com.unpostpone.app.ui.theme.UnpostponeTheme
-
-// ═══════════════════════════════════════════════════════════════════════════
-//  Statistics — premium redesign
-//
-//   Layout (top → bottom, all in one LazyColumn with 20dp gutter):
-//     1. Hero band      — total focused minutes (30d) in NumberDisplayLarge
-//                         on a HeroSurface-tinted card
-//     2. 2-col grid     — secondary summary cards (Blocks / Unlock attempts)
-//     3. Daily history  — TitleMedium section header, then DailyStatItem rows
-// ═══════════════════════════════════════════════════════════════════════════
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -71,7 +81,9 @@ fun StatisticsScreen(
     ) { paddingValues ->
         if (uiState.isLoading) {
             Box(
-                modifier = Modifier.fillMaxSize().padding(paddingValues),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
                 contentAlignment = Alignment.Center,
             ) {
                 CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
@@ -96,7 +108,9 @@ private fun StatisticsContent(
     val totalHours = totalMinutes / 60
 
     LazyColumn(
-        modifier = Modifier.fillMaxSize().padding(contentPadding),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(contentPadding),
         contentPadding = PaddingValues(
             horizontal = Dimens.ScreenGutter,
             vertical = Dimens.SpacingL,
@@ -150,7 +164,9 @@ private fun StatisticsContent(
         } else {
             item {
                 Box(
-                    modifier = Modifier.fillMaxWidth().padding(Dimens.SpacingHuge),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(Dimens.SpacingHuge),
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
@@ -287,7 +303,9 @@ private fun DailyStatItem(stat: Statistics) {
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(Dimens.CardPadding),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(Dimens.CardPadding),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -347,9 +365,24 @@ private fun StatisticsContentPreview_Populated() {
             uiState = StatisticsUiState(
                 isLoading = false,
                 recentStats = listOf(
-                    Statistics(date = "2024-09-03", focusedMinutes = 180, blockCount = 12, unlockAttempts = 4),
-                    Statistics(date = "2024-09-02", focusedMinutes = 145, blockCount = 9,  unlockAttempts = 1),
-                    Statistics(date = "2024-09-01", focusedMinutes = 90,  blockCount = 6,  unlockAttempts = 0),
+                    Statistics(
+                        date = "2024-09-03",
+                        focusedMinutes = 180,
+                        blockCount = 12,
+                        unlockAttempts = 4
+                    ),
+                    Statistics(
+                        date = "2024-09-02",
+                        focusedMinutes = 145,
+                        blockCount = 9,
+                        unlockAttempts = 1
+                    ),
+                    Statistics(
+                        date = "2024-09-01",
+                        focusedMinutes = 90,
+                        blockCount = 6,
+                        unlockAttempts = 0
+                    ),
                 ),
             ),
             contentPadding = PaddingValues(0.dp),
@@ -376,8 +409,18 @@ private fun StatisticsContentPreview_Populated_Dark() {
             uiState = StatisticsUiState(
                 isLoading = false,
                 recentStats = listOf(
-                    Statistics(date = "2024-09-03", focusedMinutes = 180, blockCount = 12, unlockAttempts = 4),
-                    Statistics(date = "2024-09-02", focusedMinutes = 145, blockCount = 9,  unlockAttempts = 1),
+                    Statistics(
+                        date = "2024-09-03",
+                        focusedMinutes = 180,
+                        blockCount = 12,
+                        unlockAttempts = 4
+                    ),
+                    Statistics(
+                        date = "2024-09-02",
+                        focusedMinutes = 145,
+                        blockCount = 9,
+                        unlockAttempts = 1
+                    ),
                 ),
             ),
             contentPadding = PaddingValues(0.dp),

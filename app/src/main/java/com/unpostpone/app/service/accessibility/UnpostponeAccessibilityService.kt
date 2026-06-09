@@ -25,7 +25,6 @@ class UnpostponeAccessibilityService : AccessibilityService() {
 
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
-    /** Package allowed for a 5-minute temporary bypass. */
     @Volatile private var temporarilyUnlockedPackage: String? = null
 
     override fun onServiceConnected() {
@@ -44,8 +43,6 @@ class UnpostponeAccessibilityService : AccessibilityService() {
         if (packageName == temporarilyUnlockedPackage) return
 
         serviceScope.launch {
-            // Global gate: if the user has the master toggle off, do nothing
-            // — no per-app lookup, no block count, no blocker screen.
             if (!observeBlockingEnabledUseCase().first()) return@launch
 
             if (isAppBlockedUseCase(packageName)) {

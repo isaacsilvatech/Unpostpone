@@ -12,11 +12,6 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-/**
- * App-scoped Hilt bindings. Anything that does not fit cleanly into
- * DatabaseModule / RepositoryModule goes here — analytics, remote config,
- * local preferences, the application context itself.
- */
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {

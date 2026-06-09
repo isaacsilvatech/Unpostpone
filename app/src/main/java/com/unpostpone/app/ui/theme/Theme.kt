@@ -6,21 +6,6 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 
-// ════════════════════════════════════════════════════════════════════════════
-//  Unpostpone — Theme
-//  Single entry point for screens. Provides MaterialTheme (colorScheme +
-//  typography + shapes).
-//
-//  Every M3 token the app reads is declared explicitly. The palette is
-//  neutral-first: surface = white, background = off-white, text = near-black,
-//  brand = teal #0C4D5B used sparingly on FABs, primary buttons, selected
-//  states, progress indicators, and switches.
-//
-//  Unpostpone intentionally does NOT use Material You dynamic color — the
-//  brand identity is the teal/neutral system, and a phone wallpaper should
-//  not change the app's personality. Add it as an opt-in setting if ever
-//  requested.
-// ════════════════════════════════════════════════════════════════════════════
 
 private val LightColors = lightColorScheme(
     background                   = LightBackground,
