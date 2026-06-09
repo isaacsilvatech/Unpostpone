@@ -1,11 +1,7 @@
 package com.unpostpone.app.presentation.focusreminder
 
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -14,8 +10,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -25,8 +21,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import com.unpostpone.app.R
-import com.unpostpone.app.ui.components.BrandMark
-import com.unpostpone.app.ui.components.BrandMarkMode
 import com.unpostpone.app.ui.theme.Dimens
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -85,24 +79,6 @@ fun FocusReminderScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    val infiniteTransition = rememberInfiniteTransition(label = "float")
-    val floatY by infiniteTransition.animateFloat(
-        initialValue = 0f, targetValue = 8f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 3200, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse,
-        ),
-        label = "floatY",
-    )
-    val scale by infiniteTransition.animateFloat(
-        initialValue = 1.0f, targetValue = 1.02f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 3200, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse,
-        ),
-        label = "scale",
-    )
-
     LaunchedEffect(state.outcome) {
         when (state.outcome) {
             FocusOutcome.StayFocused -> onStayFocused()
@@ -123,17 +99,12 @@ fun FocusReminderScreen(
         ) {
             Spacer(Modifier.height(Dimens.SpacingHuge))
 
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.graphicsLayer { translationY = -floatY }.scale(scale),
-            ) {
-                BrandMark(
-                    size = 160.dp, mode = BrandMarkMode.Hero,
-                    arcColor = MaterialTheme.colorScheme.onBackground,
-                    handColor = MaterialTheme.colorScheme.primary,
-                    leafColor = MaterialTheme.colorScheme.primary,
-                )
-            }
+            Image(
+                painter = painterResource(R.drawable.ic_app_darckbluegreen),
+                contentDescription = null,
+                modifier = Modifier.size(160.dp),
+                contentScale = ContentScale.Fit,
+            )
 
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,

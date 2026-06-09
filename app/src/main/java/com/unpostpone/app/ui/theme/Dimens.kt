@@ -38,10 +38,6 @@ object Dimens {
     val IconL             = 32.dp
     val IconXL            = 48.dp
 
-    // ── Brand mark / hero illustrations ────────────────────────────────
-    val BrandMarkSize     = 96.dp
-    val BrandMarkLarge    = 160.dp  // splash, onboarding
-
     // ── Focus ring (the C/clock shape from the icon) ──────────────────
     val FocusRingSize     = 240.dp
     val FocusRingStroke   = 14.dp
