@@ -191,7 +191,6 @@ private fun SettingsContent(
         item {
             SettingsSectionCard(
                 title = stringResource(R.string.settings_section_about),
-                subtitle = stringResource(R.string.settings_section_about_subtitle),
             ) {
                 AboutVersionRow(
                     version = BuildConfig.VERSION_NAME,

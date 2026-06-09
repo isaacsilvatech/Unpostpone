@@ -32,7 +32,7 @@
     <string name="settings_unlock_duration_option">%1$d minutes</string>
 
     <!-- Onboarding re-entry -->
-    <string name="settings_replay_onboarding">Replay onboarding</string>
+    <string name="settings_replay_onboarding">Replay intro</string>
 
     <!-- Replay / about -->
     <string name="settings_about_title">About</string>

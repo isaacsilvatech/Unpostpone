@@ -30,7 +30,7 @@
     <string name="settings_unlock_duration_picker_title">Escolha a duração do desbloqueio</string>
     <string name="settings_unlock_duration_option">%1$d minutos</string>
 
-    <string name="settings_replay_onboarding">Rever onboarding</string>
+    <string name="settings_replay_onboarding">Rever introdução</string>
 
     <string name="settings_about_title">Sobre</string>
     <string name="settings_about_version">Versão %1$s</string>
