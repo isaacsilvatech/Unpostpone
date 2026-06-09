@@ -85,11 +85,10 @@ fun NavGraph(
         ) { backStackEntry ->
             val packageName = backStackEntry.arguments?.getString("packageName").orEmpty()
             FocusReminderScreen(
-                onStayFocused = {
-                    navController.popBackStack()
-                },
                 onContinue = {
-                    navController.popBackStack()
+                    navController.navigate(Screen.Dashboard.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
                 },
             )
         }

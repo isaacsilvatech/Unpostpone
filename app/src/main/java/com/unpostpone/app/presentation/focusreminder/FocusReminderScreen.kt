@@ -1,12 +1,10 @@
 package com.unpostpone.app.presentation.focusreminder
 
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,16 +17,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewModelScope
 import com.unpostpone.app.R
 import com.unpostpone.app.ui.theme.Dimens
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -39,20 +33,9 @@ class FocusReminderViewModel @Inject constructor() : ViewModel() {
     )
     val state: StateFlow<FocusReminderUiState> = _state.asStateFlow()
 
-    init {
-        viewModelScope.launch {
-            delay(REFLECTION_DURATION_MS)
-            _state.update { it.copy(actionsVisible = true) }
-        }
-    }
-
-    fun onStayFocused() = _state.update { it.copy(outcome = FocusOutcome.StayFocused) }
-    fun onContinue()    = _state.update { it.copy(outcome = FocusOutcome.Continue) }
-
     private fun pickMessage(seed: Int): Int = MESSAGES[seed % MESSAGES.size]
 
     companion object {
-        const val REFLECTION_DURATION_MS = 5_000L
         private val MESSAGES = listOf(
             R.string.focus_reminder_message_1,
             R.string.focus_reminder_message_2,
@@ -65,27 +48,14 @@ class FocusReminderViewModel @Inject constructor() : ViewModel() {
 
 data class FocusReminderUiState(
     val messageRes: Int,
-    val actionsVisible: Boolean = false,
-    val outcome: FocusOutcome? = null,
 )
-
-enum class FocusOutcome { StayFocused, Continue }
 
 @Composable
 fun FocusReminderScreen(
-    onStayFocused: () -> Unit,
     onContinue: () -> Unit,
     viewModel: FocusReminderViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-
-    LaunchedEffect(state.outcome) {
-        when (state.outcome) {
-            FocusOutcome.StayFocused -> onStayFocused()
-            FocusOutcome.Continue    -> onContinue()
-            null -> Unit
-        }
-    }
 
     Box(
         modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
@@ -95,9 +65,8 @@ fun FocusReminderScreen(
             modifier = Modifier.fillMaxSize()
                 .padding(horizontal = Dimens.SpacingXXL, vertical = Dimens.SpacingScreen),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween,
         ) {
-            Spacer(Modifier.height(Dimens.SpacingHuge))
+            Spacer(Modifier.weight(1f))
 
             Image(
                 painter = painterResource(R.drawable.ic_app_darckbluegreen),
@@ -105,7 +74,7 @@ fun FocusReminderScreen(
                 modifier = Modifier.size(160.dp),
                 contentScale = ContentScale.Fit,
             )
-
+            Spacer(Modifier.height(Dimens.SpacingXL))
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxWidth(),
@@ -126,37 +95,21 @@ fun FocusReminderScreen(
                 )
             }
 
-            androidx.compose.animation.AnimatedVisibility(
-                visible = state.actionsVisible,
-                enter = androidx.compose.animation.fadeIn(
-                    animationSpec = tween(durationMillis = 500),
-                ),
+            Spacer(Modifier.weight(1f))
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth(),
             ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
+                TextButton(
+                    onClick = onContinue,
                     modifier = Modifier.fillMaxWidth(),
                 ) {
-                    Button(
-                        onClick = viewModel::onStayFocused,
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = androidx.compose.foundation.shape.RoundedCornerShape(26.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            contentColor = MaterialTheme.colorScheme.onPrimary,
-                        ),
-                    ) {
-                        Text(stringResource(R.string.focus_reminder_stay_focused),
-                            style = MaterialTheme.typography.labelLarge,
-                            fontWeight = FontWeight.SemiBold,
-                            modifier = Modifier.padding(vertical = Dimens.SpacingS))
-                    }
-                    Spacer(Modifier.height(Dimens.SpacingM))
-                    TextButton(onClick = viewModel::onContinue,
-                        modifier = Modifier.fillMaxWidth()) {
-                        Text(stringResource(R.string.focus_reminder_continue),
-                            style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    }
+                    Text(
+                        text = stringResource(R.string.focus_reminder_continue),
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
                 }
             }
         }

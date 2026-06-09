@@ -1,5 +1,10 @@
 package com.unpostpone.app.presentation.blocker
 
+import android.content.Context
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.os.VibratorManager
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -9,6 +14,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -27,6 +33,22 @@ fun BlockerScreen(
     viewModel: BlockerViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        val vibrator: Vibrator? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            context.getSystemService(VibratorManager::class.java)?.defaultVibrator
+        } else {
+            @Suppress("DEPRECATION")
+            context.getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
+        }
+        vibrator?.vibrate(
+            VibrationEffect.createWaveform(
+                longArrayOf(0, 250, 100, 250),
+                -1,
+            ),
+        )
+    }
 
     Box(
         modifier = Modifier
@@ -81,6 +103,23 @@ fun BlockerScreen(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
+                Button(
+                    onClick = {
+                        navController.navigate(Screen.FocusReminder.createRoute(packageName)) {
+                            popUpTo(Screen.Blocker.route) { inclusive = true }
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.onErrorContainer,
+                        contentColor = MaterialTheme.colorScheme.errorContainer
+                    )
+                ) {
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, null)
+                    Spacer(Modifier.width(8.dp))
+                    Text(stringResource(R.string.blocker_back_to_focus))
+                }
+
                 if (uiState.isTemporarilyUnlocked) {
                     Card(colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.error)) {
@@ -102,23 +141,6 @@ fun BlockerScreen(
                         Spacer(Modifier.width(8.dp))
                         Text(stringResource(R.string.blocker_unlock_for, 5))
                     }
-                }
-
-                Button(
-                    onClick = {
-                        navController.navigate(Screen.FocusReminder.createRoute(packageName)) {
-                            popUpTo(Screen.Blocker.route) { inclusive = true }
-                        }
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.onErrorContainer,
-                        contentColor = MaterialTheme.colorScheme.errorContainer
-                    )
-                ) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, null)
-                    Spacer(Modifier.width(8.dp))
-                    Text(stringResource(R.string.blocker_back_to_focus))
                 }
             }
         }
