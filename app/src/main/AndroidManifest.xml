@@ -51,11 +51,6 @@
         </service>
 
         <service
-            android:name=".service.monitoring.AppMonitoringService"
-            android:exported="false"
-            android:foregroundServiceType="specialUse" />
-
-        <service
             android:name=".service.tempunlock.TemporaryUnlockService"
             android:exported="false"
             android:foregroundServiceType="specialUse">

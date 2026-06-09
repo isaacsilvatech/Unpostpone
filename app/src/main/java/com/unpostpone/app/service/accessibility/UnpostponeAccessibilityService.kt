@@ -9,6 +9,7 @@ import com.unpostpone.app.MainActivity
 import com.unpostpone.app.core.tempunlock.TemporaryUnlockManager
 import com.unpostpone.app.domain.usecase.blockedapp.IsAppBlockedUseCase
 import com.unpostpone.app.domain.usecase.blockedapp.ObserveBlockingEnabledUseCase
+import com.unpostpone.app.domain.usecase.statistics.AddFocusTimeUseCase
 import com.unpostpone.app.domain.usecase.statistics.IncrementBlockCountUseCase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -29,9 +30,13 @@ class UnpostponeAccessibilityService : AccessibilityService() {
     @Inject lateinit var isAppBlockedUseCase: IsAppBlockedUseCase
     @Inject lateinit var incrementBlockCountUseCase: IncrementBlockCountUseCase
     @Inject lateinit var observeBlockingEnabledUseCase: ObserveBlockingEnabledUseCase
+    @Inject lateinit var addFocusTimeUseCase: AddFocusTimeUseCase
     @Inject lateinit var temporaryUnlockManager: TemporaryUnlockManager
 
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
+    private var focusSessionStart: Long? = null
+    private var lastTrackedPackage: String? = null
 
     override fun onServiceConnected() {
         serviceInfo = AccessibilityServiceInfo().apply {
@@ -49,13 +54,34 @@ class UnpostponeAccessibilityService : AccessibilityService() {
         if (temporaryUnlockManager.isActive(packageName)) return
 
         serviceScope.launch {
-            if (!observeBlockingEnabledUseCase().first()) return@launch
+            if (!observeBlockingEnabledUseCase().first()) {
+                commitFocusTime()
+                return@launch
+            }
 
             if (isAppBlockedUseCase(packageName)) {
+                commitFocusTime()
                 val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
                 incrementBlockCountUseCase(today)
                 withContext(Dispatchers.Main) { launchBlockerActivity(packageName) }
+                return@launch
             }
+
+            if (lastTrackedPackage != packageName) {
+                commitFocusTime()
+                focusSessionStart = System.currentTimeMillis()
+                lastTrackedPackage = packageName
+            }
+        }
+    }
+
+    private suspend fun commitFocusTime() {
+        val start = focusSessionStart ?: return
+        val elapsedMinutes = ((System.currentTimeMillis() - start) / 60_000L).toInt()
+        if (elapsedMinutes > 0) {
+            val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+            addFocusTimeUseCase(today, elapsedMinutes)
+            focusSessionStart = System.currentTimeMillis()
         }
     }
 

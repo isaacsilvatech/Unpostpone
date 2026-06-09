@@ -1,5 +1,6 @@
 package com.unpostpone.app.presentation.blocker
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -7,6 +8,8 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -53,6 +56,7 @@ import androidx.navigation.NavController
 import com.unpostpone.app.R
 import com.unpostpone.app.core.tempunlock.TemporaryUnlockManager
 import com.unpostpone.app.core.util.AppLabelResolver
+import com.unpostpone.app.core.util.NotificationPermissionHelper
 import com.unpostpone.app.domain.model.Goal
 import com.unpostpone.app.presentation.navigation.Screen
 import com.unpostpone.app.service.tempunlock.TemporaryUnlockService
@@ -66,6 +70,10 @@ fun BlockerScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
     var showConfirmDialog by remember { mutableStateOf(false) }
+
+    val notificationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+    ) { _ -> }
 
     LaunchedEffect(Unit) {
         val vibrator: Vibrator? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -157,7 +165,14 @@ fun BlockerScreen(
                 }
 
                 OutlinedButton(
-                    onClick = { showConfirmDialog = true },
+                    onClick = {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                            !NotificationPermissionHelper.isGranted(context)
+                        ) {
+                            notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                        }
+                        showConfirmDialog = true
+                    },
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.outlinedButtonColors(
                         contentColor = MaterialTheme.colorScheme.onErrorContainer,
