@@ -2,8 +2,10 @@ package com.unpostpone.app.service.accessibility
 
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.AccessibilityServiceInfo
+import android.content.ComponentName
 import android.content.Intent
 import android.view.accessibility.AccessibilityEvent
+import com.unpostpone.app.MainActivity
 import com.unpostpone.app.domain.usecase.blockedapp.IsAppBlockedUseCase
 import com.unpostpone.app.domain.usecase.blockedapp.ObserveBlockingEnabledUseCase
 import com.unpostpone.app.domain.usecase.statistics.IncrementBlockCountUseCase
@@ -55,12 +57,16 @@ class UnpostponeAccessibilityService : AccessibilityService() {
     }
 
     private fun launchBlockerActivity(packageName: String) {
-        packageManager.getLaunchIntentForPackage(applicationContext.packageName)
-            ?.apply {
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                putExtra(EXTRA_BLOCKED_PACKAGE, packageName)
-            }
-            ?.let { startActivity(it) }
+        val intent = Intent(applicationContext, MainActivity::class.java).apply {
+            component = ComponentName(applicationContext, MainActivity::class.java)
+            addFlags(
+                Intent.FLAG_ACTIVITY_NEW_TASK or
+                    Intent.FLAG_ACTIVITY_SINGLE_TOP or
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP
+            )
+            putExtra(EXTRA_BLOCKED_PACKAGE, packageName)
+        }
+        startActivity(intent)
     }
 
     fun grantTemporaryUnlock(packageName: String) {
