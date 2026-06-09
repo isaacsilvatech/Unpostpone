@@ -1,5 +1,7 @@
 package com.unpostpone.app.presentation.settings
 
+import android.content.Intent
+import android.provider.Settings
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -14,6 +16,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,6 +40,7 @@ fun SettingsScreen(
 ) {
     val currentLanguage by viewModel.currentLanguage.collectAsStateWithLifecycle()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
     var showLanguagePicker by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -72,6 +76,12 @@ fun SettingsScreen(
             currentLanguage = currentLanguage,
             onToggleApp = viewModel::toggleApp,
             onLanguageClick = { showLanguagePicker = true },
+            onAccessibilityClick = {
+                context.startActivity(
+                    Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                )
+            },
             contentPadding = paddingValues,
         )
     }
@@ -89,6 +99,7 @@ private fun SettingsContent(
     currentLanguage: SupportedLanguage,
     onToggleApp: (String, Boolean) -> Unit,
     onLanguageClick: () -> Unit,
+    onAccessibilityClick: () -> Unit,
     contentPadding: PaddingValues,
 ) {
     LazyColumn(
@@ -127,7 +138,7 @@ private fun SettingsContent(
                     }
                 }
                 SettingsRowDivider()
-                AccessibilityServiceRow()
+                AccessibilityServiceRow(onClick = onAccessibilityClick)
             }
         }
 
@@ -292,9 +303,12 @@ private fun AppBlockToggleItem(
 }
 
 @Composable
-private fun AccessibilityServiceRow() {
+private fun AccessibilityServiceRow(onClick: () -> Unit) {
     Column(
-        modifier = Modifier.fillMaxWidth().padding(vertical = Dimens.SpacingM),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(vertical = Dimens.SpacingM),
         verticalArrangement = Arrangement.spacedBy(Dimens.SpacingS),
     ) {
         Row(
@@ -409,6 +423,7 @@ private fun SettingsContentPreview_Populated() {
             currentLanguage = SupportedLanguage.English,
             onToggleApp = { _, _ -> },
             onLanguageClick = {},
+            onAccessibilityClick = {},
             contentPadding = PaddingValues(0.dp),
         )
     }
@@ -423,6 +438,7 @@ private fun SettingsContentPreview_EmptyBlocked() {
             currentLanguage = SupportedLanguage.PortugueseBrazil,
             onToggleApp = { _, _ -> },
             onLanguageClick = {},
+            onAccessibilityClick = {},
             contentPadding = PaddingValues(0.dp),
         )
     }
@@ -437,6 +453,7 @@ private fun SettingsContentPreview_Loading() {
             currentLanguage = SupportedLanguage.SystemDefault,
             onToggleApp = { _, _ -> },
             onLanguageClick = {},
+            onAccessibilityClick = {},
             contentPadding = PaddingValues(0.dp),
         )
     }
@@ -457,6 +474,7 @@ private fun SettingsContentPreview_Populated_Dark() {
             currentLanguage = SupportedLanguage.English,
             onToggleApp = { _, _ -> },
             onLanguageClick = {},
+            onAccessibilityClick = {},
             contentPadding = PaddingValues(0.dp),
         )
     }
