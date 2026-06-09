@@ -6,6 +6,7 @@ import com.unpostpone.app.core.locale.LanguageManager
 import com.unpostpone.app.core.locale.SupportedLanguage
 import com.unpostpone.app.core.util.Constants
 import com.unpostpone.app.domain.model.BlockedApp
+import com.unpostpone.app.domain.repository.OnboardingPreferences
 import com.unpostpone.app.domain.usecase.blockedapp.AddBlockedAppUseCase
 import com.unpostpone.app.domain.usecase.blockedapp.GetBlockedAppsUseCase
 import com.unpostpone.app.domain.usecase.blockedapp.SetAppEnabledUseCase
@@ -24,6 +25,7 @@ class SettingsViewModel @Inject constructor(
     private val getBlockedApps: GetBlockedAppsUseCase,
     private val addBlockedApp: AddBlockedAppUseCase,
     private val setAppEnabled: SetAppEnabledUseCase,
+    private val onboardingPreferences: OnboardingPreferences,
 ) : ViewModel() {
     val currentLanguage: StateFlow<SupportedLanguage> = languageManager.current
 
@@ -41,6 +43,9 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             setAppEnabled(packageName, isEnabled)
         }
+    }
+    fun replayOnboarding() {
+        onboardingPreferences.resetOnboarding()
     }
 
     private fun observeBlockedApps() {

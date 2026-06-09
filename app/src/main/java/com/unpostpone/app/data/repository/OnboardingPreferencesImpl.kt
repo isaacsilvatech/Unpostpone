@@ -19,6 +19,12 @@ class OnboardingPreferencesImpl @Inject constructor(
             .apply()
     }
 
+    override fun resetOnboarding() {
+        sharedPreferences.edit()
+            .remove(KEY_ONBOARDING_COMPLETED)
+            .apply()
+    }
+
     private companion object {
         const val KEY_ONBOARDING_COMPLETED = "unpostpone.onboarding.completed"
     }

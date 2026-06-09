@@ -30,6 +30,7 @@ import com.unpostpone.app.R
 import com.unpostpone.app.core.locale.SupportedLanguage
 import com.unpostpone.app.domain.model.BlockedApp
 import com.unpostpone.app.presentation.dashboard.BottomNavigationBar
+import com.unpostpone.app.presentation.navigation.Screen
 import com.unpostpone.app.service.accessibility.UnpostponeAccessibilityService
 import com.unpostpone.app.ui.theme.Dimens
 import com.unpostpone.app.ui.theme.UnpostponeTheme
@@ -92,6 +93,12 @@ fun SettingsScreen(
                         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 )
             },
+            onReplayOnboardingClick = {
+                viewModel.replayOnboarding()
+                navController.navigate(Screen.Onboarding.route) {
+                    popUpTo(navController.graph.startDestinationId) { inclusive = false }
+                }
+            },
             contentPadding = paddingValues,
         )
     }
@@ -110,6 +117,7 @@ private fun SettingsContent(
     onToggleApp: (String, Boolean) -> Unit,
     onLanguageClick: () -> Unit,
     onAccessibilityClick: () -> Unit,
+    onReplayOnboardingClick: () -> Unit,
     contentPadding: PaddingValues,
 ) {
     LazyColumn(
@@ -176,7 +184,7 @@ private fun SettingsContent(
                 )
                 SettingsRowDivider()
                 ReplayOnboardingRow(
-                    onClick = { /* TODO: requires OnboardingPreferences.reset(); out of scope for this redesign */ },
+                    onClick = onReplayOnboardingClick,
                 )
             }
         }
@@ -434,6 +442,7 @@ private fun SettingsContentPreview_Populated() {
             onToggleApp = { _, _ -> },
             onLanguageClick = {},
             onAccessibilityClick = {},
+            onReplayOnboardingClick = {},
             contentPadding = PaddingValues(0.dp),
         )
     }
@@ -449,6 +458,7 @@ private fun SettingsContentPreview_EmptyBlocked() {
             onToggleApp = { _, _ -> },
             onLanguageClick = {},
             onAccessibilityClick = {},
+            onReplayOnboardingClick = {},
             contentPadding = PaddingValues(0.dp),
         )
     }
@@ -464,6 +474,7 @@ private fun SettingsContentPreview_Loading() {
             onToggleApp = { _, _ -> },
             onLanguageClick = {},
             onAccessibilityClick = {},
+            onReplayOnboardingClick = {},
             contentPadding = PaddingValues(0.dp),
         )
     }
@@ -485,6 +496,7 @@ private fun SettingsContentPreview_Populated_Dark() {
             onToggleApp = { _, _ -> },
             onLanguageClick = {},
             onAccessibilityClick = {},
+            onReplayOnboardingClick = {},
             contentPadding = PaddingValues(0.dp),
         )
     }
