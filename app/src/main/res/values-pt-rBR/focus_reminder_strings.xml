@@ -1,12 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="focus_reminder_take_moment">Tire um momento.</string>
-    <string name="focus_reminder_stay_focused">Manter o foco</string>
     <string name="focus_reminder_continue">Continuar</string>
 
-    <string name="focus_reminder_message_1">Pequenos progressos diários criam resultados significativos.</string>
-    <string name="focus_reminder_message_2">Seus objetivos futuros merecem sua atenção agora.</string>
-    <string name="focus_reminder_message_3">A consistência constrói momentum — um momento de cada vez.</string>
-    <string name="focus_reminder_message_4">Foque no que mais importa hoje.</string>
-    <string name="focus_reminder_message_5">O trabalho que você faz agora é o trabalho que se acumula.</string>
+    <string name="focus_reminder_message_1">Foco é uma habilidade. Cada vez que você resiste, fica mais forte.</string>
+    <string name="focus_reminder_message_2">Seu futuro está sendo moldado pelo que você faz agora.</string>
+    <string name="focus_reminder_message_3">Pequenos passos diários constroem grandes conquistas.</string>
+    <string name="focus_reminder_message_4">A disciplina é a ponte entre metas e realizações.</string>
+    <string name="focus_reminder_message_5">Respire. Você é mais forte do que suas distrações.</string>
+    <string name="focus_reminder_message_6">Não é sobre tempo. É sobre foco.</string>
+    <string name="focus_reminder_message_7">O sucesso nasce do esforço diário.</string>
+    <string name="focus_reminder_message_8">Sua história está sendo escrita agora.</string>
+    <string name="focus_reminder_message_9">Pequenas escolhas diárias, grandes resultados.</string>
+    <string name="focus_reminder_message_10">Menos celular, mais propósito.</string>
+    <string name="focus_reminder_message_11">A melhor hora para começar é agora.</string>
+    <string name="focus_reminder_message_12">A procrastinação rouba o que ninguém devolve: o tempo.</string>
+
+    <string name="focus_reminder_message_13">Foque no progresso, não na perfeição.</string>
+    <string name="focus_reminder_message_14">O que você faz quando ninguém está olhando define quem você é.</string>
+    <string name="focus_reminder_message_15">Sua mente é sua maior ferramenta. Use-a com intenção.</string>
+    <string name="focus_reminder_message_16">Cada sessão de foco é um investimento em você.</string>
+    <string name="focus_reminder_message_17">Grandes jornadas começam com um único passo.</string>
+    <string name="focus_reminder_message_18">A motivação te faz começar. O hábito te faz continuar.</string>
+    <string name="focus_reminder_message_19">Cresça em silêncio. Os resultados vão falar por você.</string>
+    <string name="focus_reminder_message_20">Invista sua atenção no que realmente importa.</string>
+    <string name="focus_reminder_message_21">Pequenas ações diárias criam grandes transformações.</string>
+    <string name="focus_reminder_message_22">A energia vem de quem você decide ser.</string>
+    <string name="focus_reminder_message_23">Velocidade não é sobre pressa. É sobre direção.</string>
+    <string name="focus_reminder_message_24">Você não precisa ser perfeito. Precisa ser constante.</string>
 </resources>

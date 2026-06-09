@@ -1,13 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="focus_reminder_take_moment">Take a moment.</string>
-    <string name="focus_reminder_stay_focused">Stay focused</string>
     <string name="focus_reminder_continue">Continue</string>
 
-    <!-- Reflective messages (5, rotated) -->
-    <string name="focus_reminder_message_1">Small progress every day creates meaningful results.</string>
-    <string name="focus_reminder_message_2">Your future goals deserve your attention right now.</string>
-    <string name="focus_reminder_message_3">Consistency builds momentum — one moment at a time.</string>
-    <string name="focus_reminder_message_4">Focus on what matters most today.</string>
-    <string name="focus_reminder_message_5">The work you do now is the work that compounds.</string>
+    <!-- Reflective messages (12, rotated) -->
+    <string name="focus_reminder_message_1">Focus is a skill. Each time you resist, you grow stronger.</string>
+    <string name="focus_reminder_message_2">Your future is being shaped by what you do right now.</string>
+    <string name="focus_reminder_message_3">Small daily steps build great achievements.</string>
+    <string name="focus_reminder_message_4">Discipline is the bridge between goals and accomplishments.</string>
+    <string name="focus_reminder_message_5">Breathe. You are stronger than your distractions.</string>
+    <string name="focus_reminder_message_6">It\'s not about time. It\'s about focus.</string>
+    <string name="focus_reminder_message_7">Success is born from daily effort.</string>
+    <string name="focus_reminder_message_8">Your story is being written right now.</string>
+    <string name="focus_reminder_message_9">Small daily choices create great results.</string>
+    <string name="focus_reminder_message_10">Less phone, more purpose.</string>
+    <string name="focus_reminder_message_11">The best time to start is now.</string>
+    <string name="focus_reminder_message_12">Procrastination steals what no one returns: time.</string>
+
+    <!-- Reflective messages (24 total) -->
+    <string name="focus_reminder_message_13">Focus on progress, not perfection.</string>
+    <string name="focus_reminder_message_14">What you do when no one is watching defines who you are.</string>
+    <string name="focus_reminder_message_15">Your mind is your greatest tool. Use it with intention.</string>
+    <string name="focus_reminder_message_16">Every focus session is an investment in yourself.</string>
+    <string name="focus_reminder_message_17">Great journeys begin with a single step.</string>
+    <string name="focus_reminder_message_18">Motivation gets you started. Habit keeps you going.</string>
+    <string name="focus_reminder_message_19">Grow in silence. The results will speak for you.</string>
+    <string name="focus_reminder_message_20">Invest your attention in what truly matters.</string>
+    <string name="focus_reminder_message_21">Small daily actions create great transformations.</string>
+    <string name="focus_reminder_message_22">The energy comes from who you decide to be.</string>
+    <string name="focus_reminder_message_23">Speed isn\'t about rushing. It\'s about direction.</string>
+    <string name="focus_reminder_message_24">You don\'t need to be perfect. You need to be consistent.</string>
 </resources>
