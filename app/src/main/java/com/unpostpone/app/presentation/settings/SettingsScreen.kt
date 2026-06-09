@@ -1,5 +1,6 @@
 package com.unpostpone.app.presentation.settings
 
+import android.content.ComponentName
 import android.content.Intent
 import android.provider.Settings
 import androidx.compose.foundation.BorderStroke
@@ -29,6 +30,7 @@ import com.unpostpone.app.R
 import com.unpostpone.app.core.locale.SupportedLanguage
 import com.unpostpone.app.domain.model.BlockedApp
 import com.unpostpone.app.presentation.dashboard.BottomNavigationBar
+import com.unpostpone.app.service.accessibility.UnpostponeAccessibilityService
 import com.unpostpone.app.ui.theme.Dimens
 import com.unpostpone.app.ui.theme.UnpostponeTheme
 
@@ -77,8 +79,16 @@ fun SettingsScreen(
             onToggleApp = viewModel::toggleApp,
             onLanguageClick = { showLanguagePicker = true },
             onAccessibilityClick = {
+                val serviceComponent = ComponentName(
+                    context,
+                    UnpostponeAccessibilityService::class.java,
+                )
                 context.startActivity(
                     Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+                        .putExtra(
+                            Intent.EXTRA_COMPONENT_NAME,
+                            serviceComponent.flattenToString(),
+                        )
                         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 )
             },
