@@ -1,5 +1,8 @@
 package com.unpostpone.app.presentation.dashboard
 
+import android.content.ComponentName
+import android.content.Intent
+import android.provider.Settings
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,12 +19,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Accessibility
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Flag
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -43,17 +48,22 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.unpostpone.app.R
@@ -61,6 +71,7 @@ import com.unpostpone.app.domain.model.Goal
 import com.unpostpone.app.domain.model.Statistics
 import com.unpostpone.app.presentation.dashboard.components.HeroFocusRing
 import com.unpostpone.app.presentation.navigation.Screen
+import com.unpostpone.app.service.accessibility.UnpostponeAccessibilityService
 import com.unpostpone.app.ui.theme.Dimens
 import com.unpostpone.app.ui.theme.HeroRadius
 import com.unpostpone.app.ui.theme.NumberHeadline
@@ -74,6 +85,21 @@ fun DashboardScreen(
     viewModel: DashboardViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                viewModel.refreshAccessibilityState()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
+
+    val isEffectivelyActive =
+        uiState.isBlockingActive && uiState.isAccessibilityServiceEnabled
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -165,8 +191,8 @@ fun DashboardScreen(
                 // ii. Compact blocking-toggle row
                 item {
                     BlockingToggleCard(
-                        isActive = uiState.isBlockingActive,
-                        onToggle = viewModel::toggleBlocking,
+                        isActive = isEffectivelyActive,
+                        onToggle = viewModel::onToggleBlocking,
                     )
                 }
 
@@ -205,6 +231,64 @@ fun DashboardScreen(
         }
 
         uiState.error?.let { LaunchedEffect(it) { viewModel.dismissError() } }
+    }
+
+    if (uiState.showAccessibilityPrompt) {
+        AlertDialog(
+            onDismissRequest = viewModel::dismissAccessibilityPrompt,
+            title = {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(Dimens.SpacingS),
+                ) {
+                    Icon(
+                        Icons.Default.Accessibility,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.size(Dimens.IconS),
+                    )
+                    Text(
+                        text = stringResource(R.string.dashboard_accessibility_prompt_title),
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                }
+            },
+            text = {
+                Text(
+                    text = stringResource(R.string.dashboard_accessibility_prompt_body),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        viewModel.dismissAccessibilityPrompt()
+                        val serviceComponent = ComponentName(
+                            context,
+                            UnpostponeAccessibilityService::class.java,
+                        )
+                        context.startActivity(
+                            Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+                                .putExtra(
+                                    Intent.EXTRA_COMPONENT_NAME,
+                                    serviceComponent.flattenToString(),
+                                )
+                                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        )
+                    },
+                ) {
+                    Text(stringResource(R.string.dashboard_accessibility_open_settings))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = viewModel::dismissAccessibilityPrompt) {
+                    Text(stringResource(R.string.dashboard_accessibility_cancel))
+                }
+            },
+        )
     }
 }
 
@@ -617,6 +701,8 @@ private fun DashboardContentPreview(uiState: DashboardUiState) {
         val unlockAttempts = uiState.todayStatistics?.unlockAttempts ?: 0
         val completedGoals = uiState.completedGoalsCount
         val totalGoals = uiState.totalGoalsCount
+        val isEffectivelyActive =
+            uiState.isBlockingActive && uiState.isAccessibilityServiceEnabled
         val heroSubtitle = if (totalGoals == 0) {
             stringResource(R.string.dashboard_hero_subtitle_empty)
         } else {
@@ -650,7 +736,7 @@ private fun DashboardContentPreview(uiState: DashboardUiState) {
             }
             item {
                 BlockingToggleCard(
-                    isActive = uiState.isBlockingActive,
+                    isActive = isEffectivelyActive,
                     onToggle = {},
                 )
             }

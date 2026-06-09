@@ -20,6 +20,11 @@
     <string name="dashboard_blocking_active_subtitle">Distrações estão bloqueadas</string>
     <string name="dashboard_blocking_inactive_subtitle">Toque para ativar</string>
 
+    <string name="dashboard_accessibility_prompt_title">Serviço de Acessibilidade</string>
+    <string name="dashboard_accessibility_prompt_body">Para bloquear apps automaticamente, ative o serviço de acessibilidade do Unpostpone em: Configurações → Acessibilidade → Aplicativos instalados.</string>
+    <string name="dashboard_accessibility_open_settings">Abrir configurações</string>
+    <string name="dashboard_accessibility_cancel">Cancelar</string>
+
     <!-- retained for backward compatibility, no longer referenced -->
     <string name="dashboard_progress_title">Progresso geral</string>
     <!-- retained for backward compatibility, no longer referenced -->

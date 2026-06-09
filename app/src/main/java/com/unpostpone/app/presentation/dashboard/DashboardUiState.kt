@@ -7,6 +7,8 @@ data class DashboardUiState(
     val todayGoals: List<Goal> = emptyList(),
     val todayStatistics: Statistics? = null,
     val isBlockingActive: Boolean = false,
+    val isAccessibilityServiceEnabled: Boolean = false,
+    val showAccessibilityPrompt: Boolean = false,
     val isLoading: Boolean = false,
     val error: String? = null
 ) {

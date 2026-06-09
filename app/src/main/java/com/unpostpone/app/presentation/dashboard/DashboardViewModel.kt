@@ -1,12 +1,15 @@
 package com.unpostpone.app.presentation.dashboard
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.unpostpone.app.core.util.AccessibilityServiceUtils
 import com.unpostpone.app.domain.usecase.blockedapp.ObserveBlockingEnabledUseCase
 import com.unpostpone.app.domain.usecase.blockedapp.SetBlockingEnabledUseCase
 import com.unpostpone.app.domain.usecase.goal.GetGoalsUseCase
 import com.unpostpone.app.domain.usecase.statistics.GetStatisticsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -15,6 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val getGoalsUseCase: GetGoalsUseCase,
     private val getStatisticsUseCase: GetStatisticsUseCase,
     private val observeBlockingEnabledUseCase: ObserveBlockingEnabledUseCase,
@@ -39,24 +43,45 @@ class DashboardViewModel @Inject constructor(
                 getStatisticsUseCase.forDate(today),
                 observeBlockingEnabledUseCase(),
             ) { goals, stats, isBlocking ->
-                DashboardUiState(
-                    todayGoals = goals,
-                    todayStatistics = stats,
-                    isBlockingActive = isBlocking,
-                    isLoading = false,
-                )
+                Triple(goals, stats, isBlocking)
             }
                 .catch { e -> _uiState.update { it.copy(isLoading = false, error = e.message) } }
-                .collect { state -> _uiState.value = state }
+                .collect { (goals, stats, isBlocking) ->
+                    _uiState.update {
+                        it.copy(
+                            todayGoals = goals,
+                            todayStatistics = stats,
+                            isBlockingActive = isBlocking,
+                            isAccessibilityServiceEnabled = AccessibilityServiceUtils.isUnpostponeEnabled(context),
+                            isLoading = false,
+                        )
+                    }
+                }
         }
     }
 
-    fun toggleBlocking() {
+    fun onToggleBlocking() {
         viewModelScope.launch {
             val current = observeBlockingEnabledUseCase().first()
-            setBlockingEnabledUseCase(!current)
+            if (current) {
+                setBlockingEnabledUseCase(false)
+                return@launch
+            }
+            if (AccessibilityServiceUtils.isUnpostponeEnabled(context)) {
+                setBlockingEnabledUseCase(true)
+            } else {
+                _uiState.update { it.copy(showAccessibilityPrompt = true) }
+            }
         }
     }
+
+    fun refreshAccessibilityState() {
+        _uiState.update {
+            it.copy(isAccessibilityServiceEnabled = AccessibilityServiceUtils.isUnpostponeEnabled(context))
+        }
+    }
+
+    fun dismissAccessibilityPrompt() = _uiState.update { it.copy(showAccessibilityPrompt = false) }
 
     fun dismissError() = _uiState.update { it.copy(error = null) }
 }

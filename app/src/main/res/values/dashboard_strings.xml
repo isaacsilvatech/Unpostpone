@@ -23,6 +23,12 @@
     <string name="dashboard_blocking_active_subtitle">Distractions are blocked</string>
     <string name="dashboard_blocking_inactive_subtitle">Tap to activate</string>
 
+    <!-- Accessibility prompt -->
+    <string name="dashboard_accessibility_prompt_title">Accessibility service</string>
+    <string name="dashboard_accessibility_prompt_body">To block apps automatically, enable the Unpostpone accessibility service at: Settings → Accessibility → Installed apps.</string>
+    <string name="dashboard_accessibility_open_settings">Open settings</string>
+    <string name="dashboard_accessibility_cancel">Cancel</string>
+
     <!-- retained for backward compatibility, no longer referenced -->
     <string name="dashboard_progress_title">Overall progress</string>
     <!-- retained for backward compatibility, no longer referenced -->
