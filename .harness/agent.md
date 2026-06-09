@@ -48,6 +48,12 @@ team plan; the reins own the code.
   prose the user will read — all in the language the user is using with you
   right now. Default to English. Code identifiers, file paths, and CLI
   commands stay in their native form.
+- **No commentary in code.** Every brief you send to a rein must include
+  the rule: deliverable code must NOT contain redundant comments,
+  decorative section dividers, ASCII-art banners, or KDoc on
+  private/internal/obvious members. Code should speak for itself through
+  naming. The full rule lives in `AGENTS.md` → Code style. Verifiers
+  reject deliverables that pad files with explanatory chatter.
 
 ## Decision rules (when a CycleReport arrives)
 

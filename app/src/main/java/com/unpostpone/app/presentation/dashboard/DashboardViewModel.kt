@@ -24,19 +24,6 @@ class DashboardViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(DashboardUiState())
     val uiState: StateFlow<DashboardUiState> = _uiState.asStateFlow()
 
-    /**
-     * Standalone stream of the persisted "is blocking active" flag.
-     * Mirrors the value inside [uiState] but is exposed separately so
-     * callers that only care about the toggle don't have to subscribe
-     * to the heavier dashboard state.
-     */
-    val isBlockingActive: StateFlow<Boolean> = observeBlockingEnabledUseCase()
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = false,
-        )
-
     private val today: String
         get() = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
 
@@ -64,9 +51,20 @@ class DashboardViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Flips the persisted blocking flag. Reads the current value straight
+     * from [observeBlockingEnabledUseCase] (a hot, replay-1 flow backed by
+     * SharedPreferences) instead of a [StateFlow] mirror, so we never read
+     * a stale [SharingStarted.WhileSubscribed] cache that no UI is
+     * collecting. This is what makes the second tap (off) actually
+     * register after the first tap (on) — the mirror previously froze at
+     * `false` and forced every toggle to write `true`.
+     */
     fun toggleBlocking() {
-        val current = isBlockingActive.value
-        viewModelScope.launch { setBlockingEnabledUseCase(!current) }
+        viewModelScope.launch {
+            val current = observeBlockingEnabledUseCase().first()
+            setBlockingEnabledUseCase(!current)
+        }
     }
 
     fun dismissError() = _uiState.update { it.copy(error = null) }

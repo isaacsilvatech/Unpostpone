@@ -57,6 +57,11 @@ No `packageManager` lockfile — Gradle's dependency cache is the source of trut
 - No `detekt` or `ktlint` is currently configured — use `lintDebug` and IntelliJ/Android Studio
   inspections until a formatter is added. When adding one, wire it into the version catalog and
   the build, and update this file.
+- **Avoid redundant comments.** Prefer self-explanatory code (descriptive names) over comments.
+  Do NOT add comments that restate what the code does, decorative section dividers, ASCII-art
+  banners, or KDoc on private/internal/obvious members. OK to keep a short `why` comment where
+  the intent is not obvious from the code, and KDoc on genuinely public APIs. The harness
+  enforces this — see `.harness/agent.md`.
 
 ## Testing instructions
 
