@@ -54,7 +54,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.unpostpone.app.R
-import com.unpostpone.app.core.tempunlock.TemporaryUnlockManager
 import com.unpostpone.app.core.util.AppLabelResolver
 import com.unpostpone.app.core.util.NotificationPermissionHelper
 import com.unpostpone.app.domain.model.Goal
@@ -68,6 +67,7 @@ fun BlockerScreen(
     viewModel: BlockerViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val currentDuration by viewModel.currentDurationMinutes.collectAsStateWithLifecycle()
     val context = LocalContext.current
     var showConfirmDialog by remember { mutableStateOf(false) }
 
@@ -180,7 +180,7 @@ fun BlockerScreen(
                 ) {
                     Icon(Icons.Default.LockOpen, contentDescription = null)
                     Spacer(Modifier.width(8.dp))
-                    Text(stringResource(R.string.blocker_unlock_for, 5))
+                    Text(stringResource(R.string.blocker_unlock_for, currentDuration))
                 }
             }
         }
@@ -188,11 +188,13 @@ fun BlockerScreen(
 
     if (showConfirmDialog) {
         UnlockConfirmDialog(
+            durationMinutes = currentDuration,
             onConfirm = {
                 showConfirmDialog = false
                 val displayName = AppLabelResolver.resolve(context, packageName)
+                val durationSeconds = currentDuration * 60
                 viewModel.requestTemporaryUnlock(packageName, displayName)
-                startTemporaryUnlockService(context, packageName, displayName)
+                startTemporaryUnlockService(context, packageName, displayName, durationSeconds)
                 (context as? Activity)?.finish()
             },
             onDismiss = { showConfirmDialog = false },
@@ -202,13 +204,14 @@ fun BlockerScreen(
 
 @Composable
 private fun UnlockConfirmDialog(
+    durationMinutes: Int,
     onConfirm: () -> Unit,
     onDismiss: () -> Unit,
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(R.string.blocker_unlock_dialog_title)) },
-        text = { Text(stringResource(R.string.blocker_unlock_dialog_body)) },
+        text = { Text(stringResource(R.string.blocker_unlock_dialog_body, durationMinutes)) },
         confirmButton = {
             TextButton(onClick = onConfirm) {
                 Text(stringResource(R.string.action_confirm))
@@ -226,15 +229,13 @@ private fun startTemporaryUnlockService(
     context: Context,
     packageName: String,
     displayName: String,
+    durationSeconds: Int,
 ) {
     val intent = Intent(context, TemporaryUnlockService::class.java)
         .setAction(TemporaryUnlockService.ACTION_START)
         .putExtra(TemporaryUnlockService.EXTRA_PACKAGE_NAME, packageName)
         .putExtra(TemporaryUnlockService.EXTRA_DISPLAY_NAME, displayName)
-        .putExtra(
-            TemporaryUnlockService.EXTRA_DURATION_SECONDS,
-            TemporaryUnlockManager.DEFAULT_DURATION_SECONDS,
-        )
+        .putExtra(TemporaryUnlockService.EXTRA_DURATION_SECONDS, durationSeconds)
     ContextCompat.startForegroundService(context, intent)
 }
 

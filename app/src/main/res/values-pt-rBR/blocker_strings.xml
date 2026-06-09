@@ -7,7 +7,7 @@
     <string name="blocker_back_to_focus">Voltar e Focar</string>
 
     <string name="blocker_unlock_dialog_title">Desbloquear este app?</string>
-    <string name="blocker_unlock_dialog_body">Você terá 5 minutos de acesso. Depois disso, o app será bloqueado novamente e você voltará para esta tela.</string>
+    <string name="blocker_unlock_dialog_body">Você terá %1$d minutos de acesso. Depois disso, o app será bloqueado novamente e você voltará para esta tela.</string>
 
     <string name="blocker_unlock_notification_title">%1$s desbloqueado</string>
     <string name="blocker_unlock_notification_body">Tempo restante: %1$s</string>

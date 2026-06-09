@@ -42,9 +42,11 @@ fun SettingsScreen(
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val currentTheme by viewModel.currentTheme.collectAsStateWithLifecycle()
+    val currentDuration by viewModel.currentDuration.collectAsStateWithLifecycle()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
     var showThemePicker by remember { mutableStateOf(false) }
+    var showDurationPicker by remember { mutableStateOf(false) }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -77,8 +79,10 @@ fun SettingsScreen(
         SettingsContent(
             uiState = uiState,
             currentTheme = currentTheme,
+            currentDuration = currentDuration,
             onToggleApp = viewModel::toggleApp,
             onThemeClick = { showThemePicker = true },
+            onDurationClick = { showDurationPicker = true },
             onAccessibilityClick = {
                 val serviceComponent = ComponentName(
                     context,
@@ -106,6 +110,10 @@ fun SettingsScreen(
     if (showThemePicker) {
         ThemePickerDialog(onDismiss = { showThemePicker = false })
     }
+
+    if (showDurationPicker) {
+        DurationPickerDialog(onDismiss = { showDurationPicker = false })
+    }
 }
 
 // ── Inner content (preview-friendly, takes pure state + lambdas) ────────
@@ -114,8 +122,10 @@ fun SettingsScreen(
 private fun SettingsContent(
     uiState: SettingsUiState,
     currentTheme: ThemeMode,
+    currentDuration: Int,
     onToggleApp: (String, Boolean) -> Unit,
     onThemeClick: () -> Unit,
+    onDurationClick: () -> Unit,
     onAccessibilityClick: () -> Unit,
     onReplayOnboardingClick: () -> Unit,
     contentPadding: PaddingValues,
@@ -164,11 +174,15 @@ private fun SettingsContent(
         item {
             SettingsSectionCard(
                 title = stringResource(R.string.settings_section_preferences),
-                subtitle = stringResource(R.string.settings_section_preferences_subtitle),
             ) {
                 ThemeRow(
                     current = currentTheme,
                     onClick = onThemeClick,
+                )
+                SettingsRowDivider()
+                DurationRow(
+                    currentMinutes = currentDuration,
+                    onClick = onDurationClick,
                 )
             }
         }
@@ -198,7 +212,7 @@ private fun SettingsContent(
 @Composable
 private fun SettingsSectionCard(
     title: String,
-    subtitle: String,
+    subtitle: String? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     Card(
@@ -221,12 +235,14 @@ private fun SettingsSectionCard(
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSurface,
             )
-            Spacer(Modifier.height(Dimens.SpacingXS))
-            Text(
-                text = subtitle,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
+            if (!subtitle.isNullOrBlank()) {
+                Spacer(Modifier.height(Dimens.SpacingXS))
+                Text(
+                    text = subtitle,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
             Spacer(Modifier.height(Dimens.SpacingM))
             HorizontalDivider(
                 thickness = 1.dp,
@@ -364,15 +380,56 @@ private fun ThemeRow(
             .fillMaxWidth()
             .clickable(onClick = onClick)
             .padding(vertical = Dimens.SpacingM),
-        horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        Text(
-            text = current.nativeName,
-            style = MaterialTheme.typography.bodyLarge,
-            fontWeight = FontWeight.Medium,
-            color = MaterialTheme.colorScheme.onSurface,
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = stringResource(R.string.settings_theme_title),
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+            Text(
+                text = current.nativeName,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        Icon(
+            Icons.Default.ChevronRight,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
         )
+    }
+}
+
+@Composable
+private fun DurationRow(
+    currentMinutes: Int,
+    onClick: () -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(vertical = Dimens.SpacingM),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = stringResource(R.string.settings_unlock_duration_title),
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+            Text(
+                text = stringResource(R.string.settings_unlock_duration_value, currentMinutes),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
         Icon(
             Icons.Default.ChevronRight,
             contentDescription = null,
@@ -439,8 +496,10 @@ private fun SettingsContentPreview_Populated() {
                 ),
             ),
             currentTheme = ThemeMode.SystemDefault,
+            currentDuration = 5,
             onToggleApp = { _, _ -> },
             onThemeClick = {},
+            onDurationClick = {},
             onAccessibilityClick = {},
             onReplayOnboardingClick = {},
             contentPadding = PaddingValues(0.dp),
@@ -455,8 +514,10 @@ private fun SettingsContentPreview_EmptyBlocked() {
         SettingsContent(
             uiState = SettingsUiState(isLoading = false),
             currentTheme = ThemeMode.Light,
+            currentDuration = 15,
             onToggleApp = { _, _ -> },
             onThemeClick = {},
+            onDurationClick = {},
             onAccessibilityClick = {},
             onReplayOnboardingClick = {},
             contentPadding = PaddingValues(0.dp),
@@ -471,8 +532,10 @@ private fun SettingsContentPreview_Loading() {
         SettingsContent(
             uiState = SettingsUiState(isLoading = true),
             currentTheme = ThemeMode.SystemDefault,
+            currentDuration = 5,
             onToggleApp = { _, _ -> },
             onThemeClick = {},
+            onDurationClick = {},
             onAccessibilityClick = {},
             onReplayOnboardingClick = {},
             contentPadding = PaddingValues(0.dp),
@@ -493,8 +556,10 @@ private fun SettingsContentPreview_Populated_Dark() {
                 ),
             ),
             currentTheme = ThemeMode.Dark,
+            currentDuration = 30,
             onToggleApp = { _, _ -> },
             onThemeClick = {},
+            onDurationClick = {},
             onAccessibilityClick = {},
             onReplayOnboardingClick = {},
             contentPadding = PaddingValues(0.dp),

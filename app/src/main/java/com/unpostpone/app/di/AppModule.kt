@@ -4,8 +4,10 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.unpostpone.app.data.repository.OnboardingPreferencesImpl
 import com.unpostpone.app.data.repository.ThemePreferencesImpl
+import com.unpostpone.app.data.repository.UnlockDurationPreferencesImpl
 import com.unpostpone.app.domain.repository.OnboardingPreferences
 import com.unpostpone.app.domain.repository.ThemePreferences
+import com.unpostpone.app.domain.repository.UnlockDurationPreferences
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -42,4 +44,10 @@ abstract class AppModuleBinds {
     abstract fun bindThemePreferences(
         impl: ThemePreferencesImpl,
     ): ThemePreferences
+
+    @Binds
+    @Singleton
+    abstract fun bindUnlockDurationPreferences(
+        impl: UnlockDurationPreferencesImpl,
+    ): UnlockDurationPreferences
 }

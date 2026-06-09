@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.unpostpone.app.core.tempunlock.TemporaryUnlockManager
 import com.unpostpone.app.domain.model.Goal
+import com.unpostpone.app.domain.repository.UnlockDurationPreferences
 import com.unpostpone.app.domain.usecase.goal.GetGoalsUseCase
 import com.unpostpone.app.domain.usecase.statistics.IncrementUnlockAttemptUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,10 +27,13 @@ class BlockerViewModel @Inject constructor(
     private val getGoalsUseCase: GetGoalsUseCase,
     private val incrementUnlockAttemptUseCase: IncrementUnlockAttemptUseCase,
     private val temporaryUnlockManager: TemporaryUnlockManager,
+    unlockDurationPreferences: UnlockDurationPreferences,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(BlockerUiState())
     val uiState: StateFlow<BlockerUiState> = _uiState.asStateFlow()
+
+    val currentDurationMinutes: StateFlow<Int> = unlockDurationPreferences.current
 
     private val today: String
         get() = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
@@ -45,12 +49,13 @@ class BlockerViewModel @Inject constructor(
     }
 
     fun requestTemporaryUnlock(packageName: String, displayName: String) {
+        val durationSeconds = currentDurationMinutes.value * 60
         viewModelScope.launch {
             incrementUnlockAttemptUseCase(today)
             temporaryUnlockManager.start(
                 packageName = packageName,
                 displayName = displayName,
-                durationSeconds = TemporaryUnlockManager.DEFAULT_DURATION_SECONDS,
+                durationSeconds = durationSeconds,
             )
         }
     }

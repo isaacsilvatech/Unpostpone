@@ -9,7 +9,7 @@
 
     <!-- Temporary unlock confirmation dialog -->
     <string name="blocker_unlock_dialog_title">Unlock this app?</string>
-    <string name="blocker_unlock_dialog_body">You will have 5 minutes of access. After that, the app will be blocked again and you will return to this screen.</string>
+    <string name="blocker_unlock_dialog_body">You will have %1$d minutes of access. After that, the app will be blocked again and you will return to this screen.</string>
 
     <!-- Temporary unlock notification (foreground service) -->
     <string name="blocker_unlock_notification_title">%1$s is unlocked</string>

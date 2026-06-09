@@ -7,6 +7,7 @@ import com.unpostpone.app.core.util.Constants
 import com.unpostpone.app.domain.model.BlockedApp
 import com.unpostpone.app.domain.repository.OnboardingPreferences
 import com.unpostpone.app.domain.repository.ThemePreferences
+import com.unpostpone.app.domain.repository.UnlockDurationPreferences
 import com.unpostpone.app.domain.usecase.blockedapp.AddBlockedAppUseCase
 import com.unpostpone.app.domain.usecase.blockedapp.GetBlockedAppsUseCase
 import com.unpostpone.app.domain.usecase.blockedapp.SetAppEnabledUseCase
@@ -26,9 +27,11 @@ class SettingsViewModel @Inject constructor(
     private val setAppEnabled: SetAppEnabledUseCase,
     private val onboardingPreferences: OnboardingPreferences,
     private val themePreferences: ThemePreferences,
+    private val unlockDurationPreferences: UnlockDurationPreferences,
 ) : ViewModel() {
 
     val currentTheme: StateFlow<ThemeMode> = themePreferences.current
+    val currentDuration: StateFlow<Int> = unlockDurationPreferences.current
 
     private val _uiState = MutableStateFlow(SettingsUiState(isLoading = true))
     val uiState: StateFlow<SettingsUiState> = _uiState.asStateFlow()
@@ -45,6 +48,10 @@ class SettingsViewModel @Inject constructor(
 
     fun setTheme(mode: ThemeMode) {
         themePreferences.setTheme(mode)
+    }
+
+    fun setDuration(minutes: Int) {
+        unlockDurationPreferences.setDuration(minutes)
     }
 
     fun replayOnboarding() {
