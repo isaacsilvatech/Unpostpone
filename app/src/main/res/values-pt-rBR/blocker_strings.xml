@@ -2,7 +2,6 @@
 <resources>
     <string name="blocker_title">App Bloqueado</string>
     <string name="blocker_subtitle">Conclua suas metas antes de acessar este app.</string>
-    <string name="blocker_pending_goals">Metas Pendentes</string>
     <string name="blocker_unlock_for">Desbloquear por %1$d minutos</string>
     <string name="blocker_back_to_focus">Voltar e Focar</string>
 

@@ -28,10 +28,7 @@ import androidx.compose.material.icons.filled.LockOpen
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -56,7 +53,6 @@ import androidx.navigation.NavController
 import com.unpostpone.app.R
 import com.unpostpone.app.core.util.AppLabelResolver
 import com.unpostpone.app.core.util.NotificationPermissionHelper
-import com.unpostpone.app.domain.model.Goal
 import com.unpostpone.app.presentation.navigation.Screen
 import com.unpostpone.app.service.tempunlock.TemporaryUnlockService
 
@@ -66,7 +62,6 @@ fun BlockerScreen(
     navController: NavController,
     viewModel: BlockerViewModel = hiltViewModel(),
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val currentDuration by viewModel.currentDurationMinutes.collectAsStateWithLifecycle()
     val context = LocalContext.current
     var showConfirmDialog by remember { mutableStateOf(false) }
@@ -125,21 +120,6 @@ fun BlockerScreen(
                     color = MaterialTheme.colorScheme.onErrorContainer,
                     textAlign = TextAlign.Center,
                 )
-            }
-
-            if (uiState.activeGoals.isNotEmpty()) {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Text(
-                        text = stringResource(R.string.blocker_pending_goals),
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onErrorContainer,
-                    )
-                    uiState.activeGoals.take(3).forEach { goal -> BlockerGoalItem(goal) }
-                }
             }
 
             Column(
@@ -237,34 +217,4 @@ private fun startTemporaryUnlockService(
         .putExtra(TemporaryUnlockService.EXTRA_DISPLAY_NAME, displayName)
         .putExtra(TemporaryUnlockService.EXTRA_DURATION_SECONDS, durationSeconds)
     ContextCompat.startForegroundService(context, intent)
-}
-
-@Composable
-private fun BlockerGoalItem(goal: Goal) {
-    Card(
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.error.copy(alpha = 0.2f)
-        )
-    ) {
-        Column(modifier = Modifier.fillMaxWidth().padding(12.dp)) {
-            Text(
-                goal.name,
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colorScheme.onErrorContainer,
-            )
-            Spacer(Modifier.height(4.dp))
-            LinearProgressIndicator(
-                progress = { goal.progressPercent },
-                modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colorScheme.onErrorContainer,
-                trackColor = MaterialTheme.colorScheme.error.copy(alpha = 0.3f),
-            )
-            Text(
-                "${goal.progressMinutes}/${goal.targetMinutes} min",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onErrorContainer.copy(alpha = 0.7f),
-            )
-        }
-    }
 }
