@@ -47,6 +47,32 @@
 
     <string name="dashboard_goal_completed_cd">Concluído</string>
 
+    <!-- Dashboard redesenhado (herói de Proteção de Foco) -->
+    <string name="dashboard_focus_protection_title">Proteção de Foco</string>
+    <string name="dashboard_focus_protection_apps">%1$d apps protegidos</string>
+    <string name="dashboard_focus_protection_subtitle">Mantenha o foco e evite distrações</string>
+    <string name="dashboard_focus_status_active">Ativo</string>
+    <string name="dashboard_focus_status_inactive">Inativo</string>
+    <string name="dashboard_todays_focus_title">Foco de hoje</string>
+    <string name="dashboard_focused_today">Focado hoje</string>
+    <string name="dashboard_daily_goal_percent">%1$d%% da meta diária · meta de %2$dh</string>
+    <string name="dashboard_tools_label">Ferramentas</string>
+    <string name="dashboard_tool_pomodoro">Pomodoro</string>
+    <string name="dashboard_tool_tasks">Tarefas</string>
+    <string name="dashboard_tool_notes">Notas</string>
+    <string name="dashboard_tool_goals">Metas</string>
+    <string name="dashboard_tool_statistics">Estatísticas</string>
+    <string name="dashboard_today_goal_progress">%1$d / %2$d min</string>
+    <string name="dashboard_empty_goals_subtitle">Defina o que você quer conquistar hoje</string>
+    <string name="dashboard_insights_label">Indicativos de hoje</string>
+    <string name="dashboard_insight_blocked">Bloqueios</string>
+    <string name="dashboard_insight_attempts">Tentativas</string>
+    <string name="dashboard_insight_goals">Metas</string>
+    <string name="dashboard_insight_focused">Focado</string>
+    <string name="dashboard_momentum_title">Momento</string>
+    <string name="dashboard_momentum_quote">Pequenas ações repetidas diariamente criam resultados extraordinários.</string>
+    <string name="dashboard_streak_days">Sequência de %1$d dias</string>
+
     <plurals name="dashboard_minutes_focused">
         <item quantity="one">%d min</item>
         <item quantity="other">%d min</item>

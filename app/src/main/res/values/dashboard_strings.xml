@@ -51,6 +51,32 @@
 
     <string name="dashboard_goal_completed_cd">Completed</string>
 
+    <!-- Redesigned dashboard (focus protection hero) -->
+    <string name="dashboard_focus_protection_title">Focus Protection</string>
+    <string name="dashboard_focus_protection_apps">%1$d apps protected</string>
+    <string name="dashboard_focus_protection_subtitle">Stay focused and avoid distractions</string>
+    <string name="dashboard_focus_status_active">Active</string>
+    <string name="dashboard_focus_status_inactive">Inactive</string>
+    <string name="dashboard_todays_focus_title">Today\'s focus</string>
+    <string name="dashboard_focused_today">Focused today</string>
+    <string name="dashboard_daily_goal_percent">%1$d%% of daily goal · %2$dh target</string>
+    <string name="dashboard_tools_label">Tools</string>
+    <string name="dashboard_tool_pomodoro">Pomodoro</string>
+    <string name="dashboard_tool_tasks">Tasks</string>
+    <string name="dashboard_tool_notes">Notes</string>
+    <string name="dashboard_tool_goals">Goals</string>
+    <string name="dashboard_tool_statistics">Statistics</string>
+    <string name="dashboard_today_goal_progress">%1$d / %2$d min</string>
+    <string name="dashboard_empty_goals_subtitle">Define what you want to accomplish today</string>
+    <string name="dashboard_insights_label">Today\'s insights</string>
+    <string name="dashboard_insight_blocked">Blocked</string>
+    <string name="dashboard_insight_attempts">Attempts</string>
+    <string name="dashboard_insight_goals">Goals</string>
+    <string name="dashboard_insight_focused">Focused</string>
+    <string name="dashboard_momentum_title">Momentum</string>
+    <string name="dashboard_momentum_quote">Small actions repeated daily create extraordinary results.</string>
+    <string name="dashboard_streak_days">%1$d-day streak</string>
+
     <!-- Plurals: minutes -->
     <plurals name="dashboard_minutes_focused">
         <item quantity="one">%d min</item>

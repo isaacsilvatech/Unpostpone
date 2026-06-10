@@ -14,6 +14,14 @@ AccessibilityService and a foreground monitoring service.
 - Lint:         `./gradlew :app:lintDebug`
 - Clean:        `./gradlew clean`
 
+**Build policy — DO NOT assemble APKs from the harness.** Orchestrators and
+workers must NOT run `./gradlew :app:assembleDebug` or `:app:assembleRelease`
+during normal work. The user builds the APK manually on their own machine
+after reviewing the diff. Use `:app:compileDebugKotlin` and
+`:app:testDebugUnitTest` for fast verification; leave packaging to the user.
+Generated `app/build/outputs/apk/**/*.apk` files are not deliverables — never
+attach them to chat unless the user explicitly asks.
+
 Package manager: Gradle (Kotlin DSL) with version catalog at `gradle/libs.versions.toml`.
 No `packageManager` lockfile — Gradle's dependency cache is the source of truth.
 

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.unpostpone.app.core.util.AccessibilityServiceUtils
+import com.unpostpone.app.domain.usecase.blockedapp.GetBlockedAppsUseCase
 import com.unpostpone.app.domain.usecase.blockedapp.ObserveBlockingEnabledUseCase
 import com.unpostpone.app.domain.usecase.blockedapp.SetBlockingEnabledUseCase
 import com.unpostpone.app.domain.usecase.goal.GetGoalsUseCase
@@ -21,6 +22,7 @@ class DashboardViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val getGoalsUseCase: GetGoalsUseCase,
     private val getStatisticsUseCase: GetStatisticsUseCase,
+    private val getBlockedAppsUseCase: GetBlockedAppsUseCase,
     private val observeBlockingEnabledUseCase: ObserveBlockingEnabledUseCase,
     private val setBlockingEnabledUseCase: SetBlockingEnabledUseCase,
 ) : ViewModel() {
@@ -42,17 +44,19 @@ class DashboardViewModel @Inject constructor(
                 getGoalsUseCase(today),
                 getStatisticsUseCase.forDate(today),
                 observeBlockingEnabledUseCase(),
-            ) { goals, stats, isBlocking ->
-                Triple(goals, stats, isBlocking)
+                getBlockedAppsUseCase(),
+            ) { goals, stats, isBlocking, blockedApps ->
+                Quad(goals, stats, isBlocking, blockedApps.size)
             }
                 .catch { e -> _uiState.update { it.copy(isLoading = false, error = e.message) } }
-                .collect { (goals, stats, isBlocking) ->
+                .collect { (goals, stats, isBlocking, protectedCount) ->
                     _uiState.update {
                         it.copy(
                             todayGoals = goals,
                             todayStatistics = stats,
                             isBlockingActive = isBlocking,
                             isAccessibilityServiceEnabled = AccessibilityServiceUtils.isUnpostponeEnabled(context),
+                            protectedAppCount = protectedCount,
                             isLoading = false,
                         )
                     }
@@ -84,3 +88,5 @@ class DashboardViewModel @Inject constructor(
 
     fun dismissError() = _uiState.update { it.copy(error = null) }
 }
+
+private data class Quad<A, B, C, D>(val a: A, val b: B, val c: C, val d: D)
