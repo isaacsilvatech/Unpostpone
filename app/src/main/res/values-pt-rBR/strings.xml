@@ -30,11 +30,19 @@
 
  <string name="pomodoro_title">Pomodoro</string>
  <string name="pomodoro_back_cd">Voltar</string>
- <string name="pomodoro_action_start">Iniciar</string>
- <string name="pomodoro_action_pause">Pausar</string>
- <string name="pomodoro_action_resume">Retomar</string>
- <string name="pomodoro_action_reset">Reiniciar</string>
- <string name="pomodoro_action_skip">Pular</string>
+    <string name="pomodoro_action_start">Iniciar</string>
+    <string name="pomodoro_action_start_next">Iniciar próxima</string>
+    <string name="pomodoro_action_pause">Pausar</string>
+    <string name="pomodoro_action_resume">Retomar</string>
+    <string name="pomodoro_action_reset">Reiniciar</string>
+    <string name="pomodoro_action_skip">Pular</string>
+    <string name="pomodoro_action_cancel">Cancelar</string>
+    <string name="pomodoro_eyebrow_focus">Foco · %1$d min</string>
+    <string name="pomodoro_eyebrow_short_break">Pausa curta · %1$d min</string>
+    <string name="pomodoro_eyebrow_long_break">Pausa longa · %1$d min</string>
+    <string name="pomodoro_preset_total">%1$d min por ciclo</string>
+    <string name="pomodoro_session_chip_cd">Sessão atual</string>
+    <string name="pomodoro_preset_selected_cd">Selecionado</string>
  <string name="pomodoro_presets_title">Atalhos rápidos</string>
  <string name="pomodoro_preset_classic_title">25/5 Clássico</string>
  <string name="pomodoro_preset_deep_title">50/10 Trabalho Profundo</string>

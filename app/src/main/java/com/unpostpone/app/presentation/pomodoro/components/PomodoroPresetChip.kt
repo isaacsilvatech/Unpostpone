@@ -1,16 +1,28 @@
 package com.unpostpone.app.presentation.pomodoro.components
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,32 +48,62 @@ fun PomodoroPresetChip(
     else MaterialTheme.colorScheme.onSurface
     val subtitleColor = if (selected) MaterialTheme.colorScheme.onPrimaryContainer
     else MaterialTheme.colorScheme.onSurfaceVariant
+    val accentColor = if (selected) MaterialTheme.colorScheme.primary
+    else MaterialTheme.colorScheme.onSurfaceVariant
     val titleRes = when (preset) {
         PomodoroPreset.Classic -> R.string.pomodoro_preset_classic_title
         PomodoroPreset.DeepWork -> R.string.pomodoro_preset_deep_title
         PomodoroPreset.Extended -> R.string.pomodoro_preset_extended_title
         else -> R.string.pomodoro_preset_classic_title
     }
+    val cycleMinutes = preset.focusMinutes + preset.shortBreakMinutes
+    val selectedCd = stringResource(R.string.pomodoro_preset_selected_cd)
+
+    val chipModifier = modifier
+        .defaultMinSize(minWidth = Dimens.PresetChipMinWidth)
+        .then(
+            if (selected) Modifier.semantics { contentDescription = selectedCd }
+            else Modifier,
+        )
 
     Surface(
-        modifier = modifier,
+        modifier = chipModifier,
         shape = RoundedCornerShape(MediumRadius),
         color = containerColor,
-        tonalElevation = 0.dp,
-        border = BorderStroke(1.dp, borderColor),
+        contentColor = titleColor,
+        tonalElevation = Dimens.SurfaceFlatElevation,
+        border = BorderStroke(Dimens.PresetChipBorderWidth, borderColor),
         onClick = onClick,
     ) {
         Column(
-            modifier = Modifier.padding(horizontal = Dimens.SpacingM, vertical = Dimens.SpacingS),
+            modifier = Modifier.padding(
+                horizontal = Dimens.SpacingM,
+                vertical = Dimens.SpacingS,
+            ),
         ) {
-            Text(
-                text = stringResource(titleRes),
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.SemiBold,
-                color = titleColor,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = stringResource(titleRes),
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    color = titleColor,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f),
+                )
+                if (selected) {
+                    Spacer(Modifier.width(Dimens.SpacingS))
+                    Icon(
+                        imageVector = Icons.Filled.Check,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(Dimens.IconS),
+                    )
+                }
+            }
             Text(
                 text = stringResource(
                     R.string.pomodoro_preset_subtitle,
@@ -73,6 +115,18 @@ fun PomodoroPresetChip(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
+            Spacer(Modifier.size(Dimens.SpacingXS))
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(Dimens.SpacingS),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = stringResource(R.string.pomodoro_preset_total, cycleMinutes),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = accentColor,
+                    fontWeight = FontWeight.Medium,
+                )
+            }
         }
     }
 }

@@ -42,6 +42,7 @@ object Dimens {
     val FocusRingSize     = 240.dp
     val FocusRingStroke   = 14.dp
     val FocusRingTrack    = 6.dp
+    val FocusRingTickRadius = 4.dp
 
     val HeroPadding          = 32.dp
     val HeroRingSize         = FocusRingSize   // alias — 240dp
@@ -53,4 +54,14 @@ object Dimens {
 
     // ── Hero card shape (alias of HeroRadius in Shape.kt) ───────────
     val HeroCornerRadius     = 32.dp  // 32dp squircle for the hero band
+
+    // ── Pomodoro screen ─────────────────────────────────────────────
+    val SessionChipMinWidth  = 120.dp // minimum width so the chip never looks like a pill in the corner
+    val PresetChipMinWidth   = 160.dp // minimum width for a FlowRow preset card
+    val PresetFlowSpacing    = SpacingL   // 16 — between preset chips in the FlowRow
+    val HeroZoneSpacing      = SpacingXXL // 24 — between the four hero zones (chip → ring → controls → link)
+    val ControlsLinkSpacing  = SpacingM   // 12 — between the main button and the secondary "Reset/Cancel" text-button
+    val HeroBorderWidth      = 1.dp
+    val PresetChipBorderWidth = 1.dp
+    val SurfaceFlatElevation = 0.dp  // explicit zero-elevation token (idiomatic for `tonalElevation = 0.dp`)
 }

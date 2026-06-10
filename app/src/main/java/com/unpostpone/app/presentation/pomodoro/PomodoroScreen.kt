@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -32,7 +33,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -126,27 +130,50 @@ private fun PomodoroContent(
     ) {
         Spacer(Modifier.height(Dimens.SpacingM))
 
-        Surface(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(HeroRadius),
-            color = MaterialTheme.colorScheme.surface,
-            tonalElevation = 0.dp,
-            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        HeroCard(
+            uiState = uiState,
+            onEvent = onEvent,
+        )
+
+        Spacer(Modifier.height(Dimens.SpacingM))
+
+        PresetsSection(
+            uiState = uiState,
+            onEvent = onEvent,
+        )
+
+        Spacer(Modifier.height(Dimens.SpacingXL))
+    }
+}
+
+@Composable
+private fun HeroCard(
+    uiState: PomodoroUiState,
+    onEvent: (PomodoroEvent) -> Unit,
+) {
+    val eyebrowText = eyebrowFor(uiState)
+
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(HeroRadius),
+        color = MaterialTheme.colorScheme.surface,
+        tonalElevation = Dimens.SurfaceFlatElevation,
+        border = BorderStroke(Dimens.HeroBorderWidth, MaterialTheme.colorScheme.outlineVariant),
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = Dimens.SpacingXXL),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(Dimens.HeroZoneSpacing),
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = Dimens.SpacingXXL),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(Dimens.SpacingL),
-            ) {
-                SessionTypeChip(type = uiState.currentSessionType)
-                PomodoroTimerRing(
-                    progress = uiState.progress,
-                    centerText = uiState.formattedRemaining,
-                    eyebrow = null,
-                )
-            }
+            SessionTypeChip(type = uiState.currentSessionType)
+
+            PomodoroTimerRing(
+                progress = uiState.progress,
+                centerText = uiState.formattedRemaining,
+                eyebrow = eyebrowText,
+            )
 
             PomodoroControls(
                 timerState = uiState.timerState,
@@ -156,7 +183,7 @@ private fun PomodoroContent(
                 onResume = { onEvent(PomodoroEvent.Resume) },
                 onReset = { onEvent(PomodoroEvent.Reset) },
                 onSkipToNext = { onEvent(PomodoroEvent.SkipToNext) },
-                modifier = Modifier.padding(horizontal = Dimens.SpacingXXL),
+                onCancel = { onEvent(PomodoroEvent.Reset) },
             )
 
             if (uiState.completedFocusCount > 0) {
@@ -167,61 +194,88 @@ private fun PomodoroContent(
                     ),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(horizontal = Dimens.SpacingXXL),
                 )
             }
-
-            Spacer(Modifier.height(Dimens.SpacingS))
         }
+    }
+}
 
+@Composable
+private fun PresetsSection(
+    uiState: PomodoroUiState,
+    onEvent: (PomodoroEvent) -> Unit,
+) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Text(
+            text = stringResource(R.string.pomodoro_presets_title).uppercase(),
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
         Spacer(Modifier.height(Dimens.SpacingM))
-
-        Column(modifier = Modifier.fillMaxWidth()) {
-            Text(
-                text = stringResource(R.string.pomodoro_presets_title).uppercase(),
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            Spacer(Modifier.height(Dimens.SpacingM))
-            FlowRow(
-                horizontalArrangement = Arrangement.spacedBy(Dimens.SpacingM),
-                verticalArrangement = Arrangement.spacedBy(Dimens.SpacingM),
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                uiState.availablePresets.forEach { preset ->
-                    PomodoroPresetChip(
-                        preset = preset,
-                        selected = preset.name == uiState.selectedPreset.name,
-                        onClick = { onEvent(PomodoroEvent.PresetSelected(preset)) },
-                    )
-                }
+        FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(Dimens.PresetFlowSpacing),
+            verticalArrangement = Arrangement.spacedBy(Dimens.PresetFlowSpacing),
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            uiState.availablePresets.forEach { preset ->
+                PomodoroPresetChip(
+                    preset = preset,
+                    selected = preset.name == uiState.selectedPreset.name,
+                    onClick = { onEvent(PomodoroEvent.PresetSelected(preset)) },
+                )
             }
         }
-
-        Spacer(Modifier.height(Dimens.SpacingXL))
     }
+}
+
+@Composable
+private fun eyebrowFor(uiState: PomodoroUiState): String {
+    val minutes = (uiState.plannedDurationMillis / 60_000L).toInt()
+    val resId = when (uiState.currentSessionType) {
+        PomodoroSessionType.FOCUS -> R.string.pomodoro_eyebrow_focus
+        PomodoroSessionType.SHORT_BREAK -> R.string.pomodoro_eyebrow_short_break
+        PomodoroSessionType.LONG_BREAK -> R.string.pomodoro_eyebrow_long_break
+    }
+    return stringResource(resId, minutes)
 }
 
 @Composable
 private fun SessionTypeChip(type: PomodoroSessionType) {
     val labelRes: Int
-    val containerColor = MaterialTheme.colorScheme.surface
-    val contentColor = MaterialTheme.colorScheme.onSurface
+    val containerColor: Color
+    val contentColor: Color
+    val borderColor: Color
     when (type) {
         PomodoroSessionType.FOCUS -> {
             labelRes = R.string.pomodoro_session_focus
+            containerColor = MaterialTheme.colorScheme.primaryContainer
+            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            borderColor = MaterialTheme.colorScheme.primary
         }
         PomodoroSessionType.SHORT_BREAK -> {
             labelRes = R.string.pomodoro_session_short_break
+            containerColor = MaterialTheme.colorScheme.tertiaryContainer
+            contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+            borderColor = MaterialTheme.colorScheme.tertiary
         }
         PomodoroSessionType.LONG_BREAK -> {
             labelRes = R.string.pomodoro_session_long_break
+            containerColor = MaterialTheme.colorScheme.secondaryContainer
+            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+            borderColor = MaterialTheme.colorScheme.secondary
         }
     }
+
+    val chipCd = stringResource(R.string.pomodoro_session_chip_cd)
 
     Surface(
         shape = RoundedCornerShape(Dimens.SpacingXL),
         color = containerColor,
+        contentColor = contentColor,
+        border = BorderStroke(Dimens.HeroBorderWidth, borderColor),
+        modifier = Modifier
+            .defaultMinSize(minWidth = Dimens.SessionChipMinWidth)
+            .semantics { contentDescription = chipCd },
     ) {
         Text(
             text = stringResource(labelRes),
@@ -338,6 +392,24 @@ private fun PomodoroScreenPreview_Paused() {
     }
 }
 
+@Preview(name = "PomodoroScreen — Finished (light)", showBackground = true)
+@Composable
+private fun PomodoroScreenPreview_Finished() {
+    UnpostponeTheme(darkTheme = false) {
+        PomodoroContent(
+            uiState = PomodoroUiState(
+                timerState = TimerState.Finished,
+                remainingMillis = 0L,
+                plannedDurationMillis = 25 * 60_000L,
+                currentSessionType = PomodoroSessionType.SHORT_BREAK,
+                completedFocusCount = 2,
+            ),
+            onEvent = {},
+            contentPadding = PaddingValues(0.dp),
+        )
+    }
+}
+
 @Preview(name = "PomodoroScreen — Dark", showBackground = true)
 @Composable
 private fun PomodoroScreenPreview_Dark() {
@@ -345,11 +417,11 @@ private fun PomodoroScreenPreview_Dark() {
         PomodoroContent(
             uiState = PomodoroUiState(
                 timerState = TimerState.Running,
-                currentSessionType = PomodoroSessionType.SHORT_BREAK,
+                currentSessionType = PomodoroSessionType.LONG_BREAK,
                 selectedPreset = PomodoroPreset.DeepWork,
-                remainingMillis = 5 * 60_000L,
-                plannedDurationMillis = 10 * 60_000L,
-                completedFocusCount = 3,
+                remainingMillis = 8 * 60_000L,
+                plannedDurationMillis = 20 * 60_000L,
+                completedFocusCount = 4,
             ),
             onEvent = {},
             contentPadding = PaddingValues(0.dp),

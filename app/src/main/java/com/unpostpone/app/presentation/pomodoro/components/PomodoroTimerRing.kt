@@ -89,7 +89,7 @@ fun PomodoroTimerRing(
                 )
             }
 
-            val tickRadius = 4.dp.toPx()
+            val tickRadius = Dimens.FocusRingTickRadius.toPx()
             drawCircle(
                 color = ringColor,
                 radius = tickRadius,
