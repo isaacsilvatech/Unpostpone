@@ -6,6 +6,7 @@ import com.unpostpone.app.core.util.Constants
 import com.unpostpone.app.data.local.AppDatabase
 import com.unpostpone.app.data.local.dao.BlockedAppDao
 import com.unpostpone.app.data.local.dao.GoalDao
+import com.unpostpone.app.data.local.dao.PomodoroSessionDao
 import com.unpostpone.app.data.local.dao.StatisticsDao
 import dagger.Module
 import dagger.Provides
@@ -21,7 +22,9 @@ object DatabaseModule {
     @Provides
     @Singleton
     fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase =
-        Room.databaseBuilder(context, AppDatabase::class.java, Constants.DATABASE_NAME).build()
+        Room.databaseBuilder(context, AppDatabase::class.java, Constants.DATABASE_NAME)
+            .addMigrations(AppDatabase.MIGRATION_1_2)
+            .build()
 
     @Provides
     fun provideGoalDao(db: AppDatabase): GoalDao = db.goalDao()
@@ -31,4 +34,7 @@ object DatabaseModule {
 
     @Provides
     fun provideStatisticsDao(db: AppDatabase): StatisticsDao = db.statisticsDao()
+
+    @Provides
+    fun providePomodoroSessionDao(db: AppDatabase): PomodoroSessionDao = db.pomodoroSessionDao()
 }

@@ -31,8 +31,32 @@
     <string name="accessibility_service_description">Unpostpone monitors which app is in use to block distractions while you work on your goals.</string>
 
     <!-- Errors -->
-    <string name="error_generic">Something went wrong. Please try again.</string>
-    <string name="error_network">No connection. Check your network and retry.</string>
-    <string name="error_empty_field">This field cannot be empty.</string>
-    <string name="error_invalid_number">Enter a valid number.</string>
+ <string name="error_generic">Something went wrong. Please try again.</string>
+ <string name="error_network">No connection. Check your network and retry.</string>
+ <string name="error_empty_field">This field cannot be empty.</string>
+ <string name="error_invalid_number">Enter a valid number.</string>
+
+ <!-- Pomodoro screen -->
+ <string name="pomodoro_title">Pomodoro</string>
+ <string name="pomodoro_back_cd">Back</string>
+ <string name="pomodoro_action_start">Start</string>
+ <string name="pomodoro_action_pause">Pause</string>
+ <string name="pomodoro_action_resume">Resume</string>
+ <string name="pomodoro_action_reset">Reset</string>
+ <string name="pomodoro_action_skip">Skip</string>
+ <string name="pomodoro_presets_title">Quick presets</string>
+ <string name="pomodoro_preset_classic_title">25/5 Classic</string>
+ <string name="pomodoro_preset_deep_title">50/10 Deep Work</string>
+ <string name="pomodoro_preset_extended_title">90/15 Extended Focus</string>
+ <string name="pomodoro_preset_subtitle">%1$d min focus / %2$d min break</string>
+ <string name="pomodoro_session_focus">Focus</string>
+ <string name="pomodoro_session_short_break">Short break</string>
+ <string name="pomodoro_session_long_break">Long break</string>
+ <string name="pomodoro_complete_title">Session complete</string>
+ <string name="pomodoro_complete_focus_body">Time for a break.</string>
+ <string name="pomodoro_complete_break_body">Ready to focus again?</string>
+ <string name="pomodoro_complete_focus_action">Start break</string>
+ <string name="pomodoro_complete_break_action">Start focus</string>
+ <string name="pomodoro_complete_dismiss">Close</string>
+ <string name="pomodoro_completed_focus_count">%1$d focus sessions completed</string>
 </resources>

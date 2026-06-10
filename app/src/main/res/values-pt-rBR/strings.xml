@@ -24,7 +24,30 @@
     <string name="accessibility_service_description">O Unpostpone monitora qual aplicativo está em uso para bloquear distrações enquanto você trabalha nas suas metas.</string>
 
     <string name="error_generic">Algo deu errado. Tente novamente.</string>
-    <string name="error_network">Sem conexão. Verifique sua rede e tente novamente.</string>
-    <string name="error_empty_field">Este campo não pode estar vazio.</string>
-    <string name="error_invalid_number">Digite um número válido.</string>
+ <string name="error_network">Sem conexão. Verifique sua rede e tente novamente.</string>
+ <string name="error_empty_field">Este campo não pode estar vazio.</string>
+ <string name="error_invalid_number">Digite um número válido.</string>
+
+ <string name="pomodoro_title">Pomodoro</string>
+ <string name="pomodoro_back_cd">Voltar</string>
+ <string name="pomodoro_action_start">Iniciar</string>
+ <string name="pomodoro_action_pause">Pausar</string>
+ <string name="pomodoro_action_resume">Retomar</string>
+ <string name="pomodoro_action_reset">Reiniciar</string>
+ <string name="pomodoro_action_skip">Pular</string>
+ <string name="pomodoro_presets_title">Atalhos rápidos</string>
+ <string name="pomodoro_preset_classic_title">25/5 Clássico</string>
+ <string name="pomodoro_preset_deep_title">50/10 Trabalho Profundo</string>
+ <string name="pomodoro_preset_extended_title">90/15 Foco Estendido</string>
+ <string name="pomodoro_preset_subtitle">%1$d min foco / %2$d min pausa</string>
+ <string name="pomodoro_session_focus">Foco</string>
+ <string name="pomodoro_session_short_break">Pausa curta</string>
+ <string name="pomodoro_session_long_break">Pausa longa</string>
+ <string name="pomodoro_complete_title">Sessão concluída</string>
+ <string name="pomodoro_complete_focus_body">Hora de uma pausa.</string>
+ <string name="pomodoro_complete_break_body">Pronto para focar de novo?</string>
+ <string name="pomodoro_complete_focus_action">Iniciar pausa</string>
+ <string name="pomodoro_complete_break_action">Iniciar foco</string>
+ <string name="pomodoro_complete_dismiss">Fechar</string>
+ <string name="pomodoro_completed_focus_count">%1$d sessões de foco concluídas</string>
 </resources>
