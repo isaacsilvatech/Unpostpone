@@ -11,22 +11,22 @@ val TealHint   = Color(0xFFE8F2F4)  // primary container — whisper of teal
 val TealHintDark = Color(0xFF1F4047) // dark-mode primary container
 
 // ── Material 3 — Light scheme ─────────────────────────────────────────────
-val LightBackground            = Color(0xFFFAFAFA)   // page bg
+val LightBackground            = Color(0xFFF6F6F7)   // page bg — lifts cards off it
 val LightOnBackground          = Color(0xFF0A0A0A)   // primary text
 val LightSurface               = Color(0xFFFFFFFF)   // cards
 val LightOnSurface             = Color(0xFF0A0A0A)
-val LightSurfaceVariant        = Color(0xFFF4F4F4)   // subtle neutral fill
+val LightSurfaceVariant        = Color(0xFFEEEEF0)   // subtle neutral fill
 val LightOnSurfaceVariant      = Color(0xFF6B6B6B)   // muted text
 
 // M3 1.4 surface container family — used by TopAppBar, NavigationBar, etc.
 val LightSurfaceContainerLowest  = Color(0xFFFFFFFF)
-val LightSurfaceContainerLow     = Color(0xFFFAFAFA)
-val LightSurfaceContainer        = Color(0xFFFAFAFA)
-val LightSurfaceContainerHigh    = Color(0xFFF4F4F4)
-val LightSurfaceContainerHighest = Color(0xFFEEEEEE)
+val LightSurfaceContainerLow     = Color(0xFFFAFAFB)
+val LightSurfaceContainer        = Color(0xFFF8F8F9)
+val LightSurfaceContainerHigh    = Color(0xFFF4F4F5)
+val LightSurfaceContainerHighest = Color(0xFFEFEFF0)
 
-val LightOutline               = Color(0xFFD4D4D4)   // visible borders
-val LightOutlineVariant        = Color(0xFFEDEDED)   // hairline dividers
+val LightOutline               = Color(0xFFBFBFBF)   // visible borders
+val LightOutlineVariant        = Color(0xFFE0E0E0)   // hairline dividers
 
 val LightPrimary               = Teal
 val LightOnPrimary             = Color(0xFFFFFFFF)
@@ -57,19 +57,19 @@ val LightSurfaceTint           = Teal
 // ── Material 3 — Dark scheme ──────────────────────────────────────────────
 val DarkBackground             = Color(0xFF0A0A0A)
 val DarkOnBackground           = Color(0xFFF5F5F5)
-val DarkSurface                = Color(0xFF141414)
+val DarkSurface                = Color(0xFF1C1C1C)
 val DarkOnSurface              = Color(0xFFF5F5F5)
-val DarkSurfaceVariant         = Color(0xFF1F1F1F)
-val DarkOnSurfaceVariant       = Color(0xFFA3A3A3)
+val DarkSurfaceVariant         = Color(0xFF2C2C2C)
+val DarkOnSurfaceVariant       = Color(0xFFB0B0B0)
 
 val DarkSurfaceContainerLowest  = Color(0xFF0A0A0A)
-val DarkSurfaceContainerLow     = Color(0xFF0A0A0A)
-val DarkSurfaceContainer        = Color(0xFF141414)
-val DarkSurfaceContainerHigh    = Color(0xFF1F1F1F)
-val DarkSurfaceContainerHighest = Color(0xFF262626)
+val DarkSurfaceContainerLow     = Color(0xFF121212)
+val DarkSurfaceContainer        = Color(0xFF1C1C1C)
+val DarkSurfaceContainerHigh    = Color(0xFF262626)
+val DarkSurfaceContainerHighest = Color(0xFF303030)
 
-val DarkOutline                = Color(0xFF404040)
-val DarkOutlineVariant         = Color(0xFF2E2E2E)
+val DarkOutline                = Color(0xFF555555)
+val DarkOutlineVariant         = Color(0xFF383838)
 
 val DarkPrimary                = Color(0xFF5BA3B0)   // lifted teal for dark
 val DarkOnPrimary              = TealDark
