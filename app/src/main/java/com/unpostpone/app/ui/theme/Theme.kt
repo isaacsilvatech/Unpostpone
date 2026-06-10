@@ -5,7 +5,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.compositionLocalOf
 
+
+val LocalIsDarkTheme = compositionLocalOf { false }
 
 private val LightColors = lightColorScheme(
     background                   = LightBackground,
@@ -87,10 +91,14 @@ fun UnpostponeTheme(
     content: @Composable () -> Unit
 ) {
     val colorScheme = if (darkTheme) DarkColors else LightColors
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography  = Typography,
-        shapes      = UnpostponeShapes,
-        content     = content,
-    )
+    CompositionLocalProvider(
+        LocalIsDarkTheme provides darkTheme,
+    ) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography  = Typography,
+            shapes      = UnpostponeShapes,
+            content     = content,
+        )
+    }
 }

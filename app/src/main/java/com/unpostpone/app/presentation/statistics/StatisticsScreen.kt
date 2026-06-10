@@ -1,7 +1,6 @@
 package com.unpostpone.app.presentation.statistics
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -47,6 +46,7 @@ import com.unpostpone.app.presentation.dashboard.BottomNavigationBar
 import com.unpostpone.app.ui.theme.DarkHeroSurface
 import com.unpostpone.app.ui.theme.Dimens
 import com.unpostpone.app.ui.theme.LightHeroSurface
+import com.unpostpone.app.ui.theme.LocalIsDarkTheme
 import com.unpostpone.app.ui.theme.NumberBody
 import com.unpostpone.app.ui.theme.NumberDisplayLarge
 import com.unpostpone.app.ui.theme.NumberHeadline
@@ -102,7 +102,7 @@ private fun StatisticsContent(
     uiState: StatisticsUiState,
     contentPadding: PaddingValues,
 ) {
-    val isDark = isSystemInDarkTheme()
+    val isDark = LocalIsDarkTheme.current
     val heroSurface = if (isDark) DarkHeroSurface else LightHeroSurface
     val totalMinutes = uiState.totalFocusedMinutes
     val totalHours = totalMinutes / 60
