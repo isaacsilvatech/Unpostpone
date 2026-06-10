@@ -66,16 +66,28 @@ follow-ups if the user asks.
 Don't disable `buildConfig` — other parts of the app may rely on
 `BuildConfig.*` constants.
 
-## Build commands (the user runs these)
+## Build commands
 
-| Goal | Command |
-|---|---|
-| Compile debug | `./gradlew :app:assembleDebug` |
-| Compile release | `./gradlew :app:assembleRelease` |
-| Unit tests | `./gradlew :app:testDebugUnitTest` |
-| Instrumented tests | `./gradlew :app:connectedDebugAndroidTest` |
-| Lint | `./gradlew :app:lintDebug` |
-| Clean | `./gradlew clean` |
+| Goal | Command | Who runs it |
+|---|---|---|
+| Compile debug | `./gradlew :app:assembleDebug` | **Anyone in the harness** (orchestrator and workers/reins) may run this as a self-check. Mention the result in the report. |
+| Compile debug (Kotlin only, faster) | `./gradlew :app:compileDebugKotlin` | **Anyone in the harness** — preferred for fast syntax / unresolved-reference checks. |
+| Compile release | `./gradlew :app:assembleRelease` | User (release builds can have signing-config surprises; the user wants to see the output). |
+| Unit tests | `./gradlew :app:testDebugUnitTest` | **User only.** No one in the harness runs test tasks. |
+| Instrumented tests | `./gradlew :app:connectedDebugAndroidTest` | **User only.** Requires a device/emulator the user controls. |
+| Lint | `./gradlew :app:lintDebug` | User. |
+| Clean | `./gradlew clean` | User. |
+
+### Why anyone can compile but no one runs tests
+
+Compile-only builds are a fast, free self-check: a missing
+import, a typo in a class name, or a broken Hilt / KSP graph
+shows up in seconds, and catching it before handing the change
+back saves the user a round-trip. Tests are different: they
+are the user's quality gate, and running them from inside the
+harness would silently burn the user's test budget (CI
+minutes, flaky-test retries, etc.) and would also let the
+harness "approve" its own work.
 
 ## CI
 

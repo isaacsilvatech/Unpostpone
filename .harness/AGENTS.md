@@ -6,9 +6,21 @@ both the orchestrator and every rein.
 
 ## Standing rules (apply to every agent)
 
-1. **Build & test commands are the user's job.** Don't run
-   `./gradlew` or `./gradlew test` from inside a rein session. Suggest
-   the exact command in your report; the user runs it.
+1. **Test commands are the user's job — build commands are
+   fair game.** Don't run `./gradlew :app:testDebugUnitTest`,
+   `./gradlew :app:connectedDebugAndroidTest`, or any other test
+   task (lint, connected checks, etc.) from inside any session —
+   workers, orchestrator, doesn't matter. Tests are the user's
+   signal, and running them from inside the harness would
+   silently burn the user's test budget (CI minutes, flaky-test
+   retries, etc.) and would also let the harness "approve" its
+   own work. **Compile-only builds are fine for both the
+   orchestrator and workers (reins)**: `./gradlew :app:compileDebugKotlin`
+   and `./gradlew :app:assembleDebug` are encouraged as a
+   self-check for missing imports, unresolved references, and
+   KSP / Hilt graph errors before handing the change back.
+   Workers should mention the build result in their report; the
+   user runs the test commands.
 2. **Use the version catalog.** Every new dependency goes into
    `gradle/libs.versions.toml`. No hardcoded
    `implementation("group:artifact:version")` strings in
