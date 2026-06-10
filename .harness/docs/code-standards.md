@@ -58,6 +58,22 @@ persistent. No shortcuts.
   in `ui/theme/`. Don't add a second font family.
 - **State**: ViewModel exposes `StateFlow<XxxUiState>`; the
   composable collects with `collectAsStateWithLifecycle()`.
+- **Dark mode detection: read `LocalIsDarkTheme.current`, never
+  call `isSystemInDarkTheme()` directly inside a composable.**
+  `UnpostponeTheme` exposes `LocalIsDarkTheme` from `ui.theme` so
+  every composable sees the same value the `MaterialTheme` is
+  actually using. `isSystemInDarkTheme()` only reflects the OS
+  setting, not the user's `ThemeMode` preference (which can be
+  `SystemDefault` / `Light` / `Dark` in Settings). Reading the
+  OS setting directly inside a composable is a divergence bug:
+  the rest of the screen uses `MaterialTheme.colorScheme` and
+  follows the preference, but a hardcoded `if (isSystemInDarkTheme())
+  DarkHeroSurface else LightHeroSurface` will use the wrong
+  variant the moment those two values disagree. The only two
+  legitimate callers of `isSystemInDarkTheme()` are
+  `MainActivity.onCreate` (to combine with the user's `ThemeMode`
+  preference into the single source of truth) and `UnpostponeTheme`
+  itself (the default parameter value).
 
 ## Hilt
 
