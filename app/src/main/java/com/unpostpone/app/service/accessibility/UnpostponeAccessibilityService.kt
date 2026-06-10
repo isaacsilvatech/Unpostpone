@@ -16,6 +16,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -37,6 +38,8 @@ class UnpostponeAccessibilityService : AccessibilityService() {
 
     private var focusSessionStart: Long? = null
     private var lastTrackedPackage: String? = null
+    private var currentForegroundPackage: String? = null
+    private var previousActivePackage: String? = null
 
     override fun onServiceConnected() {
         serviceInfo = AccessibilityServiceInfo().apply {
@@ -45,12 +48,28 @@ class UnpostponeAccessibilityService : AccessibilityService() {
             flags = AccessibilityServiceInfo.FLAG_INCLUDE_NOT_IMPORTANT_VIEWS
             notificationTimeout = 100
         }
+        serviceScope.launch {
+            temporaryUnlockManager.state.collect { current ->
+                val previous = previousActivePackage
+                if (previous != null &&
+                    current.packageName == null &&
+                    currentForegroundPackage == previous
+                ) {
+                    commitFocusTime()
+                    val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+                    incrementBlockCountUseCase(today)
+                    withContext(Dispatchers.Main) { launchBlockerActivity(previous) }
+                }
+                previousActivePackage = current.packageName
+            }
+        }
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         if (event?.eventType != AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) return
         val packageName = event.packageName?.toString() ?: return
         if (packageName == applicationContext.packageName) return
+        currentForegroundPackage = packageName
         if (temporaryUnlockManager.isActive(packageName)) return
 
         serviceScope.launch {

@@ -93,7 +93,6 @@ class TemporaryUnlockService : Service() {
 
     private fun onUnlockExpired(packageName: String) {
         manager.clear()
-        launchBlockerScreen(packageName)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             stopForeground(STOP_FOREGROUND_REMOVE)
         } else {
@@ -156,19 +155,6 @@ class TemporaryUnlockService : Service() {
             .setContentIntent(contentIntent)
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .build()
-    }
-
-    private fun launchBlockerScreen(packageName: String) {
-        val intent = Intent().apply {
-            component = ComponentName(this@TemporaryUnlockService, MainActivity::class.java)
-            addFlags(
-                Intent.FLAG_ACTIVITY_NEW_TASK or
-                    Intent.FLAG_ACTIVITY_SINGLE_TOP or
-                    Intent.FLAG_ACTIVITY_CLEAR_TOP
-            )
-            putExtra(UnpostponeAccessibilityService.EXTRA_BLOCKED_PACKAGE, packageName)
-        }
-        startActivity(intent)
     }
 
     private fun createNotificationChannel() {
