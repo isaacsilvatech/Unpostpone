@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="reblock_title">Bloquear este app novamente?</string>
+    <string name="reblock_title">Bloquear %1$s novamente?</string>
     <string name="reblock_subtitle">Encerre o desbloqueio atual e bloqueie este app de novo.</string>
     <string name="reblock_currently_unlocked">Desbloqueado no momento</string>
     <string name="reblock_block_now">Bloquear %1$s agora</string>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="reblock_title">Re-block this app?</string>
+    <string name="reblock_title">Re-block %1$s?</string>
     <string name="reblock_subtitle">Stop the current unlock and block this app again.</string>
     <string name="reblock_currently_unlocked">Currently unlocked</string>
     <string name="reblock_block_now">Block %1$s now</string>
