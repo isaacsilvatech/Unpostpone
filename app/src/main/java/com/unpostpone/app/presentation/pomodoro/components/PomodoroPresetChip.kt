@@ -87,7 +87,7 @@ fun PomodoroPresetChip(
             ) {
                 Text(
                     text = stringResource(titleRes),
-                    style = MaterialTheme.typography.titleSmall,
+                    style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
                     color = titleColor,
                     maxLines = 1,

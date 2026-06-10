@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
@@ -44,12 +45,10 @@ fun PomodoroControls(
     onCancel: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    // The whole footer is a single Column: the main row (primary button + side
-    // icon button when relevant) plus a small text-button underneath for the
-    // secondary action. Nothing here can overlap the ring above because the
-    // ring lives in a sibling Column at the screen level.
     Column(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = Dimens.CardPaddingLarge),
         verticalArrangement = Arrangement.spacedBy(Dimens.ControlsLinkSpacing),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {

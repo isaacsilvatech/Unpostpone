@@ -214,7 +214,7 @@ private fun PresetsSection(
         Spacer(Modifier.height(Dimens.SpacingM))
         FlowRow(
             horizontalArrangement = Arrangement.spacedBy(Dimens.PresetFlowSpacing),
-            verticalArrangement = Arrangement.spacedBy(Dimens.PresetFlowSpacing),
+            verticalArrangement = Arrangement.spacedBy(Dimens.SpacingXL),
             modifier = Modifier.fillMaxWidth(),
         ) {
             uiState.availablePresets.forEach { preset ->
