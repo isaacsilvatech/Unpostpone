@@ -12,6 +12,11 @@
     <uses-permission
         android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions" />
+    <!--
+        Needed for Pomodoro session timing: ensures AlarmManager.setExactAndAllowWhileIdle
+        fires at the planned session end even when the device is in Doze.
+    -->
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
 
     <application
         android:name=".UnpostponeApplication"
@@ -58,6 +63,10 @@
                 android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
                 android:value="temporary_app_unlock_for_focus_session" />
         </service>
+
+        <receiver
+            android:name=".service.pomodoro.PomodoroAlarmReceiver"
+            android:exported="false" />
 
     </application>
 

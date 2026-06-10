@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Notification channel for Pomodoro session alerts. -->
+    <string name="pomodoro_channel_name">Pomodoro alerts</string>
+    <string name="pomodoro_channel_description">Pomodoro session alerts</string>
+
+    <!-- Title for the "session complete" notification. -->
+    <string name="pomodoro_notification_complete_title">Pomodoro session complete</string>
+
+    <!-- Body shown when a focus session ends. -->
+    <string name="pomodoro_notification_complete_focus_body">Time for a break.</string>
+
+    <!-- Body shown when a break session ends. -->
+    <string name="pomodoro_notification_complete_break_body">Ready to focus again?</string>
+
+    <!-- Action label that opens the Pomodoro screen to start the next session. -->
+    <string name="pomodoro_notification_action_next">Start next</string>
+
+    <!-- Ongoing notification while a session is running. -->
+    <string name="pomodoro_notification_ongoing_title">Pomodoro running</string>
+    <string name="pomodoro_notification_ongoing_body_focus">Focus session in progress</string>
+    <string name="pomodoro_notification_ongoing_body_short_break">Short break in progress</string>
+    <string name="pomodoro_notification_ongoing_body_long_break">Long break in progress</string>
+</resources>
