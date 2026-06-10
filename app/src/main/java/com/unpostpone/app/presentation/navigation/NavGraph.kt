@@ -14,6 +14,7 @@ import com.unpostpone.app.presentation.dashboard.DashboardScreen
 import com.unpostpone.app.presentation.focusreminder.FocusReminderScreen
 import com.unpostpone.app.presentation.goals.GoalsScreen
 import com.unpostpone.app.presentation.onboarding.OnboardingScreen
+import com.unpostpone.app.presentation.pomodoro.PomodoroScreen
 import com.unpostpone.app.presentation.reblock.ReBlockScreen
 import com.unpostpone.app.presentation.settings.SettingsScreen
 import com.unpostpone.app.presentation.statistics.StatisticsScreen
@@ -100,6 +101,10 @@ fun NavGraph(
                     }
                 },
             )
+        }
+
+        composable(Screen.Pomodoro.route) {
+            PomodoroScreen(navController = navController)
         }
     }
 }

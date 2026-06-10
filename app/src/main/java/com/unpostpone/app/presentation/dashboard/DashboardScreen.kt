@@ -113,15 +113,16 @@ fun DashboardScreen(
                 contentAlignment = Alignment.Center,
             ) { CircularProgressIndicator(color = MaterialTheme.colorScheme.primary) }
         } else {
-            DashboardContent(
-                uiState = uiState,
-                isEffectivelyActive = isEffectivelyActive,
-                onToggleBlocking = viewModel::onToggleBlocking,
-                onAddGoal = { navController.navigate(Screen.Goals.route) },
-                onOpenGoals = { navController.navigate(Screen.Goals.route) },
-                onOpenStatistics = { navController.navigate(Screen.Statistics.route) },
-                contentPadding = paddingValues,
-            )
+                DashboardContent(
+                    uiState = uiState,
+                    isEffectivelyActive = isEffectivelyActive,
+                    onToggleBlocking = viewModel::onToggleBlocking,
+                    onAddGoal = { navController.navigate(Screen.Goals.route) },
+                    onOpenGoals = { navController.navigate(Screen.Goals.route) },
+                    onOpenStatistics = { navController.navigate(Screen.Statistics.route) },
+                    onOpenPomodoro = { navController.navigate(Screen.Pomodoro.route) },
+                    contentPadding = paddingValues,
+                )
         }
 
         uiState.error?.let { LaunchedEffect(it) { viewModel.dismissError() } }
@@ -194,11 +195,12 @@ private fun DashboardContent(
     onAddGoal: () -> Unit,
     onOpenGoals: () -> Unit,
     onOpenStatistics: () -> Unit,
+    onOpenPomodoro: () -> Unit,
     contentPadding: PaddingValues,
 ) {
     val todayGoal: Goal? = uiState.todayGoals.firstOrNull()
     val tools = defaultDashboardTools(
-        onPomodoro = { },
+        onPomodoro = onOpenPomodoro,
         onTasks = { },
         onNotes = { },
         onGoals = onOpenGoals,
@@ -470,6 +472,7 @@ private fun DashboardContentPreview(
         onAddGoal = {},
         onOpenGoals = {},
         onOpenStatistics = {},
+        onOpenPomodoro = {},
         contentPadding = PaddingValues(0.dp),
     )
 }

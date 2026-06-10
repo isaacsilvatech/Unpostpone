@@ -19,4 +19,6 @@ sealed class Screen(val route: String) {
     data object FocusReminder : Screen("focus-reminder/{packageName}") {
         fun createRoute(packageName: String) = "focus-reminder/$packageName"
     }
+
+    data object Pomodoro : Screen("pomodoro")
 }

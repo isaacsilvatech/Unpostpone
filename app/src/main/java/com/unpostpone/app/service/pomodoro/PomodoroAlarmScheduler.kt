@@ -7,7 +7,7 @@ import android.content.Intent
 import android.os.Build
 import com.unpostpone.app.domain.model.PomodoroSessionType
 
-class PomodoroAlarmScheduler(
+open class PomodoroAlarmScheduler(
     private val appContext: Context,
     private val notificationHelper: PomodoroNotificationHelper,
 ) {
@@ -15,7 +15,7 @@ class PomodoroAlarmScheduler(
     private val alarmManager: AlarmManager =
         appContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-    fun scheduleSessionEnd(
+    open fun scheduleSessionEnd(
         plannedDurationMillis: Long,
         sessionType: PomodoroSessionType,
     ) {
@@ -33,7 +33,7 @@ class PomodoroAlarmScheduler(
         )
     }
 
-    fun cancel() {
+    open fun cancel() {
         PomodoroSessionType.values().forEach { sessionType ->
             alarmManager.cancel(buildPendingIntent(sessionType))
         }

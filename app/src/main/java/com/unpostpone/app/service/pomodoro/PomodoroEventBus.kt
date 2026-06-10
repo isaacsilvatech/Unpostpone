@@ -9,7 +9,7 @@ sealed class PomodoroAlarmEvent {
     data class SessionComplete(val sessionType: PomodoroSessionType) : PomodoroAlarmEvent()
 }
 
-class PomodoroEventBus {
+open class PomodoroEventBus {
 
     private val _sessionComplete = MutableSharedFlow<PomodoroAlarmEvent>(
         replay = 0,
@@ -18,7 +18,7 @@ class PomodoroEventBus {
 
     val sessionComplete: SharedFlow<PomodoroAlarmEvent> = _sessionComplete.asSharedFlow()
 
-    suspend fun emit(event: PomodoroAlarmEvent) {
+    open suspend fun emit(event: PomodoroAlarmEvent) {
         _sessionComplete.emit(event)
     }
 }
