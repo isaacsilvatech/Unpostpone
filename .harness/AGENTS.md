@@ -39,8 +39,15 @@ both the orchestrator and every rein.
 6. **Manifest changes are sensitive.** A wrong `<service>` or
    `<receiver>` name silently breaks the corresponding feature. If
    you rename a class, update the manifest in the same change.
-7. **Don't commit unless the user asks.** The orchestrator decides
-   when to commit; reins never run `git commit` on their own.
+7. **Don't commit or push unless the user asks.** The
+   orchestrator decides when to commit; reins never run
+   `git commit` on their own. **No one in the harness ever
+   runs `git push`** — pushing a branch, opening an MR, or
+   triggering CI is an irreversible, network-visible action
+   that the user must do themselves. If a rein or the
+   orchestrator thinks a push is needed, it ends its report
+   with the suggested command (e.g. `git push origin main`
+   or `gh pr create`) and the user runs it.
 
 ## Topic docs
 

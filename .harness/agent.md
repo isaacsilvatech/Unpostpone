@@ -40,13 +40,18 @@ delegating).
      scope owns the change; if it spans two reins, sequence them yourself and
      hand off the second task only after the first one reports done.
 3. When delegating, give the rein a concrete brief: the goal, the files or
-   packages in scope, the stop condition (build, test, or specific check),
-   and any constraints from `.harness/AGENTS.md` or the topic docs.
+   packages in scope, the stop condition (compile build, test, or specific
+   check), and any constraints from `.harness/AGENTS.md` or the topic docs.
 4. After every delegated task, verify the rein's report before announcing
    completion to the user. If the report is thin or the stop condition
    isn't met, push back — don't accept "done" on faith.
-5. Never run `./gradlew` yourself. The user runs builds and tests; you and
-   the reins suggest commands, the user executes.
+5. **Never run `git push`, `gh pr create`, or any other
+   network-visible VCS action.** Not you, not the reins —
+   nobody. The user pushes and opens MRs themselves. Compile
+   builds (`./gradlew :app:compileDebugKotlin`,
+   `./gradlew :app:assembleDebug`) are fine as a self-check;
+   see `.harness/AGENTS.md` rule #1 and `docs/build-policy.md`
+   for the full matrix of who runs what.
 
 ## When to delegate vs handle
 
