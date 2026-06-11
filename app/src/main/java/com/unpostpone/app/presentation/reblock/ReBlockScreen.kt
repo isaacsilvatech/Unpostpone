@@ -112,6 +112,7 @@ fun ReBlockScreen(
                     colors = ButtonDefaults.outlinedButtonColors(
                         contentColor = MaterialTheme.colorScheme.onErrorContainer,
                     ),
+                    border = androidx.compose.foundation.BorderStroke(0.dp, androidx.compose.ui.graphics.Color.Transparent),
                 ) {
                     Text(stringResource(R.string.reblock_go_to_dashboard))
                 }
