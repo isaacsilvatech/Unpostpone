@@ -1,8 +1,10 @@
 package com.unpostpone.app.presentation.settings
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.unpostpone.app.core.theme.ThemeMode
+import com.unpostpone.app.core.util.AppInstalledChecker
 import com.unpostpone.app.core.util.Constants
 import com.unpostpone.app.domain.model.BlockedApp
 import com.unpostpone.app.domain.repository.OnboardingPreferences
@@ -12,6 +14,7 @@ import com.unpostpone.app.domain.usecase.blockedapp.AddBlockedAppUseCase
 import com.unpostpone.app.domain.usecase.blockedapp.GetBlockedAppsUseCase
 import com.unpostpone.app.domain.usecase.blockedapp.SetAppEnabledUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,6 +25,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val getBlockedApps: GetBlockedAppsUseCase,
     private val addBlockedApp: AddBlockedAppUseCase,
     private val setAppEnabled: SetAppEnabledUseCase,
@@ -61,19 +65,20 @@ class SettingsViewModel @Inject constructor(
     private fun observeBlockedApps() {
         viewModelScope.launch {
             val current = getBlockedApps().first()
-            if (current.isEmpty()) {
-                Constants.DEFAULT_BLOCKED_APPS.forEach { def ->
-                    addBlockedApp(
-                        BlockedApp(
-                            packageName = def.packageName,
-                            displayName = def.displayName,
-                            isEnabled = false,
-                        )
+            val knownPackages = current.map { it.packageName }.toSet()
+            val missing = Constants.DEFAULT_BLOCKED_APPS.filter { it.packageName !in knownPackages }
+            missing.forEach { def ->
+                addBlockedApp(
+                    BlockedApp(
+                        packageName = def.packageName,
+                        displayName = def.displayName,
+                        isEnabled = false,
                     )
-                }
+                )
             }
             getBlockedApps().collect { apps ->
-                _uiState.update { it.copy(blockedApps = apps, isLoading = false) }
+                val visible = apps.filter { AppInstalledChecker.isInstalled(context, it.packageName) }
+                _uiState.update { it.copy(blockedApps = visible, isLoading = false) }
             }
         }
     }

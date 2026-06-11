@@ -5,11 +5,13 @@ object Constants {
     const val TEMP_UNLOCK_DURATION_MS = 5 * 60 * 1000L
 
     val DEFAULT_BLOCKED_APPS = listOf(
+        BlockableApp("Facebook",    "com.facebook.katana"),
         BlockableApp("Instagram",   "com.instagram.android"),
         BlockableApp("TikTok",      "com.zhiliaoapp.musically"),
-        BlockableApp("YouTube",     "com.google.android.youtube"),
         BlockableApp("X (Twitter)", "com.twitter.android"),
-        BlockableApp("Facebook",    "com.facebook.katana")
+        BlockableApp("Kwai",        "com.kwai.video"),
+        BlockableApp("YouTube",     "com.google.android.youtube"),
+        BlockableApp("Reddit",      "com.reddit.frontpage"),
     )
 }
 
