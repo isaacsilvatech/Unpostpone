@@ -163,7 +163,7 @@ private fun WelcomePage() {
 @Composable
 private fun FeaturesPage() {
     Column(
-        modifier = Modifier.fillMaxSize().padding(top = Dimens.SpacingHuge),
+        modifier = Modifier.fillMaxSize().padding(top = Dimens.SpacingScreen),
         verticalArrangement = Arrangement.Top,
     ) {
         Text(
@@ -251,7 +251,7 @@ private fun FeatureCard(icon: ImageVector, title: String, body: String) {
 @Composable
 private fun PrivacyPage() {
     Column(
-        modifier = Modifier.fillMaxSize().padding(top = Dimens.SpacingHuge),
+        modifier = Modifier.fillMaxSize().padding(top = Dimens.SpacingScreen),
         verticalArrangement = Arrangement.Top,
     ) {
         Text(
@@ -341,7 +341,7 @@ private fun PermissionsPage(
     onRequestNotificationPermission: () -> Unit,
 ) {
     Column(
-        modifier = Modifier.fillMaxSize().padding(top = Dimens.SpacingHuge),
+        modifier = Modifier.fillMaxSize().padding(top = Dimens.SpacingScreen),
         verticalArrangement = Arrangement.Top,
     ) {
         Text(
