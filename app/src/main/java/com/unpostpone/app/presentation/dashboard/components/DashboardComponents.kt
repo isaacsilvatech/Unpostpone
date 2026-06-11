@@ -288,24 +288,15 @@ private fun ToolTile(tool: ToolEntry) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(Dimens.SpacingM),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.SpaceBetween,
         ) {
-            Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.surfaceContainerHigh),
-                contentAlignment = Alignment.Center,
-            ) {
-                Icon(
-                    imageVector = tool.icon,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.size(Dimens.IconM),
-                )
-            }
-            Spacer(Modifier.height(Dimens.SpacingS))
+            Icon(
+                imageVector = tool.icon,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.size(Dimens.IconM),
+            )
             Text(
                 text = stringResource(tool.labelRes),
                 style = MaterialTheme.typography.labelMedium,
