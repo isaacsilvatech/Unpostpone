@@ -46,17 +46,21 @@ class DashboardViewModel @Inject constructor(
                 observeBlockingEnabledUseCase(),
                 getBlockedAppsUseCase(),
             ) { goals, stats, isBlocking, blockedApps ->
-                Quad(goals, stats, isBlocking, blockedApps.size)
+                val enabled = blockedApps
+                    .filter { it.isEnabled }
+                    .filter { com.unpostpone.app.core.util.AppInstalledChecker.isInstalled(context, it.packageName) }
+                Quad(goals, stats, isBlocking, enabled)
             }
                 .catch { e -> _uiState.update { it.copy(isLoading = false, error = e.message) } }
-                .collect { (goals, stats, isBlocking, protectedCount) ->
+                .collect { (goals, stats, isBlocking, enabled) ->
                     _uiState.update {
                         it.copy(
                             todayGoals = goals,
                             todayStatistics = stats,
                             isBlockingActive = isBlocking,
                             isAccessibilityServiceEnabled = AccessibilityServiceUtils.isUnpostponeEnabled(context),
-                            protectedAppCount = protectedCount,
+                            enabledBlockedAppCount = enabled.size,
+                            enabledBlockedApps = enabled,
                             isLoading = false,
                         )
                     }

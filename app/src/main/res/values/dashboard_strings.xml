@@ -53,7 +53,7 @@
 
     <!-- Redesigned dashboard (focus protection hero) -->
     <string name="dashboard_focus_protection_title">Focus Protection</string>
-    <string name="dashboard_focus_protection_apps">%1$d apps protected</string>
+    <string name="dashboard_focus_protection_apps">%1$d apps blocked</string>
     <string name="dashboard_focus_protection_subtitle">Stay focused and avoid distractions</string>
     <string name="dashboard_focus_status_active">Active</string>
     <string name="dashboard_focus_status_inactive">Inactive</string>

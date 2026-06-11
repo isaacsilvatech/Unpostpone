@@ -35,6 +35,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.unpostpone.app.R
 import com.unpostpone.app.core.util.NotificationPermissionHelper
+import com.unpostpone.app.domain.model.BlockedApp
 import com.unpostpone.app.domain.model.Goal
 import com.unpostpone.app.domain.model.Statistics
 import com.unpostpone.app.presentation.dashboard.components.*
@@ -218,7 +219,8 @@ private fun DashboardContent(
         item {
             HeroFocusCard(
                 isActive = isEffectivelyActive,
-                protectedAppCount = uiState.protectedAppCount,
+                enabledBlockedAppCount = uiState.enabledBlockedAppCount,
+                enabledBlockedApps = uiState.enabledBlockedApps,
                 onToggle = onToggleBlocking,
             )
         }
@@ -432,7 +434,12 @@ private fun DashboardScreenPreview_Populated() {
             uiState = DashboardUiState(
                 isLoading = false,
                 isBlockingActive = true,
-                protectedAppCount = 5,
+                enabledBlockedAppCount = 3,
+                enabledBlockedApps = listOf(
+                    BlockedApp(packageName = "com.instagram.android",   displayName = "Instagram", isEnabled = true),
+                    BlockedApp(packageName = "com.zhiliaoapp.musically", displayName = "TikTok",    isEnabled = true),
+                    BlockedApp(packageName = "com.twitter.android",     displayName = "Twitter",   isEnabled = true),
+                ),
                 streakDays = 7,
                 todayStatistics = Statistics(
                     date = "2024-09-01",

@@ -1,5 +1,6 @@
 package com.unpostpone.app.presentation.dashboard
 
+import com.unpostpone.app.domain.model.BlockedApp
 import com.unpostpone.app.domain.model.Goal
 import com.unpostpone.app.domain.model.Statistics
 
@@ -11,7 +12,8 @@ data class DashboardUiState(
     val showAccessibilityPrompt: Boolean = false,
     val isLoading: Boolean = false,
     val error: String? = null,
-    val protectedAppCount: Int = 0,
+    val enabledBlockedAppCount: Int = 0,
+    val enabledBlockedApps: List<BlockedApp> = emptyList(),
     val dailyTargetMinutes: Int = 240,
     val streakDays: Int = 0,
 ) {

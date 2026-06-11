@@ -14,25 +14,33 @@ import androidx.compose.material.icons.filled.Flag
 import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.NoteAlt
+import androidx.compose.material.icons.filled.Smartphone
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.drawable.toBitmap
 import com.unpostpone.app.R
+import com.unpostpone.app.core.util.AppLabelResolver
+import com.unpostpone.app.domain.model.BlockedApp
 import com.unpostpone.app.presentation.dashboard.format.FocusTimeFormatter
 import com.unpostpone.app.ui.theme.*
 
 @Composable
 fun HeroFocusCard(
     isActive: Boolean,
-    protectedAppCount: Int,
+    enabledBlockedAppCount: Int,
+    enabledBlockedApps: List<BlockedApp>,
     onToggle: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -64,15 +72,58 @@ fun HeroFocusCard(
                 )
                 Spacer(Modifier.height(Dimens.SpacingXS))
                 Text(
-                    text = stringResource(R.string.dashboard_focus_protection_apps, protectedAppCount),
+                    text = stringResource(R.string.dashboard_focus_protection_apps, enabledBlockedAppCount),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
+                if (enabledBlockedApps.isNotEmpty()) {
+                    Spacer(Modifier.height(Dimens.SpacingS))
+                    BlockedAppsIconRow(apps = enabledBlockedApps)
+                }
                 Spacer(Modifier.height(Dimens.SpacingM))
                 FocusStatusRow(
                     isActive = isActive,
                     onToggle = onToggle,
                 )
+            }
+        }
+    }
+}
+
+@Composable
+private fun BlockedAppsIconRow(apps: List<BlockedApp>) {
+    val context = LocalContext.current
+    LazyRow(
+        horizontalArrangement = Arrangement.spacedBy(Dimens.SpacingS),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        items(apps, key = { it.packageName }) { app ->
+            val drawable = AppLabelResolver.resolveIcon(context, app.packageName)
+            val displayName = app.displayName.ifBlank { app.packageName }
+            if (drawable != null) {
+                val bitmap = remember(drawable) { drawable.toBitmap().asImageBitmap() }
+                androidx.compose.foundation.Image(
+                    bitmap = bitmap,
+                    contentDescription = displayName,
+                    modifier = Modifier
+                        .size(20.dp)
+                        .clip(CircleShape),
+                )
+            } else {
+                Box(
+                    modifier = Modifier
+                        .size(20.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.surfaceContainerHigh),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Smartphone,
+                        contentDescription = displayName,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(12.dp),
+                    )
+                }
             }
         }
     }
