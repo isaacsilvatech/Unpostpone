@@ -24,9 +24,11 @@ class UnpostponeApplication : Application() {
         super.onCreate()
         appScope.launch {
             if (AccessibilityServiceUtils.isUnpostponeEnabled(this@UnpostponeApplication) &&
+                !blockingPreferences.hasAutoEnabledOnce.first() &&
                 !blockingPreferences.isBlockingEnabled.first()
             ) {
                 blockingPreferences.setBlockingEnabled(true)
+                blockingPreferences.markAutoEnabled()
             }
             ensureDefaultBlockedAppsSeeded()
         }

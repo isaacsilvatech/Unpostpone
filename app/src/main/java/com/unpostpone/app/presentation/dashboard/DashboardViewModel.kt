@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.unpostpone.app.core.util.AccessibilityServiceUtils
+import com.unpostpone.app.domain.repository.BlockingPreferences
 import com.unpostpone.app.domain.usecase.blockedapp.GetBlockedAppsUseCase
 import com.unpostpone.app.domain.usecase.blockedapp.ObserveBlockingEnabledUseCase
 import com.unpostpone.app.domain.usecase.blockedapp.SetBlockingEnabledUseCase
@@ -25,12 +26,11 @@ class DashboardViewModel @Inject constructor(
     private val getBlockedAppsUseCase: GetBlockedAppsUseCase,
     private val observeBlockingEnabledUseCase: ObserveBlockingEnabledUseCase,
     private val setBlockingEnabledUseCase: SetBlockingEnabledUseCase,
+    private val blockingPreferences: BlockingPreferences,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(DashboardUiState())
     val uiState: StateFlow<DashboardUiState> = _uiState.asStateFlow()
-
-    private var hasAutoEnabledBlocking: Boolean = false
 
     private val today: String
         get() = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
@@ -89,11 +89,11 @@ class DashboardViewModel @Inject constructor(
             val accessibilityOn = AccessibilityServiceUtils.isUnpostponeEnabled(context)
             _uiState.update { it.copy(isAccessibilityServiceEnabled = accessibilityOn) }
             if (accessibilityOn &&
-                !hasAutoEnabledBlocking &&
-                !observeBlockingEnabledUseCase().first()
+                !blockingPreferences.hasAutoEnabledOnce.first() &&
+                !blockingPreferences.isBlockingEnabled.first()
             ) {
                 setBlockingEnabledUseCase(true)
-                hasAutoEnabledBlocking = true
+                blockingPreferences.markAutoEnabled()
             }
         }
     }

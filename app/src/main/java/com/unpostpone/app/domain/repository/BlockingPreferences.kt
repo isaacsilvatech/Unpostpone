@@ -7,5 +7,9 @@ interface BlockingPreferences {
 
     val isBlockingEnabled: Flow<Boolean>
 
+    val hasAutoEnabledOnce: Flow<Boolean>
+
     suspend fun setBlockingEnabled(enabled: Boolean)
+
+    suspend fun markAutoEnabled()
 }
