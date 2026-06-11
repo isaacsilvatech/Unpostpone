@@ -41,6 +41,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.unpostpone.app.R
+import com.unpostpone.app.core.util.DateFormatter
 import com.unpostpone.app.domain.model.Statistics
 import com.unpostpone.app.presentation.dashboard.BottomNavigationBar
 import com.unpostpone.app.ui.theme.DarkHeroSurface
@@ -310,7 +311,7 @@ private fun DailyStatItem(stat: Statistics) {
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = stat.date,
+                text = DateFormatter.formatForUser(stat.date),
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Medium,
                 color = MaterialTheme.colorScheme.onSurface,
