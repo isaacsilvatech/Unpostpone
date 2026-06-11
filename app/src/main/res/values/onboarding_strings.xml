@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--
-        Onboarding. One file per pager page group.
-        Keys are prefixed with `onboarding_`.
-    -->
     <!-- Welcome page -->
     <string name="onboarding_welcome_title">Take control of your time</string>
     <string name="onboarding_welcome_subtitle">Unpostpone helps you stay focused, build healthy digital habits, and spend time on what matters most — without the noise.</string>
@@ -19,7 +15,7 @@
     <string name="onboarding_feature_insights_body">See your week at a glance. No streaks to defend, no scores to chase.</string>
 
     <!-- Privacy page -->
-    <string name="onboarding_privacy_title">Privacy first</string>
+    <string name="onboarding_privacy_title">Privacy</string>
     <string name="onboarding_privacy_subtitle">What stays on your device, and what never leaves it.</string>
     <string name="onboarding_privacy_collect_title">What we use</string>
     <string name="onboarding_privacy_collect_body">Only the data needed to detect which app you\'re using. Stored locally, on your phone, never uploaded.</string>
@@ -27,7 +23,7 @@
     <string name="onboarding_privacy_no_collect_body">No analytics, no tracking, no ads, no account required. No content from your apps. No screenshots. No keystrokes.</string>
 
     <!-- Permissions page -->
-    <string name="onboarding_permissions_title">A few permissions</string>
+    <string name="onboarding_permissions_title">Permissions</string>
     <string name="onboarding_permissions_subtitle">Unpostpone only asks for what\'s needed to do its job.</string>
 
     <!-- Pager a11y -->
