@@ -30,6 +30,8 @@ class DashboardViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(DashboardUiState())
     val uiState: StateFlow<DashboardUiState> = _uiState.asStateFlow()
 
+    private var hasAutoEnabledBlocking: Boolean = false
+
     private val today: String
         get() = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
 
@@ -83,8 +85,16 @@ class DashboardViewModel @Inject constructor(
     }
 
     fun refreshAccessibilityState() {
-        _uiState.update {
-            it.copy(isAccessibilityServiceEnabled = AccessibilityServiceUtils.isUnpostponeEnabled(context))
+        viewModelScope.launch {
+            val accessibilityOn = AccessibilityServiceUtils.isUnpostponeEnabled(context)
+            _uiState.update { it.copy(isAccessibilityServiceEnabled = accessibilityOn) }
+            if (accessibilityOn &&
+                !hasAutoEnabledBlocking &&
+                !observeBlockingEnabledUseCase().first()
+            ) {
+                setBlockingEnabledUseCase(true)
+                hasAutoEnabledBlocking = true
+            }
         }
     }
 
