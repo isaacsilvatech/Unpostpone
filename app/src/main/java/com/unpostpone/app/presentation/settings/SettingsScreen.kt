@@ -158,7 +158,6 @@ private fun SettingsContent(
                             if (index > 0) SettingsRowDivider()
                             AppBlockToggleItem(
                                 displayName = app.displayName,
-                                packageName = app.packageName,
                                 isBlocked = app.isEnabled,
                                 onToggle = { onToggleApp(app.packageName, it) },
                             )
@@ -296,7 +295,6 @@ private fun SettingsLoadingRow() {
 @Composable
 private fun AppBlockToggleItem(
     displayName: String,
-    packageName: String,
     isBlocked: Boolean,
     onToggle: (Boolean) -> Unit,
 ) {
@@ -307,19 +305,13 @@ private fun AppBlockToggleItem(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = displayName,
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colorScheme.onSurface,
-            )
-            Text(
-                text = packageName,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        }
+        Text(
+            text = displayName,
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = FontWeight.Medium,
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.weight(1f),
+        )
         Switch(
             checked = isBlocked,
             onCheckedChange = onToggle,
