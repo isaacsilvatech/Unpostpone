@@ -4,30 +4,38 @@ import android.content.ComponentName
 import android.content.Intent
 import android.provider.Settings
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Accessibility
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Replay
+import androidx.compose.material.icons.filled.Smartphone
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.drawable.toBitmap
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.unpostpone.app.BuildConfig
 import com.unpostpone.app.R
 import com.unpostpone.app.core.theme.ThemeMode
+import com.unpostpone.app.core.util.AppLabelResolver
 import com.unpostpone.app.domain.model.BlockedApp
 import com.unpostpone.app.presentation.dashboard.BottomNavigationBar
 import com.unpostpone.app.presentation.navigation.Screen
@@ -158,6 +166,7 @@ private fun SettingsContent(
                             if (index > 0) SettingsRowDivider()
                             AppBlockToggleItem(
                                 displayName = app.displayName,
+                                packageName = app.packageName,
                                 isBlocked = app.isEnabled,
                                 onToggle = { onToggleApp(app.packageName, it) },
                             )
@@ -295,9 +304,11 @@ private fun SettingsLoadingRow() {
 @Composable
 private fun AppBlockToggleItem(
     displayName: String,
+    packageName: String,
     isBlocked: Boolean,
     onToggle: (Boolean) -> Unit,
 ) {
+    val context = LocalContext.current
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -305,13 +316,19 @@ private fun AppBlockToggleItem(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(
-            text = displayName,
-            style = MaterialTheme.typography.bodyLarge,
-            fontWeight = FontWeight.Medium,
-            color = MaterialTheme.colorScheme.onSurface,
+        Row(
             modifier = Modifier.weight(1f),
-        )
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(Dimens.SpacingM),
+        ) {
+            AppIcon(packageName = packageName, contentDescription = displayName)
+            Text(
+                text = displayName,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+        }
         Switch(
             checked = isBlocked,
             onCheckedChange = onToggle,
@@ -324,6 +341,36 @@ private fun AppBlockToggleItem(
                 uncheckedBorderColor = MaterialTheme.colorScheme.outline,
             ),
         )
+    }
+}
+
+@Composable
+private fun AppIcon(packageName: String, contentDescription: String) {
+    val drawable = AppLabelResolver.resolveIcon(LocalContext.current, packageName)
+    if (drawable != null) {
+        val bitmap = remember(drawable) { drawable.toBitmap().asImageBitmap() }
+        Image(
+            bitmap = bitmap,
+            contentDescription = contentDescription,
+            modifier = Modifier
+                .size(24.dp)
+                .clip(CircleShape),
+        )
+    } else {
+        Box(
+            modifier = Modifier
+                .size(24.dp)
+                .clip(CircleShape)
+                .background(MaterialTheme.colorScheme.surfaceContainerHigh),
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(
+                imageVector = Icons.Default.Smartphone,
+                contentDescription = contentDescription,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(14.dp),
+            )
+        }
     }
 }
 
