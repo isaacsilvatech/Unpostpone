@@ -21,14 +21,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -42,6 +40,7 @@ import com.unpostpone.app.service.pomodoro.PomodoroTimerEngine
 import com.unpostpone.app.service.pomodoro.PomodoroTimerService
 import com.unpostpone.app.service.pomodoro.formatRemainingMillis
 import com.unpostpone.app.ui.theme.Dimens
+import com.unpostpone.app.ui.theme.Teal
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -109,7 +108,7 @@ private fun PomodoroSessionCompleteScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black),
+            .background(Teal),
     ) {
         Column(
             modifier = Modifier
@@ -123,42 +122,37 @@ private fun PomodoroSessionCompleteScreen(
                     )
                 ),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween,
+            verticalArrangement = Arrangement.Center,
         ) {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Text(
-                    text = subtitleFor(state.sessionType),
-                    color = Color.White.copy(alpha = 0.7f),
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium,
-                    textAlign = TextAlign.Center,
-                )
-                Spacer(Modifier.height(Dimens.SpacingHuge))
-                Text(
-                    text = formatRemainingMillis(state.remainingMillis),
-                    color = Color.White,
-                    fontSize = 112.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
-                )
-            }
-
+            Text(
+                text = subtitleFor(state.sessionType),
+                color = Color.White.copy(alpha = 0.7f),
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Medium,
+                textAlign = TextAlign.Center,
+            )
+            Spacer(Modifier.height(Dimens.SpacingHuge))
+            Text(
+                text = formatRemainingMillis(state.remainingMillis),
+                color = Color.White,
+                fontSize = 112.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+            )
+            Spacer(Modifier.height(Dimens.SpacingHuge))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(Dimens.SpacingM),
             ) {
-                OutlinedButton(
+                Button(
                     onClick = onAddMinute,
                     modifier = Modifier
                         .weight(1f)
                         .height(Dimens.ButtonHeight + 8.dp),
                     shape = RoundedCornerShape(50),
-                    colors = ButtonDefaults.outlinedButtonColors(
-                        containerColor = Color.Transparent,
-                        contentColor = Color.White,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.White,
+                        contentColor = Teal,
                     ),
                 ) {
                     Text(
@@ -174,7 +168,7 @@ private fun PomodoroSessionCompleteScreen(
                     shape = RoundedCornerShape(50),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.White,
-                        contentColor = Color.Black,
+                        contentColor = Teal,
                     ),
                 ) {
                     Text(
