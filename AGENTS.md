@@ -29,6 +29,18 @@ Run from the repo root. Use the wrapper, not a system `gradle`.
 
 There is no top-level `check`/CI pipeline wired up. After non-trivial changes, run in this order: `lintDebug` → `:app:test` → `assembleDebug`.
 
+## Commit style
+
+Use [Conventional Commits](https://www.conventionalcommits.org/) — short, single-line, lowercase, no trailing period. Match the scope to the affected area (e.g. `dashboard`, `pomodoro`, `blocked-apps`, `settings`, `onboarding`).
+
+```text
+feat(dashboard): confirm dialog before disabling focus protection
+fix(blocked-apps): hide uninstalled apps from the list
+refactor(pomodoro): redesign view
+```
+
+Only commit when explicitly asked. Before committing, inspect `git status` and `git diff --staged`; stage only intended files and never commit secrets.
+
 ## WSL environment
 
 The repo is developed on WSL. AGP 9.x inside WSL **cannot** use the Windows SDK at `C:\Users\Isaac\AppData\Local\Android\Sdk` (it requires a Linux `aapt` binary, not `aapt.exe`). The build is wired against a native Linux SDK at `/opt/android-sdk`.
