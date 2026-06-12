@@ -275,7 +275,7 @@ private fun ToolTile(tool: ToolEntry) {
     val shape = RoundedCornerShape(Dimens.SpacingL)
     Surface(
         modifier = Modifier
-            .width(96.dp)
+            .width(106.dp)
             .height(104.dp)
             .clip(shape),
         shape = shape,

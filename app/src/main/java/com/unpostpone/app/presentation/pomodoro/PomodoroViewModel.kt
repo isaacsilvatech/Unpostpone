@@ -1,19 +1,19 @@
 package com.unpostpone.app.presentation.pomodoro
 
 import android.content.Context
+import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.unpostpone.app.domain.model.PomodoroPreset
 import com.unpostpone.app.domain.model.PomodoroSession
 import com.unpostpone.app.domain.model.PomodoroSessionType
 import com.unpostpone.app.domain.usecase.pomodoro.RecordPomodoroSessionUseCase
-import com.unpostpone.app.service.pomodoro.PomodoroAlarmEvent
 import com.unpostpone.app.service.pomodoro.PomodoroAlarmScheduler
-import com.unpostpone.app.service.pomodoro.PomodoroEventBus
+import com.unpostpone.app.service.pomodoro.PomodoroTimerEngine
+import com.unpostpone.app.service.pomodoro.PomodoroTimerService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -25,25 +25,64 @@ import javax.inject.Inject
 class PomodoroViewModel @Inject constructor(
     @param:ApplicationContext private val context: Context,
     private val alarmScheduler: PomodoroAlarmScheduler,
-    private val eventBus: PomodoroEventBus,
     private val recordPomodoroSession: RecordPomodoroSessionUseCase,
+    private val timerEngine: PomodoroTimerEngine,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(PomodoroUiState())
     val uiState: StateFlow<PomodoroUiState> = _uiState.asStateFlow()
 
-    private var timerJob: Job? = null
-    private var eventCollectionJob: Job? = null
+    private var engineObserverJob: Job? = null
 
     private var sessionStartedAtEpochMillis: Long = 0L
+    private var lastSeenSessionType: PomodoroSessionType = PomodoroSessionType.FOCUS
+    private var lastSeenPreset: PomodoroPreset = PomodoroPreset.Classic
+
+    // One row per planned session, even if the user +1:00's and the engine re-crosses zero.
+    private var overtimeRecorded: Boolean = false
 
     init {
-        eventCollectionJob = viewModelScope.launch {
-            eventBus.sessionComplete.collect { event ->
-                when (event) {
-                    is PomodoroAlarmEvent.SessionComplete -> handleAlarmSessionComplete(event.sessionType)
-                }
+        engineObserverJob = viewModelScope.launch {
+            timerEngine.state.collect { state ->
+                syncUiFromEngine(state)
             }
+        }
+    }
+
+    private fun syncUiFromEngine(state: PomodoroTimerEngine.State) {
+        val totalMillis = state.totalMillis
+        val remainingMillis = state.remainingMillis
+        val inOvertime = state.status == PomodoroTimerEngine.Status.RUNNING && remainingMillis < 0L
+        val timerState = when (state.status) {
+            PomodoroTimerEngine.Status.IDLE -> {
+                if (remainingMillis == 0L) TimerState.Idle
+                else TimerState.Running
+            }
+            PomodoroTimerEngine.Status.RUNNING -> {
+                if (remainingMillis == 0L || inOvertime) TimerState.Finished
+                else TimerState.Running
+            }
+            PomodoroTimerEngine.Status.PAUSED -> TimerState.Paused
+        }
+        _uiState.update { current ->
+            val isEngineIdle = state.status == PomodoroTimerEngine.Status.IDLE
+            val planned = if (totalMillis > 0L) totalMillis else current.plannedDurationMillis
+            current.copy(
+                currentSessionType = state.sessionType,
+                plannedDurationMillis = planned,
+                remainingMillis = if (isEngineIdle) {
+                    if (current.remainingMillis == 0L) planned else current.remainingMillis
+                } else {
+                    remainingMillis
+                },
+                timerState = timerState,
+                showSessionCompleteDialog = if (isEngineIdle) false else current.showSessionCompleteDialog,
+            )
+        }
+        if (inOvertime && !overtimeRecorded) {
+            // Do not auto-advance or pop the in-app dialog — the fullscreen activity owns the end-of-session UX.
+            overtimeRecorded = true
+            handleSessionCompleteOvertime(state.sessionType)
         }
     }
 
@@ -58,61 +97,43 @@ class PomodoroViewModel @Inject constructor(
 
     fun onStart() {
         if (_uiState.value.timerState == TimerState.Running) return
-        sessionStartedAtEpochMillis = System.currentTimeMillis()
         val state = _uiState.value
-        _uiState.update {
-            it.copy(
-                timerState = TimerState.Running,
-                showSessionCompleteDialog = false,
-            )
-        }
-        alarmScheduler.scheduleSessionEnd(
-            plannedDurationMillis = state.plannedDurationMillis,
-            sessionType = state.currentSessionType,
-        )
-        launchTimer()
+        sessionStartedAtEpochMillis = System.currentTimeMillis()
+        lastSeenSessionType = state.currentSessionType
+        lastSeenPreset = state.selectedPreset
+        overtimeRecorded = false
+
+        startService(state.plannedDurationMillis, state.currentSessionType)
     }
 
     fun onPause() {
         if (_uiState.value.timerState != TimerState.Running) return
-        timerJob?.cancel()
-        timerJob = null
-        alarmScheduler.cancel()
-        _uiState.update { it.copy(timerState = TimerState.Paused) }
+        sendServiceAction(PomodoroTimerService.ACTION_PAUSE)
     }
 
     fun onResume() {
         if (_uiState.value.timerState != TimerState.Paused) return
-        val now = System.currentTimeMillis()
-        val elapsedBeforePause = _uiState.value.plannedDurationMillis - _uiState.value.remainingMillis
-        sessionStartedAtEpochMillis = now - elapsedBeforePause
-        val state = _uiState.value
-        _uiState.update { it.copy(timerState = TimerState.Running) }
-        alarmScheduler.scheduleSessionEnd(
-            plannedDurationMillis = state.remainingMillis,
-            sessionType = state.currentSessionType,
-        )
-        launchTimer()
+        sendServiceAction(PomodoroTimerService.ACTION_RESUME)
     }
 
     fun onReset() {
-        timerJob?.cancel()
-        timerJob = null
-        alarmScheduler.cancel()
+        sendServiceAction(PomodoroTimerService.ACTION_STOP)
+        val s = _uiState.value
+        val newDuration = durationFor(s.currentSessionType, s.selectedPreset)
+        overtimeRecorded = false
         _uiState.update {
             it.copy(
                 timerState = TimerState.Idle,
-                remainingMillis = durationFor(it.currentSessionType, it.selectedPreset),
-                plannedDurationMillis = durationFor(it.currentSessionType, it.selectedPreset),
+                remainingMillis = newDuration,
+                plannedDurationMillis = newDuration,
                 showSessionCompleteDialog = false,
             )
         }
     }
 
     fun onPresetSelected(preset: PomodoroPreset) {
-        timerJob?.cancel()
-        timerJob = null
-        alarmScheduler.cancel()
+        sendServiceAction(PomodoroTimerService.ACTION_STOP)
+        overtimeRecorded = false
         _uiState.update {
             it.copy(
                 selectedPreset = preset,
@@ -144,42 +165,24 @@ class PomodoroViewModel @Inject constructor(
         }
     }
 
-    private fun launchTimer() {
-        timerJob?.cancel()
-        timerJob = viewModelScope.launch {
-            while (true) {
-                val now = System.currentTimeMillis()
-                val elapsed = now - sessionStartedAtEpochMillis
-                val planned = _uiState.value.plannedDurationMillis
-                val remaining = (planned - elapsed).coerceAtLeast(0L)
-                _uiState.update { it.copy(remainingMillis = remaining) }
-                if (remaining <= 0L) {
-                    handleSessionComplete()
-                    break
-                }
-                delay(250L)
-            }
+    private fun startService(durationMillis: Long, type: PomodoroSessionType) {
+        val intent = Intent(context, PomodoroTimerService::class.java).apply {
+            action = PomodoroTimerService.ACTION_START
+            putExtra(PomodoroTimerService.EXTRA_DURATION_MILLIS, durationMillis)
+            putExtra(PomodoroTimerService.EXTRA_SESSION_TYPE, type.ordinal)
         }
+        context.startForegroundService(intent)
+        alarmScheduler.scheduleSessionEnd(durationMillis, type)
     }
 
-    private fun handleSessionComplete() {
-        timerJob = null
-        recordSessionInBackground(completed = true)
-        val state = _uiState.value
-        val nextFocusCount = if (state.currentSessionType == PomodoroSessionType.FOCUS)
-            state.completedFocusCount + 1
-        else state.completedFocusCount
-        advanceToNextSessionInternal(nextFocusCount)
-        _uiState.update {
-            it.copy(
-                timerState = TimerState.Finished,
-                showSessionCompleteDialog = true,
-            )
+    private fun sendServiceAction(action: String) {
+        val intent = Intent(context, PomodoroTimerService::class.java).apply {
+            this.action = action
         }
+        context.startService(intent)
     }
 
-    private fun handleAlarmSessionComplete(sessionType: PomodoroSessionType) {
-        if (_uiState.value.timerState == TimerState.Idle) return
+    private fun handleSessionCompleteOvertime(sessionType: PomodoroSessionType) {
         recordSessionInBackground(completed = true, forcedType = sessionType)
     }
 
@@ -205,8 +208,7 @@ class PomodoroViewModel @Inject constructor(
 
     private fun advanceToNextSession() {
         val state = _uiState.value
-        timerJob?.cancel()
-        timerJob = null
+        sendServiceAction(PomodoroTimerService.ACTION_STOP)
         alarmScheduler.cancel()
         val nextFocusCount = if (state.currentSessionType == PomodoroSessionType.FOCUS)
             state.completedFocusCount + 1
@@ -237,11 +239,8 @@ class PomodoroViewModel @Inject constructor(
     }
 
     override fun onCleared() {
-        timerJob?.cancel()
-        timerJob = null
-        eventCollectionJob?.cancel()
-        eventCollectionJob = null
-        alarmScheduler.cancel()
+        engineObserverJob?.cancel()
+        engineObserverJob = null
         super.onCleared()
     }
 }

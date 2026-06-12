@@ -48,6 +48,30 @@ both the orchestrator and every rein.
    orchestrator thinks a push is needed, it ends its report
    with the suggested command (e.g. `git push origin main`
    or `gh pr create`) and the user runs it.
+8. **Every string change touches every locale.** When adding or
+   editing any user-facing string, update **all** of
+   `app/src/main/res/values*/strings.xml` (en = `values/`,
+   pt-rBR = `values-pt-rBR/`, and any other locale present).
+   Never leave a locale in English when the others are translated,
+   and never leave a locale translated when `values/` is updated.
+   If a translation is unknown for a locale, mirror the English
+   value verbatim (don't delete the entry — Android falls back
+   to `values/`, but an explicit copy is auditable).
+9. **Almost no comments.** Code should speak for itself; the
+   default is **no comment at all**. Add a `//` comment only when
+   the reader genuinely cannot infer the intent from the code
+   (a non-obvious platform quirk, an OEM-specific workaround,
+   a deliberately-surprising value, or a future-must-happen
+   contract). KDoc / multi-line `/* ... */` comments on classes
+   or functions are **not allowed** unless they document a public
+   API that external callers depend on. Every comment must be
+   one or two short lines; multi-paragraph "explanations" go in
+   the commit message or the changelog, not the source.
+   - **Never** restate the function/property name in prose.
+   - **Never** describe what the next 1-2 lines literally do.
+   - **Never** leave section banners, author tags, or stale
+     `// TODO: refactor` notes.
+   When in doubt, delete the comment.
 
 ## Topic docs
 

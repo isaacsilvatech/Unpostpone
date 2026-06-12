@@ -64,4 +64,7 @@ object Dimens {
     val HeroBorderWidth      = 1.dp
     val PresetChipBorderWidth = 1.dp
     val SurfaceFlatElevation = 0.dp  // explicit zero-elevation token (idiomatic for `tonalElevation = 0.dp`)
+    val PomodoroRingSize     = 320.dp  // enlarged timer ring (was FocusRingSize 240dp) — owns the screen now that the hero card is gone
+    val PresetPillHeight     = 40.dp   // compact pill that holds "25/5" / "50/10" / "90/15"
+    val PresetPillMinWidth   = 72.dp   // minimum tap target for a single digit-pair
 }

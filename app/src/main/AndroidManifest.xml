@@ -17,6 +17,11 @@
         fires at the planned session end even when the device is in Doze.
     -->
     <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <!--
+        Allows the Pomodoro overtime notification to launch the
+        fullscreen session-complete activity over the lock screen.
+    -->
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
 
     <application
         android:name=".UnpostponeApplication"
@@ -63,6 +68,36 @@
                 android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
                 android:value="temporary_app_unlock_for_focus_session" />
         </service>
+
+        <service
+            android:name=".service.pomodoro.PomodoroTimerService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="pomodoro_session_timer" />
+        </service>
+
+        <activity
+            android:name=".presentation.pomodoro.PomodoroSessionCompleteActivity"
+            android:exported="true"
+            android:excludeFromRecents="true"
+            android:launchMode="singleTask"
+            android:showOnLockScreen="true"
+            android:taskAffinity=""
+            android:theme="@style/Theme.Unpostpone.SessionComplete" />
+
+        <receiver
+            android:name=".service.pomodoro.PomodoroActionReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.unpostpone.app.action.POMODORO_SERVICE_PAUSE" />
+                <action android:name="com.unpostpone.app.action.POMODORO_SERVICE_RESUME" />
+                <action android:name="com.unpostpone.app.action.POMODORO_SERVICE_ADD_MINUTE" />
+                <action android:name="com.unpostpone.app.action.POMODORO_SERVICE_STOP" />
+                <action android:name="com.unpostpone.app.action.POMODORO_OPEN" />
+            </intent-filter>
+        </receiver>
 
         <receiver
             android:name=".service.pomodoro.PomodoroAlarmReceiver"

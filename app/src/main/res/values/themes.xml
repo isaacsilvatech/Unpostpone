@@ -18,4 +18,19 @@
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
     </style>
+
+    <!--
+        Fullscreen session-complete activity. Solid black background,
+        no action bar; status / navigation bars are forced transparent
+        so the screen looks like the Android Clock timer-end screen
+        even when the device is on the lockscreen.
+    -->
+    <style name="Theme.Unpostpone.SessionComplete" parent="Theme.Unpostpone">
+        <item name="android:windowBackground">@color/black</item>
+        <item name="android:colorBackground">@color/black</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
 </resources>

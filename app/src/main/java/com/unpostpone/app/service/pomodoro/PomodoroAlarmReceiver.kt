@@ -3,12 +3,9 @@ package com.unpostpone.app.service.pomodoro
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.os.Build
-import android.os.VibrationEffect
-import android.os.Vibrator
-import android.os.VibratorManager
 import androidx.core.content.getSystemService
 import com.unpostpone.app.domain.model.PomodoroSessionType
+import com.unpostpone.app.presentation.pomodoro.PomodoroSessionCompleteActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -19,9 +16,11 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class PomodoroAlarmReceiver : BroadcastReceiver() {
 
+    @Inject lateinit var engine: PomodoroTimerEngine
     @Inject lateinit var notificationHelper: PomodoroNotificationHelper
     @Inject lateinit var ringtonePlayer: PomodoroRingtonePlayer
-    @Inject lateinit var eventBus: PomodoroEventBus
+    @Inject lateinit var vibrator: PomodoroVibrator
+    @Inject lateinit var sessionEndSignal: PomodoroSessionEndSignal
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
@@ -31,42 +30,48 @@ class PomodoroAlarmReceiver : BroadcastReceiver() {
         if (ordinal !in PomodoroSessionType.values().indices) return
         val sessionType = PomodoroSessionType.values()[ordinal]
 
+        val current = engine.state.value
+        if (current.status != PomodoroTimerEngine.Status.RUNNING) return
+        if (current.sessionType != sessionType) return
+        if (!sessionEndSignal.tryFire()) return
+
         val pending = goAsync()
         scope.launch {
             try {
                 notificationHelper.ensureChannel()
-                postCompletionNotification(context, sessionType)
-                vibrate(context)
+                postOvertimeHeadsUp(context, current)
+                vibrator.vibrate()
+                ringtonePlayer.stop()
                 ringtonePlayer.play()
-                eventBus.emit(PomodoroAlarmEvent.SessionComplete(sessionType))
+                launchSessionCompleteActivity(context)
             } finally {
                 pending.finish()
             }
         }
     }
 
-    private fun postCompletionNotification(context: Context, sessionType: PomodoroSessionType) {
+    private fun postOvertimeHeadsUp(
+        context: Context,
+        state: PomodoroTimerEngine.State,
+    ) {
         val appContext = context.applicationContext
-        val notification = notificationHelper.buildSessionCompleteNotification(sessionType)
+        val notification = notificationHelper.buildOvertimeNotification(state)
         val manager = appContext.getSystemService<android.app.NotificationManager>() ?: return
-        manager.notify(PomodoroNotificationHelper.POMODORO_NOTIFICATION_ID, notification)
+        manager.notify(
+            PomodoroNotificationHelper.POMODORO_RUNNING_NOTIFICATION_ID,
+            notification,
+        )
     }
 
-    private fun vibrate(context: Context) {
+    private fun launchSessionCompleteActivity(context: Context) {
         val appContext = context.applicationContext
-        val vibrator: Vibrator? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            appContext.getSystemService<VibratorManager>()?.defaultVibrator
-        } else {
-            @Suppress("DEPRECATION")
-            appContext.getSystemService<Vibrator>()
+        val intent = Intent(appContext, PomodoroSessionCompleteActivity::class.java).apply {
+            addFlags(
+                Intent.FLAG_ACTIVITY_NEW_TASK or
+                    Intent.FLAG_ACTIVITY_SINGLE_TOP or
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP
+            )
         }
-        vibrator ?: return
-        val pattern = longArrayOf(0L, 400L, 200L, 400L)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            vibrator.vibrate(VibrationEffect.createWaveform(pattern, -1))
-        } else {
-            @Suppress("DEPRECATION")
-            vibrator.vibrate(pattern, -1)
-        }
+        runCatching { appContext.startActivity(intent) }
     }
 }

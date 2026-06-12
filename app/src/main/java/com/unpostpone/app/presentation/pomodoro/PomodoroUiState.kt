@@ -2,6 +2,7 @@ package com.unpostpone.app.presentation.pomodoro
 
 import com.unpostpone.app.domain.model.PomodoroPreset
 import com.unpostpone.app.domain.model.PomodoroSessionType
+import com.unpostpone.app.service.pomodoro.formatRemainingMillis
 
 sealed interface TimerState {
     data object Idle : TimerState
@@ -31,10 +32,5 @@ data class PomodoroUiState(
         get() = timerState == TimerState.Running || timerState == TimerState.Paused
 
     val formattedRemaining: String
-        get() {
-            val totalSeconds = (remainingMillis / 1000L).coerceAtLeast(0L)
-            val minutes = totalSeconds / 60L
-            val seconds = totalSeconds % 60L
-            return "%02d:%02d".format(minutes, seconds)
-        }
+        get() = formatRemainingMillis(remainingMillis)
 }

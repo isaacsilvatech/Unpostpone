@@ -1,18 +1,14 @@
 package com.unpostpone.app.presentation.pomodoro
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -24,7 +20,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -33,12 +28,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -48,10 +39,9 @@ import com.unpostpone.app.R
 import com.unpostpone.app.domain.model.PomodoroPreset
 import com.unpostpone.app.domain.model.PomodoroSessionType
 import com.unpostpone.app.presentation.pomodoro.components.PomodoroControls
-import com.unpostpone.app.presentation.pomodoro.components.PomodoroPresetChip
+import com.unpostpone.app.presentation.pomodoro.components.PomodoroPresetPill
 import com.unpostpone.app.presentation.pomodoro.components.PomodoroTimerRing
 import com.unpostpone.app.ui.theme.Dimens
-import com.unpostpone.app.ui.theme.HeroRadius
 import com.unpostpone.app.ui.theme.UnpostponeTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -126,104 +116,67 @@ private fun PomodoroContent(
             .verticalScroll(scrollState)
             .padding(horizontal = Dimens.SpacingXL),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(Dimens.SpacingXL),
+        verticalArrangement = Arrangement.spacedBy(Dimens.SpacingXXL),
     ) {
         Spacer(Modifier.height(Dimens.SpacingM))
 
-        HeroCard(
+        PresetPillsRow(
             uiState = uiState,
             onEvent = onEvent,
         )
 
-        Spacer(Modifier.height(Dimens.SpacingM))
-
-        PresetsSection(
-            uiState = uiState,
-            onEvent = onEvent,
+        PomodoroTimerRing(
+            progress = uiState.progress,
+            centerText = uiState.formattedRemaining,
+            eyebrow = eyebrowFor(uiState),
         )
+
+        PomodoroControls(
+            timerState = uiState.timerState,
+            isSessionActive = uiState.isSessionActive,
+            onStart = { onEvent(PomodoroEvent.Start) },
+            onPause = { onEvent(PomodoroEvent.Pause) },
+            onResume = { onEvent(PomodoroEvent.Resume) },
+            onReset = { onEvent(PomodoroEvent.Reset) },
+            onSkipToNext = { onEvent(PomodoroEvent.SkipToNext) },
+            onCancel = { onEvent(PomodoroEvent.Reset) },
+        )
+
+        if (uiState.completedFocusCount > 0) {
+            Text(
+                text = stringResource(
+                    R.string.pomodoro_completed_focus_count,
+                    uiState.completedFocusCount,
+                ),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
 
         Spacer(Modifier.height(Dimens.SpacingXL))
     }
 }
 
 @Composable
-private fun HeroCard(
+private fun PresetPillsRow(
     uiState: PomodoroUiState,
     onEvent: (PomodoroEvent) -> Unit,
 ) {
-    val eyebrowText = eyebrowFor(uiState)
-
-    Surface(
+    androidx.compose.foundation.layout.Row(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(HeroRadius),
-        color = MaterialTheme.colorScheme.surface,
-        tonalElevation = Dimens.SurfaceFlatElevation,
-        border = BorderStroke(Dimens.HeroBorderWidth, MaterialTheme.colorScheme.outlineVariant),
+        horizontalArrangement = Arrangement.spacedBy(
+            Dimens.SpacingM,
+            Alignment.CenterHorizontally,
+        ),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = Dimens.SpacingXXL),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(Dimens.HeroZoneSpacing),
-        ) {
-            SessionTypeChip(type = uiState.currentSessionType)
-
-            PomodoroTimerRing(
-                progress = uiState.progress,
-                centerText = uiState.formattedRemaining,
-                eyebrow = eyebrowText,
+        uiState.availablePresets.forEach { preset ->
+            PomodoroPresetPill(
+                focusMinutes = preset.focusMinutes,
+                shortBreakMinutes = preset.shortBreakMinutes,
+                selected = preset.name == uiState.selectedPreset.name,
+                onClick = { onEvent(PomodoroEvent.PresetSelected(preset)) },
             )
-
-            PomodoroControls(
-                timerState = uiState.timerState,
-                isSessionActive = uiState.isSessionActive,
-                onStart = { onEvent(PomodoroEvent.Start) },
-                onPause = { onEvent(PomodoroEvent.Pause) },
-                onResume = { onEvent(PomodoroEvent.Resume) },
-                onReset = { onEvent(PomodoroEvent.Reset) },
-                onSkipToNext = { onEvent(PomodoroEvent.SkipToNext) },
-                onCancel = { onEvent(PomodoroEvent.Reset) },
-            )
-
-            if (uiState.completedFocusCount > 0) {
-                Text(
-                    text = stringResource(
-                        R.string.pomodoro_completed_focus_count,
-                        uiState.completedFocusCount,
-                    ),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun PresetsSection(
-    uiState: PomodoroUiState,
-    onEvent: (PomodoroEvent) -> Unit,
-) {
-    Column(modifier = Modifier.fillMaxWidth()) {
-        Text(
-            text = stringResource(R.string.pomodoro_presets_title).uppercase(),
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-        Spacer(Modifier.height(Dimens.SpacingM))
-        FlowRow(
-            horizontalArrangement = Arrangement.spacedBy(Dimens.PresetFlowSpacing),
-            verticalArrangement = Arrangement.spacedBy(Dimens.SpacingXL),
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            uiState.availablePresets.forEach { preset ->
-                PomodoroPresetChip(
-                    preset = preset,
-                    selected = preset.name == uiState.selectedPreset.name,
-                    onClick = { onEvent(PomodoroEvent.PresetSelected(preset)) },
-                )
-            }
         }
     }
 }
@@ -237,56 +190,6 @@ private fun eyebrowFor(uiState: PomodoroUiState): String {
         PomodoroSessionType.LONG_BREAK -> R.string.pomodoro_eyebrow_long_break
     }
     return stringResource(resId, minutes)
-}
-
-@Composable
-private fun SessionTypeChip(type: PomodoroSessionType) {
-    val labelRes: Int
-    val containerColor: Color
-    val contentColor: Color
-    val borderColor: Color
-    when (type) {
-        PomodoroSessionType.FOCUS -> {
-            labelRes = R.string.pomodoro_session_focus
-            containerColor = MaterialTheme.colorScheme.primaryContainer
-            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-            borderColor = MaterialTheme.colorScheme.primary
-        }
-        PomodoroSessionType.SHORT_BREAK -> {
-            labelRes = R.string.pomodoro_session_short_break
-            containerColor = MaterialTheme.colorScheme.tertiaryContainer
-            contentColor = MaterialTheme.colorScheme.onTertiaryContainer
-            borderColor = MaterialTheme.colorScheme.tertiary
-        }
-        PomodoroSessionType.LONG_BREAK -> {
-            labelRes = R.string.pomodoro_session_long_break
-            containerColor = MaterialTheme.colorScheme.secondaryContainer
-            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-            borderColor = MaterialTheme.colorScheme.secondary
-        }
-    }
-
-    val chipCd = stringResource(R.string.pomodoro_session_chip_cd)
-
-    Surface(
-        shape = RoundedCornerShape(Dimens.SpacingXL),
-        color = containerColor,
-        contentColor = contentColor,
-        border = BorderStroke(Dimens.HeroBorderWidth, borderColor),
-        modifier = Modifier
-            .defaultMinSize(minWidth = Dimens.SessionChipMinWidth)
-            .semantics { contentDescription = chipCd },
-    ) {
-        Text(
-            text = stringResource(labelRes),
-            style = MaterialTheme.typography.labelLarge,
-            color = contentColor,
-            fontWeight = FontWeight.SemiBold,
-            modifier = Modifier.padding(horizontal = Dimens.SpacingL, vertical = Dimens.SpacingS),
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-        )
-    }
 }
 
 @Composable

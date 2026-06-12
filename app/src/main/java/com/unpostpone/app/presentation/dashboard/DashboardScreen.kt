@@ -225,6 +225,8 @@ private fun DashboardContent(
             )
         }
 
+        item { ToolsRow(tools = tools) }
+
         item {
             TodaysFocusCard(
                 focusedMinutes = uiState.focusedMinutes,
@@ -232,8 +234,6 @@ private fun DashboardContent(
                 progressPercent = uiState.dailyGoalProgressPercent,
             )
         }
-
-        item { ToolsRow(tools = tools) }
 
         item {
             if (todayGoal == null) {

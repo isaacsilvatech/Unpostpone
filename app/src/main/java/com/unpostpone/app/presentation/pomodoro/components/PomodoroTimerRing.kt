@@ -38,7 +38,7 @@ fun PomodoroTimerRing(
     val clampedProgress = progress.coerceIn(0f, 1f)
 
     Box(
-        modifier = modifier.size(Dimens.FocusRingSize),
+        modifier = modifier.size(Dimens.PomodoroRingSize),
         contentAlignment = Alignment.Center,
     ) {
         Canvas(modifier = Modifier.fillMaxSize()) {

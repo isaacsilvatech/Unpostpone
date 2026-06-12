@@ -2,9 +2,9 @@ package com.unpostpone.app.di
 
 import android.content.Context
 import com.unpostpone.app.service.pomodoro.PomodoroAlarmScheduler
-import com.unpostpone.app.service.pomodoro.PomodoroEventBus
 import com.unpostpone.app.service.pomodoro.PomodoroNotificationHelper
 import com.unpostpone.app.service.pomodoro.PomodoroRingtonePlayer
+import com.unpostpone.app.service.pomodoro.PomodoroVibrator
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -37,5 +37,7 @@ object PomodoroModule {
 
     @Provides
     @Singleton
-    fun providePomodoroEventBus(): PomodoroEventBus = PomodoroEventBus()
+    fun providePomodoroVibrator(
+        @ApplicationContext context: Context,
+    ): PomodoroVibrator = PomodoroVibrator(context)
 }
