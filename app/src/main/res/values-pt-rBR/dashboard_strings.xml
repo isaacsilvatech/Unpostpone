@@ -25,6 +25,11 @@
     <string name="dashboard_accessibility_open_settings">Abrir configurações</string>
     <string name="dashboard_accessibility_cancel">Cancelar</string>
 
+    <string name="dashboard_disable_focus_title">Desativar Proteção de Foco?</string>
+    <string name="dashboard_disable_focus_body">Seus apps bloqueados não serão mais restritos. Tem certeza que deseja desativar a Proteção de Foco?</string>
+    <string name="dashboard_disable_focus_confirm">Desativar</string>
+    <string name="dashboard_disable_focus_cancel">Manter ativado</string>
+
     <!-- retained for backward compatibility, no longer referenced -->
     <string name="dashboard_progress_title">Progresso geral</string>
     <!-- retained for backward compatibility, no longer referenced -->

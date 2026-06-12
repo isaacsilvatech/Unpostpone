@@ -10,6 +10,7 @@ data class DashboardUiState(
     val isBlockingActive: Boolean = false,
     val isAccessibilityServiceEnabled: Boolean = false,
     val showAccessibilityPrompt: Boolean = false,
+    val showDisableBlockingConfirm: Boolean = false,
     val isLoading: Boolean = false,
     val error: String? = null,
     val enabledBlockedAppCount: Int = 0,

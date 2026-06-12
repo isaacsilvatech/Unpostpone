@@ -186,6 +186,37 @@ fun DashboardScreen(
             },
         )
     }
+
+    if (uiState.showDisableBlockingConfirm) {
+        AlertDialog(
+            onDismissRequest = viewModel::dismissDisableBlockingConfirm,
+            title = {
+                Text(
+                    text = stringResource(R.string.dashboard_disable_focus_title),
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+            },
+            text = {
+                Text(
+                    text = stringResource(R.string.dashboard_disable_focus_body),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = viewModel::confirmDisableBlocking) {
+                    Text(stringResource(R.string.dashboard_disable_focus_confirm))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = viewModel::dismissDisableBlockingConfirm) {
+                    Text(stringResource(R.string.dashboard_disable_focus_cancel))
+                }
+            },
+        )
+    }
 }
 
 @Composable

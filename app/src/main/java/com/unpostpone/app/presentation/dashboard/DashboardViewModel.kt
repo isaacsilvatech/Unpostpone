@@ -73,7 +73,7 @@ class DashboardViewModel @Inject constructor(
     fun onToggleBlocking(wantActive: Boolean) {
         viewModelScope.launch {
             if (!wantActive) {
-                setBlockingEnabledUseCase(false)
+                _uiState.update { it.copy(showDisableBlockingConfirm = true) }
                 return@launch
             }
             if (AccessibilityServiceUtils.isUnpostponeEnabled(context)) {
@@ -83,6 +83,16 @@ class DashboardViewModel @Inject constructor(
             }
         }
     }
+
+    fun confirmDisableBlocking() {
+        viewModelScope.launch {
+            setBlockingEnabledUseCase(false)
+            _uiState.update { it.copy(showDisableBlockingConfirm = false) }
+        }
+    }
+
+    fun dismissDisableBlockingConfirm() =
+        _uiState.update { it.copy(showDisableBlockingConfirm = false) }
 
     fun refreshAccessibilityState() {
         viewModelScope.launch {
