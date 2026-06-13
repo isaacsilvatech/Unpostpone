@@ -185,8 +185,7 @@ private fun PomodoroSessionCompleteScreen(
 private fun subtitleFor(sessionType: PomodoroSessionType): String {
     val res = when (sessionType) {
         PomodoroSessionType.FOCUS -> R.string.pomodoro_overtime_subtitle_focus
-        PomodoroSessionType.SHORT_BREAK -> R.string.pomodoro_overtime_subtitle_short_break
-        PomodoroSessionType.LONG_BREAK -> R.string.pomodoro_overtime_subtitle_long_break
+        PomodoroSessionType.BREAK -> R.string.pomodoro_overtime_subtitle_break
     }
     return stringResource(res)
 }

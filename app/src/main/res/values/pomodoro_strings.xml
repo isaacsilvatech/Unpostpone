@@ -19,6 +19,5 @@
     <!-- Ongoing notification while a session is running. -->
     <string name="pomodoro_notification_ongoing_title">Pomodoro running</string>
     <string name="pomodoro_notification_ongoing_body_focus">Focus session in progress</string>
-    <string name="pomodoro_notification_ongoing_body_short_break">Short break in progress</string>
-    <string name="pomodoro_notification_ongoing_body_long_break">Long break in progress</string>
+    <string name="pomodoro_notification_ongoing_body_break">Break in progress</string>
 </resources>

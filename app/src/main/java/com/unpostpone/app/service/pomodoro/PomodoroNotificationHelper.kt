@@ -178,8 +178,7 @@ class PomodoroNotificationHelper(
         val title = appContext.getString(R.string.pomodoro_notification_complete_title)
         val bodyRes = when (sessionType) {
             PomodoroSessionType.FOCUS -> R.string.pomodoro_notification_complete_focus_body
-            PomodoroSessionType.SHORT_BREAK,
-            PomodoroSessionType.LONG_BREAK -> R.string.pomodoro_notification_complete_break_body
+            PomodoroSessionType.BREAK -> R.string.pomodoro_notification_complete_break_body
         }
         return title to appContext.getString(bodyRes)
     }
@@ -187,8 +186,7 @@ class PomodoroNotificationHelper(
     private fun ongoingBody(sessionType: PomodoroSessionType, remainingMillis: Long): String {
         val baseRes = when (sessionType) {
             PomodoroSessionType.FOCUS -> R.string.pomodoro_notification_ongoing_body_focus
-            PomodoroSessionType.SHORT_BREAK -> R.string.pomodoro_notification_ongoing_body_short_break
-            PomodoroSessionType.LONG_BREAK -> R.string.pomodoro_notification_ongoing_body_long_break
+            PomodoroSessionType.BREAK -> R.string.pomodoro_notification_ongoing_body_break
         }
         val remainingMinutes = (remainingMillis / 60_000L).coerceAtLeast(0L)
         return "${appContext.getString(baseRes)} · ${remainingMinutes}m"

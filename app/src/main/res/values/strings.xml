@@ -46,9 +46,6 @@
  <string name="pomodoro_action_reset">Reset</string>
  <string name="pomodoro_action_skip">Skip</string>
  <string name="pomodoro_action_cancel">Cancel</string>
- <string name="pomodoro_eyebrow_focus">Focus · %1$d min</string>
- <string name="pomodoro_eyebrow_short_break">Short break · %1$d min</string>
- <string name="pomodoro_eyebrow_long_break">Long break · %1$d min</string>
  <string name="pomodoro_preset_total">%1$d min cycle</string>
  <string name="pomodoro_session_chip_cd">Current session</string>
  <string name="pomodoro_preset_selected_cd">Selected</string>
@@ -58,9 +55,9 @@
  <string name="pomodoro_preset_extended_title">90/15 Extended Focus</string>
  <string name="pomodoro_preset_subtitle">%1$d min focus / %2$d min break</string>
  <string name="pomodoro_preset_short">%1$d/%2$d</string>
+
  <string name="pomodoro_session_focus">Focus</string>
- <string name="pomodoro_session_short_break">Short break</string>
- <string name="pomodoro_session_long_break">Long break</string>
+ <string name="pomodoro_session_break">Break</string>
  <string name="pomodoro_complete_title">Session complete</string>
  <string name="pomodoro_complete_focus_body">Time for a break.</string>
  <string name="pomodoro_complete_break_body">Ready to focus again?</string>
@@ -69,21 +66,19 @@
  <string name="pomodoro_complete_dismiss">Close</string>
  <string name="pomodoro_completed_focus_count">%1$d focus sessions completed</string>
 
+ <!-- Ongoing notification body fragments — %1$s is the formatted mm:ss. -->
+ <string name="pomodoro_notification_ongoing_focus">Focus · %1$s</string>
+ <string name="pomodoro_notification_ongoing_break">Break · %1$s</string>
+ <string name="pomodoro_notification_ongoing_subtitle">Pomodoro</string>
+
  <!-- Ongoing notification action labels. -->
  <string name="pomodoro_notification_pause">Pause</string>
  <string name="pomodoro_notification_resume">Resume</string>
  <string name="pomodoro_notification_add_minute">Add 1 min</string>
 
- <!-- Ongoing notification body fragments — %1$s is the formatted mm:ss. -->
- <string name="pomodoro_notification_ongoing_focus">Focus · %1$s</string>
- <string name="pomodoro_notification_ongoing_short_break">Short break · %1$s</string>
- <string name="pomodoro_notification_ongoing_long_break">Long break · %1$s</string>
- <string name="pomodoro_notification_ongoing_subtitle">Pomodoro</string>
-
  <!-- Fullscreen session-complete screen + overtime heads-up notification. -->
  <string name="pomodoro_overtime_subtitle_focus">Focus session</string>
- <string name="pomodoro_overtime_subtitle_short_break">Short break</string>
- <string name="pomodoro_overtime_subtitle_long_break">Long break</string>
+ <string name="pomodoro_overtime_subtitle_break">Break</string>
  <string name="pomodoro_overtime_button_stop">Stop</string>
  <string name="pomodoro_overtime_button_add_minute">+ 1:00</string>
  <string name="pomodoro_notification_overtime_body">Time\'s up</string>

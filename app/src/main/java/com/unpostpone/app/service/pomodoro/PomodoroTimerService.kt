@@ -173,8 +173,7 @@ class PomodoroTimerService : Service() {
         val formattedTime = formatRemainingMillis(s.remainingMillis)
         val title = when (s.sessionType) {
             PomodoroSessionType.FOCUS -> getString(R.string.pomodoro_notification_ongoing_focus, formattedTime)
-            PomodoroSessionType.SHORT_BREAK -> getString(R.string.pomodoro_notification_ongoing_short_break, formattedTime)
-            PomodoroSessionType.LONG_BREAK -> getString(R.string.pomodoro_notification_ongoing_long_break, formattedTime)
+            PomodoroSessionType.BREAK -> getString(R.string.pomodoro_notification_ongoing_break, formattedTime)
         }
 
         val openIntent = Intent(this, MainActivity::class.java).apply {

@@ -173,7 +173,7 @@ private fun PresetPillsRow(
         uiState.availablePresets.forEach { preset ->
             PomodoroPresetPill(
                 focusMinutes = preset.focusMinutes,
-                shortBreakMinutes = preset.shortBreakMinutes,
+                breakMinutes = preset.breakMinutes,
                 selected = preset.name == uiState.selectedPreset.name,
                 onClick = { onEvent(PomodoroEvent.PresetSelected(preset)) },
             )
@@ -183,13 +183,12 @@ private fun PresetPillsRow(
 
 @Composable
 private fun eyebrowFor(uiState: PomodoroUiState): String {
-    val minutes = (uiState.plannedDurationMillis / 60_000L).toInt()
-    val resId = when (uiState.currentSessionType) {
-        PomodoroSessionType.FOCUS -> R.string.pomodoro_eyebrow_focus
-        PomodoroSessionType.SHORT_BREAK -> R.string.pomodoro_eyebrow_short_break
-        PomodoroSessionType.LONG_BREAK -> R.string.pomodoro_eyebrow_long_break
+    val sessionType = uiState.selectedPreset.sessionTypeFor(uiState.plannedDurationMillis)
+    val resId = when (sessionType) {
+        PomodoroSessionType.FOCUS -> R.string.pomodoro_session_focus
+        PomodoroSessionType.BREAK -> R.string.pomodoro_session_break
     }
-    return stringResource(resId, minutes)
+    return stringResource(resId)
 }
 
 @Composable
@@ -304,7 +303,7 @@ private fun PomodoroScreenPreview_Finished() {
                 timerState = TimerState.Finished,
                 remainingMillis = 0L,
                 plannedDurationMillis = 25 * 60_000L,
-                currentSessionType = PomodoroSessionType.SHORT_BREAK,
+                currentSessionType = PomodoroSessionType.BREAK,
                 completedFocusCount = 2,
             ),
             onEvent = {},
@@ -320,7 +319,7 @@ private fun PomodoroScreenPreview_Dark() {
         PomodoroContent(
             uiState = PomodoroUiState(
                 timerState = TimerState.Running,
-                currentSessionType = PomodoroSessionType.LONG_BREAK,
+                currentSessionType = PomodoroSessionType.BREAK,
                 selectedPreset = PomodoroPreset.DeepWork,
                 remainingMillis = 8 * 60_000L,
                 plannedDurationMillis = 20 * 60_000L,

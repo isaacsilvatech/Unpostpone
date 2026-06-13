@@ -56,7 +56,7 @@ fun PomodoroPresetChip(
         PomodoroPreset.Extended -> R.string.pomodoro_preset_extended_title
         else -> R.string.pomodoro_preset_classic_title
     }
-    val cycleMinutes = preset.focusMinutes + preset.shortBreakMinutes
+    val cycleMinutes = preset.focusMinutes + preset.breakMinutes
     val selectedCd = stringResource(R.string.pomodoro_preset_selected_cd)
 
     val chipModifier = modifier
@@ -108,7 +108,7 @@ fun PomodoroPresetChip(
                 text = stringResource(
                     R.string.pomodoro_preset_subtitle,
                     preset.focusMinutes,
-                    preset.shortBreakMinutes,
+                    preset.breakMinutes,
                 ),
                 style = MaterialTheme.typography.bodySmall,
                 color = subtitleColor,

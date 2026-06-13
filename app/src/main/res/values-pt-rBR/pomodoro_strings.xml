@@ -11,6 +11,5 @@
 
     <string name="pomodoro_notification_ongoing_title">Pomodoro em andamento</string>
     <string name="pomodoro_notification_ongoing_body_focus">Sessão de foco em andamento</string>
-    <string name="pomodoro_notification_ongoing_body_short_break">Pausa curta em andamento</string>
-    <string name="pomodoro_notification_ongoing_body_long_break">Pausa longa em andamento</string>
+    <string name="pomodoro_notification_ongoing_body_break">Descanso em andamento</string>
 </resources>

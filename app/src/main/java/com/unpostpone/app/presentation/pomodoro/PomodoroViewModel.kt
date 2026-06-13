@@ -89,8 +89,7 @@ class PomodoroViewModel @Inject constructor(
     private fun durationFor(type: PomodoroSessionType, preset: PomodoroPreset): Long {
         val minutes = when (type) {
             PomodoroSessionType.FOCUS -> preset.focusMinutes
-            PomodoroSessionType.SHORT_BREAK -> preset.shortBreakMinutes
-            PomodoroSessionType.LONG_BREAK -> preset.longBreakMinutes
+            PomodoroSessionType.BREAK -> preset.breakMinutes
         }
         return minutes * 60_000L
     }
@@ -98,12 +97,13 @@ class PomodoroViewModel @Inject constructor(
     fun onStart() {
         if (_uiState.value.timerState == TimerState.Running) return
         val state = _uiState.value
+        val sessionType = state.selectedPreset.sessionTypeFor(state.plannedDurationMillis)
         sessionStartedAtEpochMillis = System.currentTimeMillis()
-        lastSeenSessionType = state.currentSessionType
+        lastSeenSessionType = sessionType
         lastSeenPreset = state.selectedPreset
         overtimeRecorded = false
 
-        startService(state.plannedDurationMillis, state.currentSessionType)
+        startService(state.plannedDurationMillis, sessionType)
     }
 
     fun onPause() {
@@ -220,12 +220,8 @@ class PomodoroViewModel @Inject constructor(
     private fun advanceToNextSessionInternal(focusCountAfterThisOne: Int) {
         val state = _uiState.value
         val nextType: PomodoroSessionType = when (state.currentSessionType) {
-            PomodoroSessionType.FOCUS ->
-                if (focusCountAfterThisOne > 0 && focusCountAfterThisOne % state.selectedPreset.cyclesBeforeLongBreak == 0)
-                    PomodoroSessionType.LONG_BREAK
-                else
-                    PomodoroSessionType.SHORT_BREAK
-            PomodoroSessionType.SHORT_BREAK, PomodoroSessionType.LONG_BREAK -> PomodoroSessionType.FOCUS
+            PomodoroSessionType.FOCUS -> PomodoroSessionType.BREAK
+            PomodoroSessionType.BREAK -> PomodoroSessionType.FOCUS
         }
         val nextDuration = durationFor(nextType, state.selectedPreset)
         _uiState.update {
