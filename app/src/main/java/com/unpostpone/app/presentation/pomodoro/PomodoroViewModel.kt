@@ -208,13 +208,17 @@ class PomodoroViewModel @Inject constructor(
 
     private fun advanceToNextSession() {
         val state = _uiState.value
-        sendServiceAction(PomodoroTimerService.ACTION_STOP)
-        alarmScheduler.cancel()
+        val nextType: PomodoroSessionType = when (state.currentSessionType) {
+            PomodoroSessionType.FOCUS -> PomodoroSessionType.BREAK
+            PomodoroSessionType.BREAK -> PomodoroSessionType.FOCUS
+        }
+        val nextDuration = durationFor(nextType, state.selectedPreset)
         val nextFocusCount = if (state.currentSessionType == PomodoroSessionType.FOCUS)
             state.completedFocusCount + 1
         else state.completedFocusCount
         advanceToNextSessionInternal(nextFocusCount)
         _uiState.update { it.copy(timerState = TimerState.Idle, showSessionCompleteDialog = false) }
+        startService(nextDuration, nextType)
     }
 
     private fun advanceToNextSessionInternal(focusCountAfterThisOne: Int) {
