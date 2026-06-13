@@ -119,7 +119,7 @@ Strings are split by feature: `res/values/<feature>_strings.xml` plus a `values-
 - **Configuration cache is enabled.** Avoid `BuildService` patterns that break it; if a build suddenly fails after a Gradle/AGP bump, try `./gradlew --no-configuration-cache` to bisect.
 - **Accessibility + Usage-Stats permissions are core to the app.** The onboarding screen deep-links the user to `ACTION_ACCESSIBILITY_SETTINGS`, `ACTION_USAGE_ACCESS_SETTINGS`, and `ACTION_APP_NOTIFICATION_SETTINGS`. Tests that mock these paths must preserve the intent extras `EXTRA_BLOCKED_PACKAGE` and `EXTRA_FROM_UNLOCK_NOTIFICATION` on `MainActivity`.
 - **Notification actions** use the custom action namespace `com.unpostpone.app.action.POMODORO_*` (see `PomodoroActionReceiver` in the manifest). Add new actions there, not in a new namespace.
-- **Fullscreen session-complete activity** (`PomodoroSessionCompleteActivity`) is `singleTask` with `showOnLockScreen="true"` and `taskAffinity=""` — it intentionally has no back-stack history.
+- **Fullscreen overtime activity** (`PomodoroOvertimeActivity`) is `singleTask` with `showOnLockScreen="true"` and `taskAffinity=""` — it intentionally has no back-stack history.
 - **Special-use foreground services** must keep the matching `PROPERTY_SPECIAL_USE_FGS_SUBTYPE` property in the manifest. Don't remove the `<property>` lines for `PomodoroTimerService` or `TemporaryUnlockService`; Play Store review looks for them.
 
 ## Tests

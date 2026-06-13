@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.content.getSystemService
 import com.unpostpone.app.domain.model.PomodoroSessionType
-import com.unpostpone.app.presentation.pomodoro.PomodoroSessionCompleteActivity
+import com.unpostpone.app.presentation.pomodoro.PomodoroOvertimeActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -65,7 +65,7 @@ class PomodoroAlarmReceiver : BroadcastReceiver() {
 
     private fun launchSessionCompleteActivity(context: Context) {
         val appContext = context.applicationContext
-        val intent = Intent(appContext, PomodoroSessionCompleteActivity::class.java).apply {
+        val intent = Intent(appContext, PomodoroOvertimeActivity::class.java).apply {
             addFlags(
                 Intent.FLAG_ACTIVITY_NEW_TASK or
                     Intent.FLAG_ACTIVITY_SINGLE_TOP or

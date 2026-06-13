@@ -18,7 +18,7 @@
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
     </style>
-    <style name="Theme.Unpostpone.SessionComplete" parent="Theme.Unpostpone">
+    <style name="Theme.Unpostpone.Overtime" parent="Theme.Unpostpone">
         <item name="android:windowBackground">@color/black</item>
         <item name="android:colorBackground">@color/black</item>
         <item name="android:statusBarColor">@android:color/transparent</item>

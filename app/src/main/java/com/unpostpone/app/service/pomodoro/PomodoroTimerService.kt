@@ -13,7 +13,7 @@ import androidx.core.app.NotificationCompat
 import com.unpostpone.app.MainActivity
 import com.unpostpone.app.R
 import com.unpostpone.app.domain.model.PomodoroSessionType
-import com.unpostpone.app.presentation.pomodoro.PomodoroSessionCompleteActivity
+import com.unpostpone.app.presentation.pomodoro.PomodoroOvertimeActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -60,15 +60,17 @@ class PomodoroTimerService : Service() {
                 val typeOrdinal = intent.getIntExtra(EXTRA_SESSION_TYPE, 0)
                 val type = PomodoroSessionType.entries[typeOrdinal]
                 notificationHelper.ensureChannel()
+                cleanupPreviousSessionOverstate()
+                engine.start(duration, type)
+                sessionEndSignal.reset()
                 val s = engine.state.value.copy(
                     status = PomodoroTimerEngine.Status.RUNNING,
                     sessionType = type,
                     totalMillis = duration,
                     remainingMillis = duration,
                 )
-                engine.start(duration, type)
-                sessionEndSignal.reset()
                 startForegroundCompat(s)
+                alarmScheduler.cancel()
                 alarmScheduler.scheduleSessionEnd(duration, type)
             }
             ACTION_PAUSE -> engine.pause()
@@ -109,7 +111,7 @@ class PomodoroTimerService : Service() {
     }
 
     private fun launchSessionCompleteActivity() {
-        val intent = Intent(this, PomodoroSessionCompleteActivity::class.java).apply {
+        val intent = Intent(this, PomodoroOvertimeActivity::class.java).apply {
             addFlags(
                 Intent.FLAG_ACTIVITY_NEW_TASK or
                     Intent.FLAG_ACTIVITY_SINGLE_TOP or
@@ -127,6 +129,12 @@ class PomodoroTimerService : Service() {
             ?.cancel(PomodoroNotificationHelper.POMODORO_OVERTIME_NOTIFICATION_ID)
         stopForegroundCompat()
         stopSelf()
+    }
+
+    private fun cleanupPreviousSessionOverstate() {
+        ringtonePlayer.stop()
+        getSystemService(NotificationManager::class.java)
+            ?.cancel(PomodoroNotificationHelper.POMODORO_OVERTIME_NOTIFICATION_ID)
     }
 
     private fun postNotification(state: PomodoroTimerEngine.State) {

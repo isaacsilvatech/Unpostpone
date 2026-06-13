@@ -11,7 +11,7 @@ import androidx.core.app.NotificationCompat
 import com.unpostpone.app.MainActivity
 import com.unpostpone.app.R
 import com.unpostpone.app.domain.model.PomodoroSessionType
-import com.unpostpone.app.presentation.pomodoro.PomodoroSessionCompleteActivity
+import com.unpostpone.app.presentation.pomodoro.PomodoroOvertimeActivity
 
 class PomodoroNotificationHelper(
     private val appContext: Context,
@@ -110,7 +110,7 @@ class PomodoroNotificationHelper(
         val title = formatRemainingMillis(state.remainingMillis)
         val body = appContext.getString(R.string.pomodoro_notification_overtime_body)
 
-        val fullScreenIntent = Intent(appContext, PomodoroSessionCompleteActivity::class.java).apply {
+        val fullScreenIntent = Intent(appContext, PomodoroOvertimeActivity::class.java).apply {
             addFlags(
                 Intent.FLAG_ACTIVITY_NEW_TASK or
                     Intent.FLAG_ACTIVITY_SINGLE_TOP or
@@ -124,7 +124,7 @@ class PomodoroNotificationHelper(
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
         )
 
-        val openIntent = Intent(appContext, PomodoroSessionCompleteActivity::class.java).apply {
+        val openIntent = Intent(appContext, PomodoroOvertimeActivity::class.java).apply {
             addFlags(
                 Intent.FLAG_ACTIVITY_NEW_TASK or
                     Intent.FLAG_ACTIVITY_SINGLE_TOP or

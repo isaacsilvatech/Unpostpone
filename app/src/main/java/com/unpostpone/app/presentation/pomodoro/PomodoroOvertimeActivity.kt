@@ -23,6 +23,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,13 +46,16 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class PomodoroSessionCompleteActivity : ComponentActivity() {
+class PomodoroOvertimeActivity : ComponentActivity() {
 
     @Inject lateinit var engine: PomodoroTimerEngine
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        if (!shouldShowOvertime()) {
+            finish()
+            return
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
             setShowWhenLocked(true)
             setTurnScreenOn(true)
@@ -75,7 +79,12 @@ class PomodoroSessionCompleteActivity : ComponentActivity() {
 
         setContent {
             val state by engine.state.collectAsStateWithLifecycle()
-            PomodoroSessionCompleteScreen(
+            val shouldShow = state.status == PomodoroTimerEngine.Status.RUNNING &&
+                state.remainingMillis <= 0L
+            LaunchedEffect(shouldShow) {
+                if (!shouldShow) finish()
+            }
+            PomodoroOvertimeScreen(
                 state = state,
                 onAddMinute = ::sendAddMinute,
                 onStop = ::sendStop,
@@ -90,6 +99,18 @@ class PomodoroSessionCompleteActivity : ComponentActivity() {
         startService(intent)
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (!shouldShowOvertime()) {
+            finish()
+        }
+    }
+
+    private fun shouldShowOvertime(): Boolean {
+        val state = engine.state.value
+        return state.status == PomodoroTimerEngine.Status.RUNNING && state.remainingMillis <= 0L
+    }
+
     private fun sendStop() {
         val intent = Intent(this, PomodoroTimerService::class.java).apply {
             action = PomodoroTimerService.ACTION_STOP
@@ -100,7 +121,7 @@ class PomodoroSessionCompleteActivity : ComponentActivity() {
 }
 
 @Composable
-private fun PomodoroSessionCompleteScreen(
+private fun PomodoroOvertimeScreen(
     state: PomodoroTimerEngine.State,
     onAddMinute: () -> Unit,
     onStop: () -> Unit,

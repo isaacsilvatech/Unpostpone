@@ -79,13 +79,13 @@
         </service>
 
         <activity
-            android:name=".presentation.pomodoro.PomodoroSessionCompleteActivity"
+            android:name=".presentation.pomodoro.PomodoroOvertimeActivity"
             android:exported="true"
             android:excludeFromRecents="true"
             android:launchMode="singleTask"
             android:showOnLockScreen="true"
             android:taskAffinity=""
-            android:theme="@style/Theme.Unpostpone.SessionComplete" />
+            android:theme="@style/Theme.Unpostpone.Overtime" />
 
         <receiver
             android:name=".service.pomodoro.PomodoroActionReceiver"
