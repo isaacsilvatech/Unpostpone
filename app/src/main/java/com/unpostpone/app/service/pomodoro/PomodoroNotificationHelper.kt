@@ -194,7 +194,7 @@ class PomodoroNotificationHelper(
 
     companion object {
         const val POMODORO_CHANNEL_ID = "pomodoro_channel"
-        const val POMODORO_NOTIFICATION_ID = 1001
+        const val POMODORO_OVERTIME_NOTIFICATION_ID = 1001
         const val POMODORO_RUNNING_NOTIFICATION_ID = 1002
 
         const val EXTRA_OPEN_POMODORO = "extra_open_pomodoro"

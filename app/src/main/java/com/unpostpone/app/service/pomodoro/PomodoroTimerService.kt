@@ -59,19 +59,17 @@ class PomodoroTimerService : Service() {
                 val duration = intent.getLongExtra(EXTRA_DURATION_MILLIS, 0L)
                 val typeOrdinal = intent.getIntExtra(EXTRA_SESSION_TYPE, 0)
                 val type = PomodoroSessionType.entries[typeOrdinal]
-                if (engine.state.value.status == PomodoroTimerEngine.Status.IDLE) {
-                    notificationHelper.ensureChannel()
-                    val s = engine.state.value.copy(
-                        status = PomodoroTimerEngine.Status.RUNNING,
-                        sessionType = type,
-                        totalMillis = duration,
-                        remainingMillis = duration,
-                    )
-                    engine.start(duration, type)
-                    sessionEndSignal.reset()
-                    startForegroundCompat(s)
-                    alarmScheduler.scheduleSessionEnd(duration, type)
-                }
+                notificationHelper.ensureChannel()
+                val s = engine.state.value.copy(
+                    status = PomodoroTimerEngine.Status.RUNNING,
+                    sessionType = type,
+                    totalMillis = duration,
+                    remainingMillis = duration,
+                )
+                engine.start(duration, type)
+                sessionEndSignal.reset()
+                startForegroundCompat(s)
+                alarmScheduler.scheduleSessionEnd(duration, type)
             }
             ACTION_PAUSE -> engine.pause()
             ACTION_RESUME -> {
@@ -125,22 +123,29 @@ class PomodoroTimerService : Service() {
         engine.stop()
         alarmScheduler.cancel()
         ringtonePlayer.stop()
+        getSystemService(NotificationManager::class.java)
+            ?.cancel(PomodoroNotificationHelper.POMODORO_OVERTIME_NOTIFICATION_ID)
         stopForegroundCompat()
         stopSelf()
     }
 
     private fun postNotification(state: PomodoroTimerEngine.State) {
         val manager = getSystemService(NotificationManager::class.java) ?: return
+        val runningId = PomodoroNotificationHelper.POMODORO_RUNNING_NOTIFICATION_ID
         if (state.status == PomodoroTimerEngine.Status.IDLE && state.remainingMillis == 0L) {
-            manager.cancel(PomodoroNotificationHelper.POMODORO_RUNNING_NOTIFICATION_ID)
+            manager.cancel(runningId)
             return
         }
-        val notification = buildOngoingNotification(state)
-        manager.notify(PomodoroNotificationHelper.POMODORO_RUNNING_NOTIFICATION_ID, notification)
+        if (state.remainingMillis < 0L) {
+            manager.cancel(runningId)
+            return
+        }
+        val notification = buildRunningNotification(state)
+        manager.notify(runningId, notification)
     }
 
     private fun startForegroundCompat(state: PomodoroTimerEngine.State) {
-        val notification = buildOngoingNotification(state)
+        val notification = buildRunningNotification(state)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             startForeground(
                 PomodoroNotificationHelper.POMODORO_RUNNING_NOTIFICATION_ID,
@@ -158,14 +163,6 @@ class PomodoroTimerService : Service() {
         } else {
             @Suppress("DEPRECATION")
             stopForeground(true)
-        }
-    }
-
-    private fun buildOngoingNotification(s: PomodoroTimerEngine.State): Notification {
-        return if (s.status == PomodoroTimerEngine.Status.RUNNING && s.remainingMillis < 0L) {
-            notificationHelper.buildOvertimeNotification(s)
-        } else {
-            buildRunningNotification(s)
         }
     }
 

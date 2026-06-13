@@ -58,7 +58,7 @@ class PomodoroAlarmReceiver : BroadcastReceiver() {
         val notification = notificationHelper.buildOvertimeNotification(state)
         val manager = appContext.getSystemService<android.app.NotificationManager>() ?: return
         manager.notify(
-            PomodoroNotificationHelper.POMODORO_RUNNING_NOTIFICATION_ID,
+            PomodoroNotificationHelper.POMODORO_OVERTIME_NOTIFICATION_ID,
             notification,
         )
     }
