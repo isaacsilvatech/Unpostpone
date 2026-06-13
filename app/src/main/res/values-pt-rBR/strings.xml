@@ -2,7 +2,6 @@
 <resources>
     <string name="app_name">Unpostpone</string>
     <string name="app_tagline">Use seu tempo com intenção</string>
-
     <string name="action_back">Voltar</string>
     <string name="action_cancel">Cancelar</string>
     <string name="action_confirm">Confirmar</string>
@@ -15,19 +14,15 @@
     <string name="action_learn_more">Saiba mais</string>
     <string name="action_replay">Rever</string>
     <string name="action_retry">Tentar novamente</string>
-
     <string name="nav_dashboard">Painel</string>
     <string name="nav_goals">Metas</string>
     <string name="nav_statistics">Estatísticas</string>
     <string name="nav_settings">Configurações</string>
-
     <string name="accessibility_service_description">O Unpostpone monitora qual aplicativo está em uso para bloquear distrações enquanto você trabalha nas suas metas.</string>
-
     <string name="error_generic">Algo deu errado. Tente novamente.</string>
  <string name="error_network">Sem conexão. Verifique sua rede e tente novamente.</string>
  <string name="error_empty_field">Este campo não pode estar vazio.</string>
  <string name="error_invalid_number">Digite um número válido.</string>
-
  <string name="pomodoro_title">Pomodoro</string>
  <string name="pomodoro_back_cd">Voltar</string>
     <string name="pomodoro_action_start">Iniciar</string>
@@ -55,18 +50,12 @@
  <string name="pomodoro_complete_break_action">Iniciar foco</string>
  <string name="pomodoro_complete_dismiss">Fechar</string>
  <string name="pomodoro_completed_focus_count">%1$d sessões de foco concluídas</string>
-
- <!-- Body fragments da notificação ongoing — %1$s é o mm:ss formatado. -->
  <string name="pomodoro_notification_ongoing_focus">Foco · %1$s</string>
  <string name="pomodoro_notification_ongoing_break">Descanso · %1$s</string>
  <string name="pomodoro_notification_ongoing_subtitle">Pomodoro</string>
-
- <!-- Ações da notificação ongoing. -->
  <string name="pomodoro_notification_pause">Pausar</string>
  <string name="pomodoro_notification_resume">Retomar</string>
  <string name="pomodoro_notification_add_minute">Adicionar 1 min</string>
-
- <!-- Tela cheia de fim de sessão + notificação heads-up de overtime. -->
  <string name="pomodoro_overtime_subtitle_focus">Sessão de foco</string>
  <string name="pomodoro_overtime_subtitle_break">Descanso</string>
     <string name="pomodoro_overtime_button_stop">Parar</string>

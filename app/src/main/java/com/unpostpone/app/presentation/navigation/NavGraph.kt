@@ -30,7 +30,6 @@ fun NavGraph(
         navController = navController,
         startDestination = startDestination,
     ) {
-        // ── Onboarding ────────────────────────────────────────────────
         composable(Screen.Onboarding.route) {
             OnboardingScreen(
                 onOnboardingComplete = {

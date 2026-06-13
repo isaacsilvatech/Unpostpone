@@ -2,8 +2,6 @@
 <resources>
     <string name="settings_title">Configurações</string>
     <string name="settings_back_cd">Voltar</string>
-
-    <!-- Section cards (redesign) -->
     <string name="settings_section_focus">Foco</string>
     <string name="settings_section_focus_subtitle">Apps bloqueados durante o foco e o serviço que faz o bloqueio.</string>
     <string name="settings_section_preferences">Preferências</string>
@@ -11,27 +9,19 @@
     <string name="settings_section_about">Sobre</string>
     <string name="settings_section_about_subtitle">Versão.</string>
     <string name="settings_empty_section">Não configurado</string>
-
     <string name="settings_blocked_apps_title">Apps Bloqueados</string>
     <string name="settings_blocked_apps_subtitle">Selecione quais apps serão bloqueados durante o foco</string>
     <string name="settings_blocked_apps_empty">Nenhum app disponível. Puxe para atualizar após instalar mais apps.</string>
-
     <string name="settings_accessibility_title">Serviço de Acessibilidade</string>
     <string name="settings_accessibility_body">Para bloquear apps automaticamente, ative o serviço de acessibilidade do Unpostpone em: Configurações → Acessibilidade → Aplicativos instalados.</string>
-
-    <!-- Theme -->
     <string name="settings_theme_title">Tema</string>
     <string name="settings_theme_subtitle">Claro, escuro ou seguir o sistema</string>
     <string name="settings_theme_picker_title">Escolha o tema</string>
-
-    <!-- Unlock duration -->
     <string name="settings_unlock_duration_title">Duração do desbloqueio</string>
     <string name="settings_unlock_duration_value">%1$d minutos</string>
     <string name="settings_unlock_duration_picker_title">Escolha a duração do desbloqueio</string>
     <string name="settings_unlock_duration_option">%1$d minutos</string>
-
     <string name="settings_replay_onboarding">Rever introdução</string>
-
     <string name="settings_about_title">Sobre</string>
     <string name="settings_about_version">Versão %1$s</string>
 </resources>

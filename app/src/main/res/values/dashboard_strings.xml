@@ -1,63 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Dashboard screen -->
     <string name="dashboard_top_bar_title">Unpostpone</string>
     <string name="dashboard_settings_cd">Open settings</string>
     <string name="dashboard_add_goal_cd">Add goal</string>
-
-    <!-- Hero (redesign) -->
     <string name="dashboard_hero_eyebrow">Today</string>
     <string name="dashboard_hero_subtitle">%1$d of %2$d goals complete</string>
     <string name="dashboard_hero_subtitle_empty">Tap a goal to start focusing</string>
     <string name="dashboard_section_activity">Today\'s activity</string>
     <string name="dashboard_focused_short">focused</string>
-
-    <!-- Stat strip tiles -->
     <string name="dashboard_stat_blocks">Blocks</string>
     <string name="dashboard_stat_attempts">Attempts</string>
     <string name="dashboard_stat_goals_done">Done</string>
-
-    <!-- Toggle / progress cards -->
     <string name="dashboard_blocking_active">Blocking active</string>
     <string name="dashboard_blocking_inactive">Blocking inactive</string>
     <string name="dashboard_blocking_active_subtitle">Distractions are blocked</string>
     <string name="dashboard_blocking_inactive_subtitle">Tap to activate</string>
-
-    <!-- Accessibility prompt -->
     <string name="dashboard_accessibility_prompt_title">Accessibility service</string>
     <string name="dashboard_accessibility_prompt_body">To block apps automatically, enable the Unpostpone accessibility service at: Settings → Accessibility → Installed apps.</string>
     <string name="dashboard_accessibility_open_settings">Open settings</string>
     <string name="dashboard_accessibility_cancel">Cancel</string>
-
-    <!-- Disable focus protection confirmation -->
     <string name="dashboard_disable_focus_title">Disable Focus Protection?</string>
     <string name="dashboard_disable_focus_body">Your blocked apps will no longer be restricted. Are you sure you want to turn off Focus Protection?</string>
     <string name="dashboard_disable_focus_confirm">Turn off</string>
     <string name="dashboard_disable_focus_cancel">Keep on</string>
-
-    <!-- retained for backward compatibility, no longer referenced -->
     <string name="dashboard_progress_title">Overall progress</string>
-    <!-- retained for backward compatibility, no longer referenced -->
     <string name="dashboard_progress_subtitle">%1$d of %2$d goals</string>
-    <!-- retained for backward compatibility, no longer referenced -->
     <string name="dashboard_progress_percent">%1$d%% complete</string>
-
-    <!-- retained for backward compatibility, no longer referenced -->
     <string name="dashboard_today_stats_title">Today\'s statistics</string>
-    <!-- retained for backward compatibility, no longer referenced -->
     <string name="dashboard_today_stats_focused">Focused</string>
-    <!-- retained for backward compatibility, no longer referenced -->
     <string name="dashboard_today_stats_blocks">Blocks</string>
-    <!-- retained for backward compatibility, no longer referenced -->
     <string name="dashboard_today_stats_attempts">Attempts</string>
-
     <string name="dashboard_today_goals_title">Today\'s goals</string>
     <string name="dashboard_empty_goals_title">No goals for today</string>
     <string name="dashboard_empty_goals_action">Add goal</string>
-
     <string name="dashboard_goal_completed_cd">Completed</string>
-
-    <!-- Redesigned dashboard (focus protection hero) -->
     <string name="dashboard_focus_protection_title">Focus Protection</string>
     <string name="dashboard_focus_protection_apps">%1$d apps blocked</string>
     <string name="dashboard_focus_protection_subtitle">Stay focused and avoid distractions</string>
@@ -82,8 +58,6 @@
     <string name="dashboard_momentum_title">Momentum</string>
     <string name="dashboard_momentum_quote">Small actions repeated daily create extraordinary results.</string>
     <string name="dashboard_streak_days">%1$d-day streak</string>
-
-    <!-- Plurals: minutes -->
     <plurals name="dashboard_minutes_focused">
         <item quantity="one">%d min</item>
         <item quantity="other">%d min</item>

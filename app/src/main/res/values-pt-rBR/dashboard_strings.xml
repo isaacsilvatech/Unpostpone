@@ -3,56 +3,37 @@
     <string name="dashboard_top_bar_title">Unpostpone</string>
     <string name="dashboard_settings_cd">Abrir configurações</string>
     <string name="dashboard_add_goal_cd">Adicionar meta</string>
-
-    <!-- Hero (redesign) -->
     <string name="dashboard_hero_eyebrow">Hoje</string>
     <string name="dashboard_hero_subtitle">%1$d de %2$d metas concluídas</string>
     <string name="dashboard_hero_subtitle_empty">Toque em uma meta para começar</string>
     <string name="dashboard_section_activity">Atividade de hoje</string>
     <string name="dashboard_focused_short">focado</string>
-
     <string name="dashboard_stat_blocks">Bloqueios</string>
     <string name="dashboard_stat_attempts">Tentativas</string>
     <string name="dashboard_stat_goals_done">Concluídas</string>
-
     <string name="dashboard_blocking_active">Bloqueio ativo</string>
     <string name="dashboard_blocking_inactive">Bloqueio inativo</string>
     <string name="dashboard_blocking_active_subtitle">Distrações estão bloqueadas</string>
     <string name="dashboard_blocking_inactive_subtitle">Toque para ativar</string>
-
     <string name="dashboard_accessibility_prompt_title">Serviço de Acessibilidade</string>
     <string name="dashboard_accessibility_prompt_body">Para bloquear apps automaticamente, ative o serviço de acessibilidade do Unpostpone em: Configurações → Acessibilidade → Aplicativos instalados.</string>
     <string name="dashboard_accessibility_open_settings">Abrir configurações</string>
     <string name="dashboard_accessibility_cancel">Cancelar</string>
-
     <string name="dashboard_disable_focus_title">Desativar Proteção de Foco?</string>
     <string name="dashboard_disable_focus_body">Seus apps bloqueados não serão mais restritos. Tem certeza que deseja desativar a Proteção de Foco?</string>
     <string name="dashboard_disable_focus_confirm">Desativar</string>
     <string name="dashboard_disable_focus_cancel">Manter ativado</string>
-
-    <!-- retained for backward compatibility, no longer referenced -->
     <string name="dashboard_progress_title">Progresso geral</string>
-    <!-- retained for backward compatibility, no longer referenced -->
     <string name="dashboard_progress_subtitle">%1$d de %2$d metas</string>
-    <!-- retained for backward compatibility, no longer referenced -->
     <string name="dashboard_progress_percent">%1$d%% concluído</string>
-
-    <!-- retained for backward compatibility, no longer referenced -->
     <string name="dashboard_today_stats_title">Estatísticas de hoje</string>
-    <!-- retained for backward compatibility, no longer referenced -->
     <string name="dashboard_today_stats_focused">Focado</string>
-    <!-- retained for backward compatibility, no longer referenced -->
     <string name="dashboard_today_stats_blocks">Bloqueios</string>
-    <!-- retained for backward compatibility, no longer referenced -->
     <string name="dashboard_today_stats_attempts">Tentativas</string>
-
     <string name="dashboard_today_goals_title">Metas de hoje</string>
     <string name="dashboard_empty_goals_title">Nenhuma meta para hoje</string>
     <string name="dashboard_empty_goals_action">Adicionar meta</string>
-
     <string name="dashboard_goal_completed_cd">Concluído</string>
-
-    <!-- Dashboard redesenhado (herói de Proteção de Foco) -->
     <string name="dashboard_focus_protection_title">Proteção de Foco</string>
     <string name="dashboard_focus_protection_apps">%1$d apps bloqueados</string>
     <string name="dashboard_focus_protection_subtitle">Mantenha o foco e evite distrações</string>
@@ -77,7 +58,6 @@
     <string name="dashboard_momentum_title">Momento</string>
     <string name="dashboard_momentum_quote">Pequenas ações repetidas diariamente criam resultados extraordinários.</string>
     <string name="dashboard_streak_days">Sequência de %1$d dias</string>
-
     <plurals name="dashboard_minutes_focused">
         <item quantity="one">%d min</item>
         <item quantity="other">%d min</item>

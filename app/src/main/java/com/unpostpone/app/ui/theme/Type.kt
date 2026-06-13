@@ -17,7 +17,6 @@ private val manropeBase = TextStyle(
     lineHeightStyle = tightLineHeight,
 )
 
-// ── Display — onboarding, splash, hero numbers ────────────────────────────
 
 val DisplayLarge = manropeBase.copy(
     fontWeight    = FontWeight.ExtraBold,
@@ -40,7 +39,6 @@ val DisplaySmall = manropeBase.copy(
     letterSpacing = 0.sp,
 )
 
-// ── Headline — section titles, card titles, screen titles ─────────────────
 
 val HeadlineLarge = manropeBase.copy(
     fontWeight    = FontWeight.Bold,
@@ -63,7 +61,6 @@ val HeadlineSmall = manropeBase.copy(
     letterSpacing = 0.sp,
 )
 
-// ── Title — list-item primary text, dialog titles, button content ─────────
 
 val TitleLarge = manropeBase.copy(
     fontWeight    = FontWeight.SemiBold,
@@ -86,7 +83,6 @@ val TitleSmall = manropeBase.copy(
     letterSpacing = 0.1.sp,
 )
 
-// ── Body — paragraphs, descriptions, list-item secondary text ─────────────
 
 val BodyLarge = manropeBase.copy(
     fontWeight    = FontWeight.Normal,
@@ -109,7 +105,6 @@ val BodySmall = manropeBase.copy(
     letterSpacing = 0.4.sp,
 )
 
-// ── Label — buttons, chips, captions, all-caps where used ─────────────────
 
 val LabelLarge = manropeBase.copy(
     fontWeight    = FontWeight.SemiBold,
@@ -132,9 +127,6 @@ val LabelSmall = manropeBase.copy(
     letterSpacing = 0.5.sp,
 )
 
-// ── Number — JetBrains Mono with tabular figures ───────────────────────────
-//   Use these for focus time, streaks, statistics, and any other numeric
-//   display that benefits from column alignment and a technical feel.
 
 val NumberDisplayLarge = TextStyle(
     fontFamily     = JetBrainsMonoFontFamily,
@@ -211,7 +203,6 @@ val NumberBody = TextStyle(
     lineHeightStyle    = tightLineHeight,
 )
 
-// ── Compose M3 Typography ─────────────────────────────────────────────────
 
 val Typography = Typography(
     displayLarge   = DisplayLarge,

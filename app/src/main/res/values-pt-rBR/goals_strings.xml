@@ -3,14 +3,11 @@
     <string name="goals_title">Minhas metas</string>
     <string name="goals_back_cd">Voltar</string>
     <string name="goals_add_cd">Nova meta</string>
-
     <string name="goals_empty_title">Nenhuma meta criada</string>
     <string name="goals_empty_subtitle">Crie sua primeira meta de foco</string>
-
     <string name="goals_progress_label">Progresso: %1$d min</string>
     <string name="goals_progress_minutes_done">%1$d min concluídos</string>
     <string name="goals_target_minutes">Meta: %1$d min</string>
-
     <string name="goals_add_dialog_title">Nova Meta</string>
     <string name="goals_add_name_label">Nome da Meta</string>
     <string name="goals_add_name_placeholder">Ex: Estudar Kotlin</string>

@@ -4,10 +4,8 @@
     <string name="blocker_subtitle">Conclua suas metas antes de acessar este app.</string>
     <string name="blocker_unlock_for">Desbloquear por %1$d minutos</string>
     <string name="blocker_back_to_focus">Voltar e Focar</string>
-
     <string name="blocker_unlock_dialog_title">Desbloquear este app?</string>
     <string name="blocker_unlock_dialog_body">Você terá %1$d minutos de acesso. Depois disso, o app será bloqueado novamente e você voltará para esta tela.</string>
-
     <string name="blocker_unlock_notification_title">%1$s desbloqueado</string>
     <string name="blocker_unlock_notification_body">Tempo restante: %1$s</string>
     <string name="blocker_unlock_channel_name">Desbloqueio temporário</string>

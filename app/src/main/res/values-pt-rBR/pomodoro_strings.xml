@@ -2,13 +2,10 @@
 <resources>
     <string name="pomodoro_channel_name">Alarmes do Pomodoro</string>
     <string name="pomodoro_channel_description">Alarmes de sessão do Pomodoro</string>
-
     <string name="pomodoro_notification_complete_title">Sessão Pomodoro concluída</string>
     <string name="pomodoro_notification_complete_focus_body">Hora de uma pausa.</string>
     <string name="pomodoro_notification_complete_break_body">Pronto para focar de novo?</string>
-
     <string name="pomodoro_notification_action_next">Iniciar próxima</string>
-
     <string name="pomodoro_notification_ongoing_title">Pomodoro em andamento</string>
     <string name="pomodoro_notification_ongoing_body_focus">Sessão de foco em andamento</string>
     <string name="pomodoro_notification_ongoing_body_break">Descanso em andamento</string>

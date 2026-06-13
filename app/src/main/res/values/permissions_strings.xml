@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Permission cards (used in onboarding) -->
     <string name="perm_accessibility_title">Accessibility</string>
     <string name="perm_accessibility_body">Required to detect when you open a distracting app and show you a calm reminder. We do not read screen content.</string>
     <string name="perm_usage_title">Usage access</string>

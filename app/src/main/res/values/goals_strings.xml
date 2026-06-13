@@ -1,18 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Goals screen -->
     <string name="goals_title">My goals</string>
     <string name="goals_back_cd">Back</string>
     <string name="goals_add_cd">New goal</string>
-
     <string name="goals_empty_title">No goals yet</string>
     <string name="goals_empty_subtitle">Create your first focus goal</string>
-
     <string name="goals_progress_label">Progress: %1$d min</string>
     <string name="goals_progress_minutes_done">%1$d min done</string>
     <string name="goals_target_minutes">Target: %1$d min</string>
-
-    <!-- Add-goal dialog -->
     <string name="goals_add_dialog_title">New goal</string>
     <string name="goals_add_name_label">Goal name</string>
     <string name="goals_add_name_placeholder">e.g. Study Kotlin</string>

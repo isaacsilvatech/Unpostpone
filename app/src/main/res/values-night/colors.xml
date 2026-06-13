@@ -7,21 +7,10 @@
         in-app dark palette. The Compose ColorScheme lives in
         ui/theme/Color.kt — keep these two in sync.
     -->
-
-    <!-- Primary tonal palette (in dark mode, primary lifts to a luminous
-         teal; the on-color text on top of it is the light-mode "primary
-         dark" #083944, so brand_teal_dark serves double duty as
-         dark-mode on-primary). -->
     <color name="brand_teal">#84D0DC</color>
     <color name="brand_teal_soft">#1F6778</color>
     <color name="brand_teal_dark">#083944</color>
-
-    <!-- Cream slot is repurposed in dark mode as the dark surface. -->
     <color name="brand_cream">#0F1413</color>
-
-    <!-- Action — kinetic accent, lightened for dark contrast -->
     <color name="brand_action">#FFB68C</color>
-
-    <!-- Dark surface for windowBackground in night themes.xml -->
     <color name="dark_background">#0F1413</color>
 </resources>

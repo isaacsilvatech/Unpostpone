@@ -118,7 +118,6 @@ private fun StatisticsContent(
         ),
         verticalArrangement = Arrangement.spacedBy(Dimens.SpacingL),
     ) {
-        // 1. Hero band — total focused minutes on a HeroSurface card
         item {
             HeroBand(
                 containerColor = heroSurface,
@@ -129,7 +128,6 @@ private fun StatisticsContent(
             )
         }
 
-        // 2. 2-column grid — secondary summary cards
         item {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -150,7 +148,6 @@ private fun StatisticsContent(
             }
         }
 
-        // 3. Daily history
         if (uiState.recentStats.isNotEmpty()) {
             item {
                 Spacer(Modifier.height(Dimens.SectionTitleTopGap))
@@ -180,10 +177,6 @@ private fun StatisticsContent(
         }
     }
 }
-
-// ═══════════════════════════════════════════════════════════════════════════
-//  Hero band
-// ═══════════════════════════════════════════════════════════════════════════
 
 @Composable
 private fun HeroBand(
@@ -244,10 +237,6 @@ private fun HeroBand(
     }
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-//  Secondary summary card — 2-column grid item
-// ═══════════════════════════════════════════════════════════════════════════
-
 @Composable
 private fun SummaryCard(
     modifier: Modifier = Modifier,
@@ -287,10 +276,6 @@ private fun SummaryCard(
         }
     }
 }
-
-// ═══════════════════════════════════════════════════════════════════════════
-//  Daily history row
-// ═══════════════════════════════════════════════════════════════════════════
 
 @Composable
 private fun DailyStatItem(stat: Statistics) {
@@ -353,10 +338,6 @@ private fun StatColumn(value: String, label: String) {
         )
     }
 }
-
-// ═══════════════════════════════════════════════════════════════════════════
-//  Previews
-// ═══════════════════════════════════════════════════════════════════════════
 
 @Preview(name = "Statistics — Populated (light)", showBackground = true)
 @Composable

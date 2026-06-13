@@ -491,7 +491,6 @@ private fun OnboardingBottomBar(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
-            // The primary CTA — the 15% brand touch.
             Button(
                 onClick = onContinue,
                 shape = androidx.compose.foundation.shape.RoundedCornerShape(26.dp),

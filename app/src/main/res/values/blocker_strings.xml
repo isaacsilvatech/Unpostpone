@@ -1,16 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Blocker screen -->
     <string name="blocker_title">App blocked</string>
     <string name="blocker_subtitle">Complete your goals before opening this app.</string>
     <string name="blocker_unlock_for">Unlock for %1$d minutes</string>
     <string name="blocker_back_to_focus">Back to focus</string>
-
-    <!-- Temporary unlock confirmation dialog -->
     <string name="blocker_unlock_dialog_title">Unlock this app?</string>
     <string name="blocker_unlock_dialog_body">You will have %1$d minutes of access. After that, the app will be blocked again and you will return to this screen.</string>
-
-    <!-- Temporary unlock notification (foreground service) -->
     <string name="blocker_unlock_notification_title">%1$s is unlocked</string>
     <string name="blocker_unlock_notification_body">Time remaining: %1$s</string>
     <string name="blocker_unlock_channel_name">Temporary unlock</string>

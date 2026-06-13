@@ -3,14 +3,12 @@ package com.unpostpone.app.ui.theme
 import androidx.compose.ui.graphics.Color
 
 
-// ── Brand anchors ─────────────────────────────────────────────────────────
 val Teal       = Color(0xFF0C4D5B)  // primary — the only saturated color
 val TealLight  = Color(0xFF1F6778)  // primary light — softer teal
 val TealDark   = Color(0xFF083944)  // primary dark — pressed, on-primary text
 val TealHint   = Color(0xFFE8F2F4)  // primary container — whisper of teal
 val TealHintDark = Color(0xFF1F4047) // dark-mode primary container
 
-// ── Material 3 — Light scheme ─────────────────────────────────────────────
 val LightBackground            = Color(0xFFF6F6F7)   // page bg — lifts cards off it
 val LightOnBackground          = Color(0xFF0A0A0A)   // primary text
 val LightSurface               = Color(0xFFFFFFFF)   // cards
@@ -18,7 +16,6 @@ val LightOnSurface             = Color(0xFF0A0A0A)
 val LightSurfaceVariant        = Color(0xFFEEEEF0)   // subtle neutral fill
 val LightOnSurfaceVariant      = Color(0xFF6B6B6B)   // muted text
 
-// M3 1.4 surface container family — used by TopAppBar, NavigationBar, etc.
 val LightSurfaceContainerLowest  = Color(0xFFFFFFFF)
 val LightSurfaceContainerLow     = Color(0xFFFAFAFB)
 val LightSurfaceContainer        = Color(0xFFF8F8F9)
@@ -54,7 +51,6 @@ val LightInversePrimary        = Color(0xFF84D0DC)
 val LightScrim                 = Color(0xFF000000)
 val LightSurfaceTint           = Teal
 
-// ── Material 3 — Dark scheme ──────────────────────────────────────────────
 val DarkBackground             = Color(0xFF0A0A0A)
 val DarkOnBackground           = Color(0xFFF5F5F5)
 val DarkSurface                = Color(0xFF1C1C1C)

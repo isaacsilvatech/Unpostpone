@@ -124,7 +124,6 @@ fun SettingsScreen(
     }
 }
 
-// ── Inner content (preview-friendly, takes pure state + lambdas) ────────
 
 @Composable
 private fun SettingsContent(
@@ -146,7 +145,6 @@ private fun SettingsContent(
         ),
         verticalArrangement = Arrangement.spacedBy(Dimens.SpacingXXL),
     ) {
-        // ── Section 1: Focus ─────────────────────────────────────────
         item {
             SettingsSectionCard(
                 title = stringResource(R.string.settings_section_focus),
@@ -178,7 +176,6 @@ private fun SettingsContent(
             }
         }
 
-        // ── Section 2: Preferences ───────────────────────────────────
         item {
             SettingsSectionCard(
                 title = stringResource(R.string.settings_section_preferences),
@@ -195,7 +192,6 @@ private fun SettingsContent(
             }
         }
 
-        // ── Section 3: About ─────────────────────────────────────────
         item {
             SettingsSectionCard(
                 title = stringResource(R.string.settings_section_about),
@@ -212,9 +208,6 @@ private fun SettingsContent(
     }
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-//  Section card primitives
-// ═══════════════════════════════════════════════════════════════════════════
 
 @Composable
 private fun SettingsSectionCard(
@@ -297,9 +290,6 @@ private fun SettingsLoadingRow() {
     }
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-//  Row composables used inside section cards
-// ═══════════════════════════════════════════════════════════════════════════
 
 @Composable
 private fun AppBlockToggleItem(
@@ -516,9 +506,6 @@ private fun ReplayOnboardingRow(onClick: () -> Unit) {
     }
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-//  Previews
-// ═══════════════════════════════════════════════════════════════════════════
 
 @Preview(name = "Settings — Populated (light)", showBackground = true)
 @Composable

@@ -2,8 +2,6 @@
 <resources>
     <string name="focus_reminder_take_moment">Take a moment.</string>
     <string name="focus_reminder_continue">Continue</string>
-
-    <!-- Reflective messages (12, rotated) -->
     <string name="focus_reminder_message_1">Focus is a skill. Each time you resist, you grow stronger.</string>
     <string name="focus_reminder_message_2">Your future is being shaped by what you do right now.</string>
     <string name="focus_reminder_message_3">Small daily steps build great achievements.</string>
@@ -16,8 +14,6 @@
     <string name="focus_reminder_message_10">Less phone, more purpose.</string>
     <string name="focus_reminder_message_11">The best time to start is now.</string>
     <string name="focus_reminder_message_12">Procrastination steals what no one returns: time.</string>
-
-    <!-- Reflective messages (24 total) -->
     <string name="focus_reminder_message_13">Focus on progress, not perfection.</string>
     <string name="focus_reminder_message_14">What you do when no one is watching defines who you are.</string>
     <string name="focus_reminder_message_15">Your mind is your greatest tool. Use it with intention.</string>

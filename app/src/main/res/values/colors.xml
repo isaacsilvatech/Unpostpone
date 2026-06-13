@@ -7,20 +7,12 @@
         task switcher, launcher background). The Compose ColorScheme lives in
         ui/theme/Color.kt — keep these two in sync.
     -->
-
-    <!-- Primary tonal palette -->
-    <color name="brand_teal">#0C4D5B</color>          <!-- identity, primary -->
-    <color name="brand_teal_soft">#1F6778</color>     <!-- primary light -->
-    <color name="brand_teal_dark">#083944</color>     <!-- primary dark / pressed -->
-
-    <!-- Cream — the paper-like background -->
+    <color name="brand_teal">#0C4D5B</color>
+    <color name="brand_teal_soft">#1F6778</color>
+    <color name="brand_teal_dark">#083944</color>
     <color name="brand_cream">#F7F4EA</color>
-
-    <!-- Action — kinetic moments, primary CTA, clock hands -->
     <color name="brand_action">#F4A261</color>
     <color name="brand_action_dark">#8C4F1F</color>
-
-    <!-- System -->
     <color name="white">#FFFFFFFF</color>
     <color name="black">#FF000000</color>
     <color name="transparent">#00000000</color>

@@ -55,7 +55,6 @@ fun HeroFocusRing(
             )
             val topLeft = Offset(inset, inset)
 
-            // 1. Full-circle track
             drawArc(
                 color = trackColor,
                 startAngle = 0f,
@@ -66,7 +65,6 @@ fun HeroFocusRing(
                 style = Stroke(width = strokeTrack),
             )
 
-            // 2. Progress arc — 12 o'clock, clockwise, rounded caps
             if (progress > 0f) {
                 drawArc(
                     color = ringColor,
@@ -81,7 +79,6 @@ fun HeroFocusRing(
                     ),
                 )
 
-                // 3. Tip dot at the end of the progress arc
                 val tipRadius = Dimens.FocusRingStroke.value * 0.6f  // ~8.4dp
                 val endAngleRad = Math.toRadians((-90f + 360f * progress).toDouble())
                 val centerX = this.size.width / 2f
@@ -96,7 +93,6 @@ fun HeroFocusRing(
                 )
             }
 
-            // 4. 12 o'clock tick mark — small filled circle, always visible
             val tickRadius = 4.dp.toPx()
             drawCircle(
                 color = ringColor,
@@ -136,9 +132,6 @@ fun HeroFocusRing(
     }
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-//  Previews
-// ═══════════════════════════════════════════════════════════════════════════
 
 @Preview(name = "HeroFocusRing — Empty (light)", showBackground = true)
 @Composable

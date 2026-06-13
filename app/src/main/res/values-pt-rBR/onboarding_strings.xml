@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Welcome page -->
     <string name="onboarding_welcome_title">Tome controle do seu tempo</string>
     <string name="onboarding_welcome_subtitle">O Unpostpone ajuda você a manter o foco, criar hábitos digitais saudáveis e dedicar tempo ao que importa — sem barulho.</string>
-
-    <!-- Features page -->
     <string name="onboarding_features_title">Feito para o foco</string>
     <string name="onboarding_features_subtitle">Três ferramentas, uma interface calma.</string>
     <string name="onboarding_feature_focus_title">Sessões de foco</string>
@@ -13,19 +10,13 @@
     <string name="onboarding_feature_goals_body">Escolha o trabalho que importa hoje. O Unpostpone mantém ele visível.</string>
     <string name="onboarding_feature_insights_title">Insights gentis</string>
     <string name="onboarding_feature_insights_body">Veja sua semana em um relance. Sem sequências para defender, sem placares para correr.</string>
-
-    <!-- Privacy page -->
     <string name="onboarding_privacy_title">Privacidade</string>
     <string name="onboarding_privacy_subtitle">O que fica no seu dispositivo, e o que nunca sai dele.</string>
     <string name="onboarding_privacy_collect_title">O que usamos</string>
     <string name="onboarding_privacy_collect_body">Apenas os dados necessários para detectar qual app você está usando. Armazenado localmente, no seu celular, nunca enviado.</string>
     <string name="onboarding_privacy_no_collect_title">O que não coletamos</string>
     <string name="onboarding_privacy_no_collect_body">Sem análises, sem rastreamento, sem anúncios, sem conta. Sem conteúdo dos seus apps. Sem capturas de tela. Sem teclas digitadas.</string>
-
-    <!-- Permissions page -->
     <string name="onboarding_permissions_title">Permissões</string>
     <string name="onboarding_permissions_subtitle">O Unpostpone só pede o necessário para fazer o trabalho dele.</string>
-
-    <!-- Pager a11y -->
     <string name="onboarding_page_indicator">Página %1$d de %2$d</string>
 </resources>
