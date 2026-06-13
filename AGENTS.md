@@ -27,7 +27,7 @@ Run from the repo root. Use the wrapper, not a system `gradle`.
 ./gradlew :app:dependencies            # resolved dependency tree
 ```
 
-There is no top-level `check`/CI pipeline wired up. After non-trivial changes, run in this order: `lintDebug` → `:app:test` → `assembleDebug`.
+There is no top-level `check`/CI pipeline wired up. After non-trivial changes, run `:app:compileDebugKotlin` (or `:app:test`) → `assembleDebug`. **Do not run `lintDebug` unless explicitly asked or strictly required** — it is slow and noisy. Use it as a final gate, not as a default step.
 
 ## Commit style
 
@@ -112,8 +112,8 @@ Strings are split by feature: `res/values/<feature>_strings.xml` plus a `values-
 - **No code comments unless strictly necessary.** Do not add explanatory comments, KDoc, or banner comments to code you write or edit. Only add a comment when the code is genuinely non-obvious and no name or structure can clarify it. Never narrate what the code does.
 - **Compose + Material3**, theme wrapper is `com.unpostpone.app.ui.theme.UnpostponeTheme` (used by `MainActivity`). Theme mode (System/Light/Dark) is a Flow exposed via `ThemePreferences`.
 - **KSP, not kapt.** Both Hilt and Room use KSP — `ksp(libs.hilt.compiler)`, `ksp(libs.room.compiler)`.
-- **Room migrations are handwritten SQL.** `AppDatabase` is at version 2; bump the version and add a `MIGRATION_n_m` constant in `AppDatabase` (see existing `MIGRATION_1_2`). `exportSchema = false` — do not enable without also configuring a schema location.
-- **Lint:** `app/lint.xml` suppresses only `MissingDefaultResource` (for the `dark_background` color used exclusively by `values-night`). Every suppression must explain why — keep the file small and commented.
+- **Room migrations are handwritten SQL.** `AppDatabase` is at version 3; bump the version and add a `MIGRATION_n_m` constant in `AppDatabase` (see existing `MIGRATION_1_2` and `MIGRATION_2_3`). `exportSchema = false` — do not enable without also configuring a schema location.
+- **Lint:** `app/lint.xml` suppresses only `MissingDefaultResource` (for the `dark_background` color used exclusively by `values-night`). Every suppression must explain why — keep the file small and commented. **Do not run `:app:lintDebug` as part of a default verify cycle** — only run it when the user asks, or when a change is specifically a lint/resource fix.
 - **Release build:** `buildTypes.release` sets `optimization.enable = false`. Don't "fix" it without a reason.
 - **`local.properties` is gitignored** and points at the WSL Linux SDK path (`/opt/android-sdk`). The repo is developed on WSL/Windows; do not switch it back to the Windows SDK path (`C:\Users\Isaac\AppData\Local\Android\Sdk`) — AGP 9.x inside WSL refuses Windows binaries because it looks for `aapt` (no extension) but the Windows SDK only has `aapt.exe`. Don't commit it.
 - **Configuration cache is enabled.** Avoid `BuildService` patterns that break it; if a build suddenly fails after a Gradle/AGP bump, try `./gradlew --no-configuration-cache` to bisect.
