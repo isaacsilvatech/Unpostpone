@@ -41,52 +41,6 @@ refactor(pomodoro): redesign view
 
 Only commit when explicitly asked. Before committing, inspect `git status` and `git diff --staged`; stage only intended files and never commit secrets.
 
-## WSL environment
-
-The repo is developed on WSL. AGP 9.x inside WSL **cannot** use the Windows SDK at `C:\Users\Isaac\AppData\Local\Android\Sdk` (it requires a Linux `aapt` binary, not `aapt.exe`). The build is wired against a native Linux SDK at `/opt/android-sdk`.
-
-**Required env vars before any `./gradlew` invocation:**
-
-```bash
-export JAVA_HOME=/usr/lib/jvm/java-1.21.0-openjdk-amd64   # full JDK 21 (has javac)
-export ANDROID_HOME=/opt/android-sdk
-export PATH=$JAVA_HOME/bin:$PATH
-```
-
-Note: `/usr/lib/jvm/java-21-openjdk-amd64` is JRE headless only (no `javac`) and will fail with `JAVA_HOME is set to an invalid directory`. Always use the `java-1.21.0-openjdk-amd64` path.
-
-If `JAVA_HOME` or `ANDROID_HOME` are missing in a fresh shell, persist them in `~/.bashrc` (or `~/.zshrc`):
-
-```bash
-echo 'export JAVA_HOME=/usr/lib/jvm/java-1.21.0-openjdk-amd64' >> ~/.bashrc
-echo 'export ANDROID_HOME=/opt/android-sdk' >> ~/.bashrc
-echo 'export PATH=$JAVA_HOME/bin:$PATH' >> ~/.bashrc
-```
-
-**If `/opt/android-sdk` is missing** (fresh WSL install or wiped `/opt`), recreate it:
-
-```bash
-echo "123456" | sudo -S apt-get install -y unzip
-mkdir -p /tmp && cd /tmp
-curl -sSLO https://dl.google.com/android/repository/commandlinetools-linux-13114758_latest.zip
-echo "123456" | sudo -S mkdir -p /opt/android-sdk
-sudo chown -R "$USER":"$USER" /opt/android-sdk
-unzip -q commandlinetools-linux-13114758_latest.zip -d /opt/android-sdk/cmdline-tools/
-mv /opt/android-sdk/cmdline-tools/cmdline-tools /opt/android-sdk/cmdline-tools/latest
-rm commandlinetools-linux-13114758_latest.zip
-export JAVA_HOME=/usr/lib/jvm/java-1.21.0-openjdk-amd64
-yes | /opt/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses
-/opt/android-sdk/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.1.0"
-```
-
-On first build, AGP will auto-install any additional build-tools/platforms it needs into `/opt/android-sdk`.
-
-**Quick environment health check** (run if a build fails with "SDK location not found" or "Build Tools revision X is corrupted"):
-
-```bash
-ls $ANDROID_HOME/build-tools/        # expect 36.0.0, 36.1.0
-ls $ANDROID_HOME/build-tools/36.1.0/aapt 2>&1  # must exist (no .exe)
-$JAVA_HOME/bin/javac -version         # must print javac 21.x
 ```
 
 ## Project layout (`:app` only — no other modules)
@@ -115,7 +69,7 @@ Strings are split by feature: `res/values/<feature>_strings.xml` plus a `values-
 - **Room migrations are handwritten SQL.** `AppDatabase` is at version 3; bump the version and add a `MIGRATION_n_m` constant in `AppDatabase` (see existing `MIGRATION_1_2` and `MIGRATION_2_3`). `exportSchema = false` — do not enable without also configuring a schema location.
 - **Lint:** `app/lint.xml` suppresses only `MissingDefaultResource` (for the `dark_background` color used exclusively by `values-night`). Every suppression must explain why — keep the file small and commented. **Do not run `:app:lintDebug` as part of a default verify cycle** — only run it when the user asks, or when a change is specifically a lint/resource fix.
 - **Release build:** `buildTypes.release` sets `optimization.enable = false`. Don't "fix" it without a reason.
-- **`local.properties` is gitignored** and points at the WSL Linux SDK path (`/opt/android-sdk`). The repo is developed on WSL/Windows; do not switch it back to the Windows SDK path (`C:\Users\Isaac\AppData\Local\Android\Sdk`) — AGP 9.x inside WSL refuses Windows binaries because it looks for `aapt` (no extension) but the Windows SDK only has `aapt.exe`. Don't commit it.
+- **`local.properties` is gitignored** and points at the Windows SDK path (`C:\Users\isaac\AppData\Local\Android\Sdk`). Don't commit it.
 - **Configuration cache is enabled.** Avoid `BuildService` patterns that break it; if a build suddenly fails after a Gradle/AGP bump, try `./gradlew --no-configuration-cache` to bisect.
 - **Accessibility + Usage-Stats permissions are core to the app.** The onboarding screen deep-links the user to `ACTION_ACCESSIBILITY_SETTINGS`, `ACTION_USAGE_ACCESS_SETTINGS`, and `ACTION_APP_NOTIFICATION_SETTINGS`. Tests that mock these paths must preserve the intent extras `EXTRA_BLOCKED_PACKAGE` and `EXTRA_FROM_UNLOCK_NOTIFICATION` on `MainActivity`.
 - **Notification actions** use the custom action namespace `com.unpostpone.app.action.POMODORO_*` (see `PomodoroActionReceiver` in the manifest). Add new actions there, not in a new namespace.

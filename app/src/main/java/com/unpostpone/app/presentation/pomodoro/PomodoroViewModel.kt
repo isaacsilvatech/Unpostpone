@@ -38,7 +38,6 @@ class PomodoroViewModel @Inject constructor(
     private var lastSeenSessionType: PomodoroSessionType = PomodoroSessionType.FOCUS
     private var lastSeenPreset: PomodoroPreset = PomodoroPreset.Classic
 
-    // One row per planned session, even if the user +1:00's and the engine re-crosses zero.
     private var overtimeRecorded: Boolean = false
 
     init {

@@ -26,11 +26,15 @@ class PomodoroTimerEngine @Inject constructor() {
     private var breakMinutes: Int = 5
 
     fun start(durationMillis: Long, type: PomodoroSessionType) {
+        val now = System.currentTimeMillis()
         _state.value = State(
             status = Status.RUNNING,
             sessionType = type,
             totalMillis = durationMillis,
             remainingMillis = durationMillis,
+            runningStartedAtEpochMillis = now,
+            pausedAccumulatedMillis = 0L,
+            pauseStartedAtEpochMillis = 0L,
         )
         scheduleTickLoop()
     }
@@ -56,21 +60,42 @@ class PomodoroTimerEngine @Inject constructor() {
     fun pause() {
         if (_state.value.status != Status.RUNNING) return
         tickJob?.cancel()
-        _state.value = _state.value.copy(status = Status.PAUSED)
+        val now = System.currentTimeMillis()
+        val s = _state.value
+        val currentRemaining = computeRemainingMillis(s, now)
+        _state.value = s.copy(
+            status = Status.PAUSED,
+            remainingMillis = currentRemaining,
+            pauseStartedAtEpochMillis = now,
+        )
     }
 
     fun resume() {
         if (_state.value.status != Status.PAUSED) return
-        _state.value = _state.value.copy(status = Status.RUNNING)
+        val now = System.currentTimeMillis()
+        val s = _state.value
+        val pauseDuration = if (s.pauseStartedAtEpochMillis > 0L)
+            now - s.pauseStartedAtEpochMillis
+        else 0L
+        _state.value = s.copy(
+            status = Status.RUNNING,
+            runningStartedAtEpochMillis = now,
+            pausedAccumulatedMillis = s.pausedAccumulatedMillis + pauseDuration,
+            pauseStartedAtEpochMillis = 0L,
+        )
         scheduleTickLoop()
     }
 
     fun addMinute() {
         val s = _state.value
         if (s.status == Status.IDLE) return
+        val now = System.currentTimeMillis()
+        val currentRemaining = computeRemainingMillis(s, now)
         _state.value = s.copy(
             totalMillis = s.totalMillis + 60_000L,
-            remainingMillis = s.remainingMillis + 60_000L,
+            remainingMillis = currentRemaining + 60_000L,
+            runningStartedAtEpochMillis = now,
+            pauseStartedAtEpochMillis = 0L,
         )
     }
 
@@ -91,9 +116,23 @@ class PomodoroTimerEngine @Inject constructor() {
                 delay(1_000L)
                 val s = _state.value
                 if (s.status != Status.RUNNING) break
-                _state.value = s.copy(remainingMillis = s.remainingMillis - 1_000L)
+                val now = System.currentTimeMillis()
+                _state.value = s.copy(remainingMillis = computeRemainingMillis(s, now))
             }
         }
+    }
+
+    fun syncFromWallClock() {
+        val s = _state.value
+        if (s.status != Status.RUNNING) return
+        val now = System.currentTimeMillis()
+        _state.value = s.copy(remainingMillis = computeRemainingMillis(s, now))
+    }
+
+    private fun computeRemainingMillis(s: State, now: Long): Long {
+        if (s.runningStartedAtEpochMillis == 0L) return s.remainingMillis
+        val elapsed = now - s.runningStartedAtEpochMillis - s.pausedAccumulatedMillis
+        return s.totalMillis - elapsed
     }
 
     enum class Status { IDLE, RUNNING, PAUSED }
@@ -103,6 +142,9 @@ class PomodoroTimerEngine @Inject constructor() {
         val sessionType: PomodoroSessionType = PomodoroSessionType.FOCUS,
         val totalMillis: Long = 0L,
         val remainingMillis: Long = 0L,
+        val runningStartedAtEpochMillis: Long = 0L,
+        val pausedAccumulatedMillis: Long = 0L,
+        val pauseStartedAtEpochMillis: Long = 0L,
     )
 }
 

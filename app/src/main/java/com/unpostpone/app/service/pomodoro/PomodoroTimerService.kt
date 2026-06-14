@@ -117,6 +117,13 @@ class PomodoroTimerService : Service() {
                 alarmScheduler.cancel()
                 alarmScheduler.scheduleSessionEnd(nextDuration, nextType)
             }
+            ACTION_CHECK_OVERTIME -> {
+                engine.syncFromWallClock()
+                val s = engine.state.value
+                if (s.status == PomodoroTimerEngine.Status.RUNNING) {
+                    startForegroundCompat(s)
+                }
+            }
         }
         return START_STICKY
     }
@@ -278,6 +285,7 @@ class PomodoroTimerService : Service() {
         const val ACTION_ADD_MINUTE = "com.unpostpone.app.action.POMODORO_SERVICE_ADD_MINUTE"
         const val ACTION_STOP = "com.unpostpone.app.action.POMODORO_SERVICE_STOP"
         const val ACTION_SKIP_TO_NEXT = "com.unpostpone.app.action.POMODORO_SERVICE_SKIP_TO_NEXT"
+        const val ACTION_CHECK_OVERTIME = "com.unpostpone.app.action.POMODORO_SERVICE_CHECK_OVERTIME"
 
         const val EXTRA_DURATION_MILLIS = "extra_pomodoro_duration_millis"
         const val EXTRA_SESSION_TYPE = "extra_pomodoro_session_type"
