@@ -17,11 +17,13 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -31,6 +33,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
@@ -42,6 +45,7 @@ import com.unpostpone.app.service.pomodoro.PomodoroTimerService
 import com.unpostpone.app.service.pomodoro.formatRemainingMillis
 import com.unpostpone.app.ui.theme.Dimens
 import com.unpostpone.app.ui.theme.Teal
+import com.unpostpone.app.ui.theme.UnpostponeTheme
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -87,6 +91,7 @@ class PomodoroOvertimeActivity : ComponentActivity() {
             PomodoroOvertimeScreen(
                 state = state,
                 onAddMinute = ::sendAddMinute,
+                onSkipToNext = ::sendSkipToNext,
                 onStop = ::sendStop,
             )
         }
@@ -118,12 +123,21 @@ class PomodoroOvertimeActivity : ComponentActivity() {
         startService(intent)
         finish()
     }
+
+    private fun sendSkipToNext() {
+        val intent = Intent(this, PomodoroTimerService::class.java).apply {
+            action = PomodoroTimerService.ACTION_SKIP_TO_NEXT
+        }
+        startService(intent)
+        finish()
+    }
 }
 
 @Composable
 private fun PomodoroOvertimeScreen(
     state: PomodoroTimerEngine.State,
     onAddMinute: () -> Unit,
+    onSkipToNext: () -> Unit,
     onStop: () -> Unit,
 ) {
     Box(
@@ -136,7 +150,7 @@ private fun PomodoroOvertimeScreen(
                 .fillMaxSize()
                 .padding(
                     PaddingValues(
-                        top = Dimens.SpacingScreen,
+                        top = Dimens.SpacingHuge,
                         bottom = Dimens.SpacingHuge,
                         start = Dimens.SpacingXL,
                         end = Dimens.SpacingXL,
@@ -145,51 +159,73 @@ private fun PomodoroOvertimeScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
-            Text(
-                text = subtitleFor(state.sessionType),
-                color = Color.White.copy(alpha = 0.7f),
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium,
-                textAlign = TextAlign.Center,
-            )
-            Spacer(Modifier.height(Dimens.SpacingHuge))
-            Text(
-                text = formatRemainingMillis(state.remainingMillis),
-                color = Color.White,
-                fontSize = 112.sp,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center,
-            )
-            Spacer(Modifier.height(Dimens.SpacingHuge))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(Dimens.SpacingM),
+            Column(
+                modifier = Modifier
+                    .offset(y = -Dimens.SpacingHuge)
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Button(
-                    onClick = onAddMinute,
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(Dimens.ButtonHeight + 8.dp),
-                    shape = RoundedCornerShape(50),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.White,
-                        contentColor = Teal,
-                    ),
+                Text(
+                    text = subtitleFor(state.sessionType),
+                    color = Color.White.copy(alpha = 0.7f),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    textAlign = TextAlign.Center,
+                )
+                Spacer(Modifier.height(Dimens.SpacingL))
+                Text(
+                    text = formatRemainingMillis(state.remainingMillis),
+                    color = Color.White,
+                    fontSize = 88.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                )
+                Spacer(Modifier.height(Dimens.SpacingHuge))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(Dimens.SpacingM),
                 ) {
-                    Text(
-                        text = stringResource(R.string.pomodoro_overtime_button_add_minute),
-                        fontWeight = FontWeight.SemiBold,
-                    )
+                    Button(
+                        onClick = onAddMinute,
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(Dimens.ButtonHeight + 8.dp),
+                        shape = RoundedCornerShape(50),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.White,
+                            contentColor = Teal,
+                        ),
+                    ) {
+                        Text(
+                            text = stringResource(R.string.pomodoro_overtime_button_add_minute),
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                    }
+                    Button(
+                        onClick = onSkipToNext,
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(Dimens.ButtonHeight + 8.dp),
+                        shape = RoundedCornerShape(50),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.White,
+                            contentColor = Teal,
+                        ),
+                    ) {
+                        Text(
+                            text = skipLabelFor(state.sessionType),
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                    }
                 }
-                Button(
+                Spacer(Modifier.height(Dimens.SpacingM))
+                TextButton(
                     onClick = onStop,
                     modifier = Modifier
-                        .weight(1f)
-                        .height(Dimens.ButtonHeight + 8.dp),
-                    shape = RoundedCornerShape(50),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.White,
-                        contentColor = Teal,
+                        .align(Alignment.CenterHorizontally)
+                        .height(Dimens.ButtonHeightSmall),
+                    colors = ButtonDefaults.textButtonColors(
+                        contentColor = Color.White,
                     ),
                 ) {
                     Text(
@@ -203,10 +239,77 @@ private fun PomodoroOvertimeScreen(
 }
 
 @Composable
+private fun skipLabelFor(currentSessionType: PomodoroSessionType): String {
+    val nextType = when (currentSessionType) {
+        PomodoroSessionType.FOCUS -> PomodoroSessionType.BREAK
+        PomodoroSessionType.BREAK -> PomodoroSessionType.FOCUS
+    }
+    val res = when (nextType) {
+        PomodoroSessionType.FOCUS -> R.string.pomodoro_overtime_button_skip_focus
+        PomodoroSessionType.BREAK -> R.string.pomodoro_overtime_button_skip_break
+    }
+    return stringResource(res)
+}
+
+@Composable
 private fun subtitleFor(sessionType: PomodoroSessionType): String {
     val res = when (sessionType) {
         PomodoroSessionType.FOCUS -> R.string.pomodoro_overtime_subtitle_focus
         PomodoroSessionType.BREAK -> R.string.pomodoro_overtime_subtitle_break
     }
     return stringResource(res)
+}
+
+@Preview(name = "Overtime — Focus overtime (light)", showBackground = true)
+@Composable
+private fun PomodoroOvertimePreview_FocusOvertime() {
+    UnpostponeTheme(darkTheme = false) {
+        PomodoroOvertimeScreen(
+            state = PomodoroTimerEngine.State(
+                status = PomodoroTimerEngine.Status.RUNNING,
+                sessionType = PomodoroSessionType.FOCUS,
+                totalMillis = 25 * 60_000L,
+                remainingMillis = -12_000L,
+            ),
+            onAddMinute = {},
+            onSkipToNext = {},
+            onStop = {},
+        )
+    }
+}
+
+@Preview(name = "Overtime — Break overtime (light)", showBackground = true)
+@Composable
+private fun PomodoroOvertimePreview_BreakOvertime() {
+    UnpostponeTheme(darkTheme = false) {
+        PomodoroOvertimeScreen(
+            state = PomodoroTimerEngine.State(
+                status = PomodoroTimerEngine.Status.RUNNING,
+                sessionType = PomodoroSessionType.BREAK,
+                totalMillis = 5 * 60_000L,
+                remainingMillis = -1 * 60_000L - 46_000L,
+            ),
+            onAddMinute = {},
+            onSkipToNext = {},
+            onStop = {},
+        )
+    }
+}
+
+@Preview(name = "Overtime — Dark", showBackground = true)
+@Composable
+private fun PomodoroOvertimePreview_Dark() {
+    UnpostponeTheme(darkTheme = true) {
+        PomodoroOvertimeScreen(
+            state = PomodoroTimerEngine.State(
+                status = PomodoroTimerEngine.Status.RUNNING,
+                sessionType = PomodoroSessionType.FOCUS,
+                totalMillis = 50 * 60_000L,
+                remainingMillis = -3 * 60_000L - 27_000L,
+            ),
+            onAddMinute = {},
+            onSkipToNext = {},
+            onStop = {},
+        )
+    }
 }

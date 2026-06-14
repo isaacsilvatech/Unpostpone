@@ -22,6 +22,9 @@ class PomodoroTimerEngine @Inject constructor() {
     private val _state = MutableStateFlow(State())
     val state: StateFlow<State> = _state.asStateFlow()
 
+    private var focusMinutes: Int = 25
+    private var breakMinutes: Int = 5
+
     fun start(durationMillis: Long, type: PomodoroSessionType) {
         _state.value = State(
             status = Status.RUNNING,
@@ -30,6 +33,24 @@ class PomodoroTimerEngine @Inject constructor() {
             remainingMillis = durationMillis,
         )
         scheduleTickLoop()
+    }
+
+    fun configurePreset(focusMinutes: Int, breakMinutes: Int) {
+        this.focusMinutes = focusMinutes
+        this.breakMinutes = breakMinutes
+    }
+
+    fun nextSession(): Pair<PomodoroSessionType, Long> {
+        val current = _state.value
+        val nextType = when (current.sessionType) {
+            PomodoroSessionType.FOCUS -> PomodoroSessionType.BREAK
+            PomodoroSessionType.BREAK -> PomodoroSessionType.FOCUS
+        }
+        val minutes = when (nextType) {
+            PomodoroSessionType.FOCUS -> focusMinutes
+            PomodoroSessionType.BREAK -> breakMinutes
+        }
+        return nextType to (minutes * 60_000L)
     }
 
     fun pause() {

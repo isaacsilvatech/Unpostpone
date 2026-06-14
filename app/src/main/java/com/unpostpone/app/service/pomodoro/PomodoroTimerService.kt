@@ -21,6 +21,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -47,9 +48,11 @@ class PomodoroTimerService : Service() {
                 .collect { state -> postNotification(state) }
         }
         scope.launch {
-            engine.state.collect { state ->
-                handleEngineState(state)
-            }
+            engine.state
+                .drop(1)
+                .collect { state ->
+                    handleEngineState(state)
+                }
         }
     }
 
@@ -59,7 +62,10 @@ class PomodoroTimerService : Service() {
                 val duration = intent.getLongExtra(EXTRA_DURATION_MILLIS, 0L)
                 val typeOrdinal = intent.getIntExtra(EXTRA_SESSION_TYPE, 0)
                 val type = PomodoroSessionType.entries[typeOrdinal]
+                val focusMinutes = intent.getIntExtra(EXTRA_FOCUS_MINUTES, 25)
+                val breakMinutes = intent.getIntExtra(EXTRA_BREAK_MINUTES, 5)
                 notificationHelper.ensureChannel()
+                engine.configurePreset(focusMinutes, breakMinutes)
                 cleanupPreviousSessionOverstate()
                 engine.start(duration, type)
                 sessionEndSignal.reset()
@@ -96,6 +102,21 @@ class PomodoroTimerService : Service() {
                 }
             }
             ACTION_STOP -> stopService()
+            ACTION_SKIP_TO_NEXT -> {
+                val (nextType, nextDuration) = engine.nextSession()
+                cleanupPreviousSessionOverstate()
+                engine.start(nextDuration, nextType)
+                sessionEndSignal.reset()
+                val s = engine.state.value.copy(
+                    status = PomodoroTimerEngine.Status.RUNNING,
+                    sessionType = nextType,
+                    totalMillis = nextDuration,
+                    remainingMillis = nextDuration,
+                )
+                startForegroundCompat(s)
+                alarmScheduler.cancel()
+                alarmScheduler.scheduleSessionEnd(nextDuration, nextType)
+            }
         }
         return START_STICKY
     }
@@ -256,9 +277,12 @@ class PomodoroTimerService : Service() {
         const val ACTION_RESUME = "com.unpostpone.app.action.POMODORO_SERVICE_RESUME"
         const val ACTION_ADD_MINUTE = "com.unpostpone.app.action.POMODORO_SERVICE_ADD_MINUTE"
         const val ACTION_STOP = "com.unpostpone.app.action.POMODORO_SERVICE_STOP"
+        const val ACTION_SKIP_TO_NEXT = "com.unpostpone.app.action.POMODORO_SERVICE_SKIP_TO_NEXT"
 
         const val EXTRA_DURATION_MILLIS = "extra_pomodoro_duration_millis"
         const val EXTRA_SESSION_TYPE = "extra_pomodoro_session_type"
+        const val EXTRA_FOCUS_MINUTES = "extra_pomodoro_focus_minutes"
+        const val EXTRA_BREAK_MINUTES = "extra_pomodoro_break_minutes"
 
         private const val OPEN_REQUEST_CODE = 5001
         private const val PAUSE_REQUEST_CODE = 5002

@@ -80,7 +80,6 @@ class PomodoroViewModel @Inject constructor(
             )
         }
         if (inOvertime && !overtimeRecorded) {
-            // Do not auto-advance or pop the in-app dialog — the fullscreen activity owns the end-of-session UX.
             overtimeRecorded = true
             handleSessionCompleteOvertime(state.sessionType)
         }
@@ -166,10 +165,13 @@ class PomodoroViewModel @Inject constructor(
     }
 
     private fun startService(durationMillis: Long, type: PomodoroSessionType) {
+        val preset = _uiState.value.selectedPreset
         val intent = Intent(context, PomodoroTimerService::class.java).apply {
             action = PomodoroTimerService.ACTION_START
             putExtra(PomodoroTimerService.EXTRA_DURATION_MILLIS, durationMillis)
             putExtra(PomodoroTimerService.EXTRA_SESSION_TYPE, type.ordinal)
+            putExtra(PomodoroTimerService.EXTRA_FOCUS_MINUTES, preset.focusMinutes)
+            putExtra(PomodoroTimerService.EXTRA_BREAK_MINUTES, preset.breakMinutes)
         }
         context.startForegroundService(intent)
         alarmScheduler.scheduleSessionEnd(durationMillis, type)

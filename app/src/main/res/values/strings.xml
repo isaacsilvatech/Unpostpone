@@ -64,6 +64,8 @@
  <string name="pomodoro_overtime_subtitle_break">Break</string>
  <string name="pomodoro_overtime_button_stop">Stop</string>
  <string name="pomodoro_overtime_button_add_minute">+ 1:00</string>
+ <string name="pomodoro_overtime_button_skip_focus">To focus</string>
+ <string name="pomodoro_overtime_button_skip_break">To break</string>
  <string name="pomodoro_notification_overtime_body">Time\'s up</string>
  <string name="pomodoro_notification_overtime_action_stop">Stop</string>
 </resources>
