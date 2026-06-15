@@ -27,6 +27,8 @@
  <string name="pomodoro_back_cd">Voltar</string>
     <string name="pomodoro_action_start">Iniciar</string>
     <string name="pomodoro_action_start_next">Iniciar próxima</string>
+    <string name="pomodoro_action_start_focus">Focar</string>
+    <string name="pomodoro_action_start_break">Descansar</string>
     <string name="pomodoro_action_pause">Pausar</string>
     <string name="pomodoro_action_resume">Retomar</string>
     <string name="pomodoro_action_reset">Reiniciar</string>
@@ -43,12 +45,6 @@
     <string name="pomodoro_preset_short">%1$d/%2$d</string>
  <string name="pomodoro_session_focus">Foco</string>
  <string name="pomodoro_session_break">Descanso</string>
- <string name="pomodoro_complete_title">Sessão concluída</string>
- <string name="pomodoro_complete_focus_body">Hora de uma pausa.</string>
- <string name="pomodoro_complete_break_body">Pronto para focar de novo?</string>
- <string name="pomodoro_complete_focus_action">Iniciar pausa</string>
- <string name="pomodoro_complete_break_action">Iniciar foco</string>
- <string name="pomodoro_complete_dismiss">Fechar</string>
  <string name="pomodoro_completed_focus_count">%1$d sessões de foco concluídas</string>
  <string name="pomodoro_notification_ongoing_focus">Foco · %1$s</string>
  <string name="pomodoro_notification_ongoing_break">Descanso · %1$s</string>
@@ -64,4 +60,8 @@
     <string name="pomodoro_overtime_button_skip_break">Descansar</string>
     <string name="pomodoro_notification_overtime_body">Tempo esgotado</string>
     <string name="pomodoro_notification_overtime_action_stop">Parar</string>
+    <string name="pomodoro_preset_change_title">Trocar preset?</string>
+    <string name="pomodoro_preset_change_body">Sua sessão atual será interrompida. Trocar para %1$s e começar do zero?</string>
+    <string name="pomodoro_preset_change_confirm">Trocar</string>
+    <string name="pomodoro_preset_change_cancel">Manter sessão</string>
 </resources>

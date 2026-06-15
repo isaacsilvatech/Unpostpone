@@ -1,5 +1,6 @@
 package com.unpostpone.app.presentation.pomodoro
 
+import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -25,9 +26,14 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -53,6 +59,27 @@ fun PomodoroScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     val onEvent: (PomodoroEvent) -> Unit = { viewModel.onEvent(it) }
+
+    var pendingPreset by remember { mutableStateOf<PomodoroPreset?>(null) }
+    val onPresetClicked: (PomodoroPreset) -> Unit = { preset ->
+        if (preset.name != uiState.selectedPreset.name) {
+            if (uiState.isSessionActive) {
+                pendingPreset = preset
+            } else {
+                onEvent(PomodoroEvent.PresetSelected(preset))
+            }
+        }
+    }
+
+    val context = LocalContext.current
+    if (uiState.inOvertime) {
+        LaunchedEffect(Unit) {
+            val intent = Intent(context, PomodoroOvertimeActivity::class.java).apply {
+                addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+            runCatching { context.startActivity(intent) }
+        }
+    }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -84,19 +111,50 @@ fun PomodoroScreen(
         PomodoroContent(
             uiState = uiState,
             onEvent = onEvent,
+            onPresetClicked = onPresetClicked,
             contentPadding = paddingValues,
         )
     }
 
-    if (uiState.showSessionCompleteDialog) {
-        SessionCompleteDialog(
-            sessionType = uiState.currentSessionType,
-            completedFocusCount = uiState.completedFocusCount,
-            onStartNext = {
-                onEvent(PomodoroEvent.DismissCompleteDialog)
-                onEvent(PomodoroEvent.Start)
+    pendingPreset?.let { target ->
+        val presetLabel = stringResource(
+            R.string.pomodoro_preset_short,
+            target.focusMinutes,
+            target.breakMinutes,
+        )
+        AlertDialog(
+            onDismissRequest = { pendingPreset = null },
+            title = {
+                Text(
+                    text = stringResource(R.string.pomodoro_preset_change_title),
+                    style = MaterialTheme.typography.titleLarge,
+                )
             },
-            onDismiss = { onEvent(PomodoroEvent.DismissCompleteDialog) },
+            text = {
+                Text(
+                    text = stringResource(R.string.pomodoro_preset_change_body, presetLabel),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        onEvent(PomodoroEvent.PresetSelected(target))
+                        pendingPreset = null
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary,
+                    ),
+                ) {
+                    Text(stringResource(R.string.pomodoro_preset_change_confirm))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { pendingPreset = null }) {
+                    Text(stringResource(R.string.pomodoro_preset_change_cancel))
+                }
+            },
         )
     }
 }
@@ -105,6 +163,7 @@ fun PomodoroScreen(
 private fun PomodoroContent(
     uiState: PomodoroUiState,
     onEvent: (PomodoroEvent) -> Unit,
+    onPresetClicked: (PomodoroPreset) -> Unit,
     contentPadding: PaddingValues,
 ) {
     val scrollState = rememberScrollState()
@@ -122,18 +181,19 @@ private fun PomodoroContent(
 
         PresetPillsRow(
             uiState = uiState,
-            onEvent = onEvent,
+            onPresetClicked = onPresetClicked,
         )
 
         PomodoroTimerRing(
             progress = uiState.progress,
-            centerText = uiState.formattedRemaining,
+            centerText = if (uiState.inOvertime) "00:00" else uiState.formattedRemaining,
             eyebrow = eyebrowFor(uiState),
         )
 
         PomodoroControls(
             timerState = uiState.timerState,
             isSessionActive = uiState.isSessionActive,
+            currentSessionType = uiState.currentSessionType,
             onStart = { onEvent(PomodoroEvent.Start) },
             onPause = { onEvent(PomodoroEvent.Pause) },
             onResume = { onEvent(PomodoroEvent.Resume) },
@@ -160,7 +220,7 @@ private fun PomodoroContent(
 @Composable
 private fun PresetPillsRow(
     uiState: PomodoroUiState,
-    onEvent: (PomodoroEvent) -> Unit,
+    onPresetClicked: (PomodoroPreset) -> Unit,
 ) {
     androidx.compose.foundation.layout.Row(
         modifier = Modifier.fillMaxWidth(),
@@ -175,7 +235,7 @@ private fun PresetPillsRow(
                 focusMinutes = preset.focusMinutes,
                 breakMinutes = preset.breakMinutes,
                 selected = preset.name == uiState.selectedPreset.name,
-                onClick = { onEvent(PomodoroEvent.PresetSelected(preset)) },
+                onClick = { onPresetClicked(preset) },
             )
         }
     }
@@ -191,65 +251,6 @@ private fun eyebrowFor(uiState: PomodoroUiState): String {
     return stringResource(resId)
 }
 
-@Composable
-private fun SessionCompleteDialog(
-    sessionType: PomodoroSessionType,
-    completedFocusCount: Int,
-    onStartNext: () -> Unit,
-    onDismiss: () -> Unit,
-) {
-    val wasFocus = sessionType == PomodoroSessionType.FOCUS
-    val bodyRes = if (wasFocus) R.string.pomodoro_complete_focus_body
-    else R.string.pomodoro_complete_break_body
-    val actionRes = if (wasFocus) R.string.pomodoro_complete_focus_action
-    else R.string.pomodoro_complete_break_action
-
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = {
-            Text(
-                text = stringResource(R.string.pomodoro_complete_title),
-                style = MaterialTheme.typography.titleLarge,
-            )
-        },
-        text = {
-            Column {
-                Text(
-                    text = stringResource(bodyRes),
-                    style = MaterialTheme.typography.bodyMedium,
-                )
-                if (completedFocusCount > 0) {
-                    Spacer(Modifier.height(Dimens.SpacingS))
-                    Text(
-                        text = stringResource(
-                            R.string.pomodoro_completed_focus_count,
-                            completedFocusCount,
-                        ),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-            }
-        },
-        confirmButton = {
-            Button(
-                onClick = onStartNext,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary,
-                ),
-            ) {
-                Text(stringResource(actionRes))
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text(stringResource(R.string.pomodoro_complete_dismiss))
-            }
-        },
-    )
-}
-
 @Preview(name = "PomodoroScreen — Idle (light)", showBackground = true)
 @Composable
 private fun PomodoroScreenPreview_Idle() {
@@ -257,6 +258,7 @@ private fun PomodoroScreenPreview_Idle() {
         PomodoroContent(
             uiState = PomodoroUiState(),
             onEvent = {},
+            onPresetClicked = {},
             contentPadding = PaddingValues(0.dp),
         )
     }
@@ -273,6 +275,7 @@ private fun PomodoroScreenPreview_Running() {
                 plannedDurationMillis = 25 * 60_000L,
             ),
             onEvent = {},
+            onPresetClicked = {},
             contentPadding = PaddingValues(0.dp),
         )
     }
@@ -289,6 +292,7 @@ private fun PomodoroScreenPreview_Paused() {
                 plannedDurationMillis = 25 * 60_000L,
             ),
             onEvent = {},
+            onPresetClicked = {},
             contentPadding = PaddingValues(0.dp),
         )
     }
@@ -307,6 +311,7 @@ private fun PomodoroScreenPreview_Finished() {
                 completedFocusCount = 2,
             ),
             onEvent = {},
+            onPresetClicked = {},
             contentPadding = PaddingValues(0.dp),
         )
     }
@@ -326,6 +331,7 @@ private fun PomodoroScreenPreview_Dark() {
                 completedFocusCount = 4,
             ),
             onEvent = {},
+            onPresetClicked = {},
             contentPadding = PaddingValues(0.dp),
         )
     }

@@ -19,7 +19,7 @@ data class PomodoroUiState(
     val plannedDurationMillis: Long = PomodoroPreset.Classic.focusMinutes * 60_000L,
     val completedFocusCount: Int = 0,
     val availablePresets: List<PomodoroPreset> = PomodoroPreset.All,
-    val showSessionCompleteDialog: Boolean = false,
+    val inOvertime: Boolean = false,
 ) {
     val progress: Float
         get() {
@@ -29,7 +29,7 @@ data class PomodoroUiState(
         }
 
     val isSessionActive: Boolean
-        get() = timerState == TimerState.Running || timerState == TimerState.Paused
+        get() = (timerState == TimerState.Running || timerState == TimerState.Paused) && !inOvertime
 
     val formattedRemaining: String
         get() = formatRemainingMillis(remainingMillis)

@@ -29,6 +29,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.unpostpone.app.R
+import com.unpostpone.app.domain.model.PomodoroSessionType
 import com.unpostpone.app.presentation.pomodoro.TimerState
 import com.unpostpone.app.ui.theme.Dimens
 import com.unpostpone.app.ui.theme.UnpostponeTheme
@@ -37,6 +38,7 @@ import com.unpostpone.app.ui.theme.UnpostponeTheme
 fun PomodoroControls(
     timerState: TimerState,
     isSessionActive: Boolean,
+    currentSessionType: PomodoroSessionType,
     onStart: () -> Unit,
     onPause: () -> Unit,
     onResume: () -> Unit,
@@ -71,6 +73,7 @@ fun PomodoroControls(
             )
 
             TimerState.Finished -> FinishedActions(
+                currentSessionType = currentSessionType,
                 onStartNext = onStart,
             )
         }
@@ -179,10 +182,21 @@ private fun PausedActions(
 
 @Composable
 private fun FinishedActions(
+    currentSessionType: PomodoroSessionType,
     onStartNext: () -> Unit,
 ) {
+    val nextType = when (currentSessionType) {
+        PomodoroSessionType.FOCUS -> PomodoroSessionType.BREAK
+        PomodoroSessionType.BREAK -> PomodoroSessionType.FOCUS
+    }
+    val label = stringResource(
+        when (nextType) {
+            PomodoroSessionType.FOCUS -> R.string.pomodoro_action_start_focus
+            PomodoroSessionType.BREAK -> R.string.pomodoro_action_start_break
+        }
+    )
     PrimaryActionOnly(
-        label = stringResource(R.string.pomodoro_action_start_next),
+        label = label,
         onClick = onStartNext,
     )
 }
@@ -239,6 +253,7 @@ private fun PomodoroControlsPreview_Idle() {
         PomodoroControls(
             timerState = TimerState.Idle,
             isSessionActive = false,
+            currentSessionType = PomodoroSessionType.FOCUS,
             onStart = {},
             onPause = {},
             onResume = {},
@@ -256,6 +271,7 @@ private fun PomodoroControlsPreview_Running() {
         PomodoroControls(
             timerState = TimerState.Running,
             isSessionActive = true,
+            currentSessionType = PomodoroSessionType.FOCUS,
             onStart = {},
             onPause = {},
             onResume = {},
@@ -273,6 +289,7 @@ private fun PomodoroControlsPreview_Paused() {
         PomodoroControls(
             timerState = TimerState.Paused,
             isSessionActive = true,
+            currentSessionType = PomodoroSessionType.FOCUS,
             onStart = {},
             onPause = {},
             onResume = {},
@@ -290,6 +307,7 @@ private fun PomodoroControlsPreview_Finished() {
         PomodoroControls(
             timerState = TimerState.Finished,
             isSessionActive = false,
+            currentSessionType = PomodoroSessionType.FOCUS,
             onStart = {},
             onPause = {},
             onResume = {},

@@ -8,6 +8,5 @@ sealed interface PomodoroEvent {
     data object Resume : PomodoroEvent
     data object Reset : PomodoroEvent
     data class PresetSelected(val preset: PomodoroPreset) : PomodoroEvent
-    data object DismissCompleteDialog : PomodoroEvent
     data object SkipToNext : PomodoroEvent
 }

@@ -39,6 +39,7 @@ class PomodoroViewModel @Inject constructor(
     private var lastSeenPreset: PomodoroPreset = PomodoroPreset.Classic
 
     private var overtimeRecorded: Boolean = false
+    private var wasInOvertime: Boolean = false
 
     init {
         engineObserverJob = viewModelScope.launch {
@@ -52,35 +53,62 @@ class PomodoroViewModel @Inject constructor(
         val totalMillis = state.totalMillis
         val remainingMillis = state.remainingMillis
         val inOvertime = state.status == PomodoroTimerEngine.Status.RUNNING && remainingMillis < 0L
-        val timerState = when (state.status) {
-            PomodoroTimerEngine.Status.IDLE -> {
+        val isEngineIdle = state.status == PomodoroTimerEngine.Status.IDLE
+        val justLeftOvertimeToIdle = wasInOvertime && isEngineIdle
+        val timerState = when {
+            justLeftOvertimeToIdle -> TimerState.Idle
+            state.status == PomodoroTimerEngine.Status.IDLE -> {
                 if (remainingMillis == 0L) TimerState.Idle
                 else TimerState.Running
             }
-            PomodoroTimerEngine.Status.RUNNING -> {
+            state.status == PomodoroTimerEngine.Status.RUNNING -> {
                 if (remainingMillis == 0L || inOvertime) TimerState.Finished
                 else TimerState.Running
             }
-            PomodoroTimerEngine.Status.PAUSED -> TimerState.Paused
+            state.status == PomodoroTimerEngine.Status.PAUSED -> TimerState.Paused
+            else -> TimerState.Idle
         }
+        val preset = _uiState.value.selectedPreset
         _uiState.update { current ->
-            val isEngineIdle = state.status == PomodoroTimerEngine.Status.IDLE
-            val planned = if (totalMillis > 0L) totalMillis else current.plannedDurationMillis
-            current.copy(
-                currentSessionType = state.sessionType,
-                plannedDurationMillis = planned,
-                remainingMillis = if (isEngineIdle) {
-                    if (current.remainingMillis == 0L) planned else current.remainingMillis
-                } else {
-                    remainingMillis
-                },
-                timerState = timerState,
-                showSessionCompleteDialog = if (isEngineIdle) false else current.showSessionCompleteDialog,
-            )
+            if (justLeftOvertimeToIdle) {
+                val nextType = when (state.sessionType) {
+                    PomodoroSessionType.FOCUS -> PomodoroSessionType.BREAK
+                    PomodoroSessionType.BREAK -> PomodoroSessionType.FOCUS
+                }
+                val nextDuration = durationFor(nextType, preset)
+                val nextFocusCount = if (state.sessionType == PomodoroSessionType.FOCUS)
+                    current.completedFocusCount + 1
+                else current.completedFocusCount
+                current.copy(
+                    currentSessionType = nextType,
+                    completedFocusCount = nextFocusCount,
+                    plannedDurationMillis = nextDuration,
+                    remainingMillis = nextDuration,
+                    timerState = TimerState.Idle,
+                    inOvertime = false,
+                )
+            } else {
+                val planned = if (totalMillis > 0L) totalMillis else current.plannedDurationMillis
+                current.copy(
+                    currentSessionType = state.sessionType,
+                    plannedDurationMillis = planned,
+                    remainingMillis = if (isEngineIdle) {
+                        if (current.remainingMillis == 0L) planned else current.remainingMillis
+                    } else {
+                        remainingMillis
+                    },
+                    timerState = timerState,
+                    inOvertime = inOvertime,
+                )
+            }
         }
+        wasInOvertime = inOvertime
         if (inOvertime && !overtimeRecorded) {
             overtimeRecorded = true
             handleSessionCompleteOvertime(state.sessionType)
+        }
+        if (justLeftOvertimeToIdle) {
+            overtimeRecorded = false
         }
     }
 
@@ -124,7 +152,6 @@ class PomodoroViewModel @Inject constructor(
                 timerState = TimerState.Idle,
                 remainingMillis = newDuration,
                 plannedDurationMillis = newDuration,
-                showSessionCompleteDialog = false,
             )
         }
     }
@@ -138,7 +165,6 @@ class PomodoroViewModel @Inject constructor(
                 timerState = TimerState.Idle,
                 remainingMillis = durationFor(it.currentSessionType, preset),
                 plannedDurationMillis = durationFor(it.currentSessionType, preset),
-                showSessionCompleteDialog = false,
             )
         }
     }
@@ -147,17 +173,12 @@ class PomodoroViewModel @Inject constructor(
         advanceToNextSession()
     }
 
-    fun onDismissCompleteDialog() {
-        _uiState.update { it.copy(showSessionCompleteDialog = false) }
-    }
-
     fun onEvent(event: PomodoroEvent) {
         when (event) {
             PomodoroEvent.Start -> onStart()
             PomodoroEvent.Pause -> onPause()
             PomodoroEvent.Resume -> onResume()
             PomodoroEvent.Reset -> onReset()
-            PomodoroEvent.DismissCompleteDialog -> onDismissCompleteDialog()
             PomodoroEvent.SkipToNext -> onSkipToNext()
             is PomodoroEvent.PresetSelected -> onPresetSelected(event.preset)
         }
@@ -216,9 +237,9 @@ class PomodoroViewModel @Inject constructor(
         val nextDuration = durationFor(nextType, state.selectedPreset)
         val nextFocusCount = if (state.currentSessionType == PomodoroSessionType.FOCUS)
             state.completedFocusCount + 1
-        else state.completedFocusCount
+            else state.completedFocusCount
         advanceToNextSessionInternal(nextFocusCount)
-        _uiState.update { it.copy(timerState = TimerState.Idle, showSessionCompleteDialog = false) }
+        _uiState.update { it.copy(timerState = TimerState.Idle) }
         startService(nextDuration, nextType)
     }
 

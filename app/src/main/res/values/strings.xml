@@ -30,7 +30,9 @@
  <string name="pomodoro_title">Pomodoro</string>
  <string name="pomodoro_back_cd">Back</string>
  <string name="pomodoro_action_start">Start</string>
- <string name="pomodoro_action_start_next">Start next</string>
+    <string name="pomodoro_action_start_next">Start next</string>
+    <string name="pomodoro_action_start_focus">Focus</string>
+    <string name="pomodoro_action_start_break">Break</string>
  <string name="pomodoro_action_pause">Pause</string>
  <string name="pomodoro_action_resume">Resume</string>
  <string name="pomodoro_action_reset">Reset</string>
@@ -47,16 +49,10 @@
  <string name="pomodoro_preset_short">%1$d/%2$d</string>
  <string name="pomodoro_session_focus">Focus</string>
  <string name="pomodoro_session_break">Break</string>
- <string name="pomodoro_complete_title">Session complete</string>
- <string name="pomodoro_complete_focus_body">Time for a break.</string>
- <string name="pomodoro_complete_break_body">Ready to focus again?</string>
- <string name="pomodoro_complete_focus_action">Start break</string>
- <string name="pomodoro_complete_break_action">Start focus</string>
- <string name="pomodoro_complete_dismiss">Close</string>
- <string name="pomodoro_completed_focus_count">%1$d focus sessions completed</string>
- <string name="pomodoro_notification_ongoing_focus">Focus · %1$s</string>
- <string name="pomodoro_notification_ongoing_break">Break · %1$s</string>
- <string name="pomodoro_notification_ongoing_subtitle">Pomodoro</string>
+    <string name="pomodoro_completed_focus_count">%1$d focus sessions completed</string>
+    <string name="pomodoro_notification_ongoing_focus">Focus · %1$s</string>
+    <string name="pomodoro_notification_ongoing_break">Break · %1$s</string>
+    <string name="pomodoro_notification_ongoing_subtitle">Pomodoro</string>
  <string name="pomodoro_notification_pause">Pause</string>
  <string name="pomodoro_notification_resume">Resume</string>
  <string name="pomodoro_notification_add_minute">Add 1 min</string>
@@ -65,7 +61,11 @@
  <string name="pomodoro_overtime_button_stop">Stop</string>
  <string name="pomodoro_overtime_button_add_minute">+ 1:00</string>
  <string name="pomodoro_overtime_button_skip_focus">To focus</string>
- <string name="pomodoro_overtime_button_skip_break">To break</string>
- <string name="pomodoro_notification_overtime_body">Time\'s up</string>
- <string name="pomodoro_notification_overtime_action_stop">Stop</string>
+    <string name="pomodoro_overtime_button_skip_break">To break</string>
+    <string name="pomodoro_notification_overtime_body">Time\'s up</string>
+    <string name="pomodoro_notification_overtime_action_stop">Stop</string>
+    <string name="pomodoro_preset_change_title">Switch preset?</string>
+    <string name="pomodoro_preset_change_body">Your current session will be stopped. Switch to %1$s and start fresh?</string>
+    <string name="pomodoro_preset_change_confirm">Switch</string>
+    <string name="pomodoro_preset_change_cancel">Keep session</string>
 </resources>
