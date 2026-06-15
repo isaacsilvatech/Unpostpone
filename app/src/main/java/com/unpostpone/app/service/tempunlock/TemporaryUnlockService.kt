@@ -178,7 +178,7 @@ class TemporaryUnlockService : Service() {
 
     companion object {
         const val CHANNEL_ID = "unpostpone_temporary_unlock"
-        const val NOTIFICATION_ID = 1002
+        const val NOTIFICATION_ID = 1003
         const val ACTION_START = "ACTION_START_TEMP_UNLOCK"
         const val ACTION_STOP = "ACTION_STOP_TEMP_UNLOCK"
         const val EXTRA_PACKAGE_NAME = "extra_temp_unlock_package"
