@@ -163,7 +163,7 @@ class PomodoroNotificationHelper(
             .setContentText(body)
             .setSmallIcon(R.drawable.ic_pomodoro)
             .setOngoing(false)
-            .setOnlyAlertOnce(false)
+            .setOnlyAlertOnce(true)
             .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)

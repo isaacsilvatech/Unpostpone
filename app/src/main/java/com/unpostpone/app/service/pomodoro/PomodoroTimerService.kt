@@ -168,14 +168,18 @@ class PomodoroTimerService : Service() {
     private fun postNotification(state: PomodoroTimerEngine.State) {
         val manager = getSystemService(NotificationManager::class.java) ?: return
         val runningId = PomodoroNotificationHelper.POMODORO_RUNNING_NOTIFICATION_ID
+        val overtimeId = PomodoroNotificationHelper.POMODORO_OVERTIME_NOTIFICATION_ID
         if (state.status == PomodoroTimerEngine.Status.IDLE && state.remainingMillis == 0L) {
             manager.cancel(runningId)
+            manager.cancel(overtimeId)
             return
         }
         if (state.remainingMillis < 0L) {
             manager.cancel(runningId)
+            manager.notify(overtimeId, notificationHelper.buildOvertimeNotification(state))
             return
         }
+        manager.cancel(overtimeId)
         val notification = buildRunningNotification(state)
         manager.notify(runningId, notification)
     }
