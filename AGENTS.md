@@ -27,8 +27,6 @@ Run from the repo root. Use the wrapper, not a system `gradle`.
 ./gradlew :app:dependencies            # resolved dependency tree
 ```
 
-There is no top-level `check`/CI pipeline wired up. After non-trivial changes, run `:app:compileDebugKotlin` (or `:app:test`) → `assembleDebug`. **Do not run `lintDebug` unless explicitly asked or strictly required** — it is slow and noisy. Use it as a final gate, not as a default step.
-
 ## Commit style
 
 Use [Conventional Commits](https://www.conventionalcommits.org/) — short, single-line, lowercase, no trailing period. Match the scope to the affected area (e.g. `dashboard`, `pomodoro`, `blocked-apps`, `settings`, `onboarding`).
@@ -75,15 +73,6 @@ Strings are split by feature: `res/values/<feature>_strings.xml` plus a `values-
 - **Notification actions** use the custom action namespace `com.unpostpone.app.action.POMODORO_*` (see `PomodoroActionReceiver` in the manifest). Add new actions there, not in a new namespace.
 - **Fullscreen overtime activity** (`PomodoroOvertimeActivity`) is `singleTask` with `showOnLockScreen="true"` and `taskAffinity=""` — it intentionally has no back-stack history.
 - **Special-use foreground services** must keep the matching `PROPERTY_SPECIAL_USE_FGS_SUBTYPE` property in the manifest. Don't remove the `<property>` lines for `PomodoroTimerService` or `TemporaryUnlockService`; Play Store review looks for them.
-
-## Tests
-
-`src/test/` is currently just the JUnit 4 example (`ExampleUnitTest.kt`); `src/androidTest/` likewise is the `ExampleInstrumentedTest` scaffold. Real testing dependencies are already wired in `app/build.gradle.kts` and `libs.versions.toml`:
-
-- JVM: JUnit 4, `kotlinx-coroutines-test`, `room-testing`, Robolectric, `androidx.test:core`, `androidx.test.ext:junit`.
-- Instrumented: `androidx.compose.ui:ui-test-junit4`, Espresso core, `androidx.test.ext:junit` (runner is `androidx.test.runner.AndroidJUnitRunner`, already set in `defaultConfig`).
-
-Prefer Robolectric for ViewModels/repositories that touch Room or `Context`; reserve `connectedAndroidTest` for things that genuinely need a device (accessibility service, foreground services, notifications).
 
 ## Resources
 
